@@ -6,7 +6,7 @@ from . import _category
 from ._session import Session
 
 
-class APIClient(Session):
+class TestRailAPI(Session):
 
     @property
     def cases(self):

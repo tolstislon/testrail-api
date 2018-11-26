@@ -1,4 +1,4 @@
-[![PyPI version](https://badge.fury.io/py/testrail-api.svg)](https://badge.fury.io/py/testrail-api)
+[![GitHub version](https://badge.fury.io/gh/tolstislon%2Ftestrail-api.svg)](https://badge.fury.io/gh/tolstislon%2Ftestrail-api)
 
 # testrail-api
 

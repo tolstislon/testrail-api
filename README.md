@@ -1,3 +1,5 @@
+[![PyPI version](https://badge.fury.io/py/testrail-api.svg)](https://badge.fury.io/py/testrail-api)
+
 # testrail-api
 
 

@@ -749,7 +749,7 @@ class Sections(BaseCategory):
         :param suite_id: The ID of the test suite (optional if the project is operating in single suite mode)
         :return: response
         """
-        return self._session.request('GET', f'get_sections/{project_id}/{suite_id}')
+        return self._session.request('GET', f'get_sections/{project_id}&suite_id={suite_id}')
 
     def add_section(self, project_id: int, name: str, **kwargs) -> dict:
         """

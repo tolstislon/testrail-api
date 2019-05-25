@@ -1,17 +1,16 @@
 [![GitHub version](https://badge.fury.io/gh/tolstislon%2Ftestrail-api.svg)](https://badge.fury.io/gh/tolstislon%2Ftestrail-api)
 [![Downloads](https://pepy.tech/badge/testrail-api)](https://pepy.tech/project/testrail-api)
-
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/testrail-api.svg)
 # testrail-api
 
 
 This is a Python wrapper of the TestRail API(v2) according to [the official document](http://docs.gurock.com/testrail-api2/start)
 
-`python 3.6+`
 
 ### Install
 
-```
-    pip install testrail-api
+```bash
+pip install testrail-api
 ```
 
 ### Example

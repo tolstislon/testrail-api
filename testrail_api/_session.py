@@ -13,6 +13,7 @@ class Session:
         self.__password = password
         self.__headers = kwargs.get('headers', self.__default_headers)
         self.__timeout = kwargs.get('timeout', 5)
+        self.__verify = kwargs.get('verify', True)
         self.__session = requests.Session()
 
     def request(self, method: str, src: str, **kwargs):
@@ -25,5 +26,5 @@ class Session:
         """
         url = f'{self.__base_url}{src}'
         response = self.__session.request(method, url, auth=(self.__user, self.__password), headers=self.__headers,
-                                          **kwargs)
+                                          verify=self.__verify, **kwargs)
         return response.json()

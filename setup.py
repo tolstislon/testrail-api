@@ -1,9 +1,7 @@
+from m2r import parse_from_file
 from setuptools import setup
 
 import testrail_api
-
-with open('readme.rst', 'r') as file:
-    long_description = file.read()
 
 setup(
     name='testrail_api',
@@ -14,7 +12,7 @@ setup(
     author='tolstislon',
     author_email='tolstislon@gmail.com',
     description='Python wrapper of the TestRail API',
-    long_description=long_description,
+    long_description=parse_from_file('README.md'),
     install_requires=['requests>=2.20.1'],
     python_requires='>=3.6',
     include_package_data=True,

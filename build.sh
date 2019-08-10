@@ -18,7 +18,7 @@ remove_artifacts
 
 # config file $HOME/.pypirc
 pipenv run python setup.py bdist_wheel
-twine upload --repository ${repository} dist/*
+pipenv run twine upload --repository ${repository} dist/*
 
 remove_artifacts
 

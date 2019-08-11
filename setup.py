@@ -8,7 +8,7 @@ setup(
     version=testrail_api.__version__,
     packages=['testrail_api'],
     url='https://github.com/tolstislon/testrail-api',
-    license='Apache Software License 2.0',
+    license='MIT License',
     author='tolstislon',
     author_email='tolstislon@gmail.com',
     description='Python wrapper of the TestRail API',
@@ -20,9 +20,10 @@ setup(
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: Apache Software License',
+        'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Operating System :: OS Independent',
+        'Programming Language :: Python',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Topic :: Software Development :: Libraries :: Python Modules'

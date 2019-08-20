@@ -7,6 +7,14 @@ class Session:
     _user_agent = 'Python TestRail API v: 1'
 
     def __init__(self, base_url: str, user: str, password: str, **kwargs):
+        """
+        :param kwargs:
+            :key timeout int
+            :key verify bool
+            :key headers dict
+        """
+        if base_url.endswith('/'):
+            base_url = base_url[:-1]
         self.__base_url = f'{base_url}/index.php?/api/v2/'
         self.__timeout = kwargs.get('timeout', 30)
         self.__session = requests.Session()
@@ -17,13 +25,7 @@ class Session:
         self.__session.auth = (user, password)
 
     def request(self, method: METHODS, src: str, **kwargs):
-        """
-        Base request method
-        :param method:
-        :param src:
-        :param kwargs:
-        :return: response
-        """
+        """Base request method"""
         url = f'{self.__base_url}{src}'
         response = self.__session.request(method=method.value, url=url, timeout=self.__timeout, **kwargs)
         return response.json() if response.text else None

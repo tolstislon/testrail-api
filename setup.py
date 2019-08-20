@@ -13,10 +13,18 @@ setup(
     author_email='tolstislon@gmail.com',
     description='Python wrapper of the TestRail API',
     long_description=parse_from_file('README.md'),
-    install_requires=['requests>=2.20.1'],
+    install_requires=[
+        'requests>=2.20.1'
+    ],
     python_requires='>=3.6',
     include_package_data=True,
-    keywords=['testrail', 'api', 'client', 'library', 'testrail_api'],
+    keywords=[
+        'testrail',
+        'api',
+        'client',
+        'library',
+        'testrail_api'
+    ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',

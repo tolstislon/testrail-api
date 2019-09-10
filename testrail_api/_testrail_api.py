@@ -9,6 +9,11 @@ from ._session import Session
 class TestRailAPI(Session):
 
     @property
+    def attachments(self):
+        """http://docs.gurock.com/testrail-api2/reference-attachments"""
+        return _category.Attachments(self)
+
+    @property
     def cases(self):
         """http://docs.gurock.com/testrail-api2/reference-cases"""
         return _category.Cases(self)

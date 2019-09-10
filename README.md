@@ -1,4 +1,4 @@
-[![GitHub version](https://badge.fury.io/gh/tolstislon%2Ftestrail-api.svg)](https://badge.fury.io/gh/tolstislon%2Ftestrail-api)
+![PyPI](https://img.shields.io/pypi/v/testrail-api?color=%2301a001&label=version&logo=version)
 [![Downloads](https://pepy.tech/badge/testrail-api)](https://pepy.tech/project/testrail-api)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/testrail-api.svg)
 # testrail-api

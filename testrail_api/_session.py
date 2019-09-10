@@ -1,10 +1,12 @@
+from pathlib import Path
+
 import requests
 
 from ._enums import METHODS
 
 
 class Session:
-    _user_agent = 'Python TestRail API v: 1'
+    _user_agent = 'Python TestRail API v: 1.2'
 
     def __init__(self, base_url: str, user: str, password: str, **kwargs):
         """
@@ -28,4 +30,12 @@ class Session:
         """Base request method"""
         url = f'{self.__base_url}{src}'
         response = self.__session.request(method=method.value, url=url, timeout=self.__timeout, **kwargs)
-        return response.json() if response.text else None
+        if 'json' in response.headers.get('Content-Type', ''):
+            return response.json()
+        else:
+            return response.text or None
+
+    def attachment_request(self, method: METHODS, src: str, file: Path, **kwargs):
+        """"""
+        return self.request(method, src, files={'file': file.open('rb')},
+                            headers={'Content-Type': 'multipart/form-data'}, **kwargs)

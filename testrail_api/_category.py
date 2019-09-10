@@ -2,7 +2,8 @@
 TestRail API categories
 """
 
-from typing import List, Optional
+from pathlib import Path
+from typing import List, Optional, Union
 
 from ._enums import METHODS
 
@@ -958,3 +959,80 @@ class Users(BaseCategory):
         :return: response
         """
         return self._session.request(METHODS.GET, 'get_users')
+
+
+class Attachments(BaseCategory):
+
+    def add_attachment_to_result(self, result_id: int, path: Union[str, Path]) -> dict:
+        """
+        http://docs.gurock.com/testrail-api2/reference-attachments#add_attachment_to_result
+
+        Adds attachment to a result based on the result ID. The maximum allowable upload size is set to 256mb.
+
+        :param result_id: The ID of the result the attachment should be added to
+        :param path: The path to the file
+        :return: response
+        """
+        file = path if isinstance(path, Path) else Path(path)
+        return self._session.attachment_request(METHODS.POST, f'add_attachment_to_result/{result_id}', file)
+
+    def add_attachment_to_result_for_case(self, result_id: int, case_id: int, path: Union[str, Path]) -> dict:
+        """
+        http://docs.gurock.com/testrail-api2/reference-attachments#add_attachment_to_result_for_case
+
+        Adds attachment to a result based on a combination of result and test case IDs.
+
+        :param result_id: The ID of the result the attachment should be added to
+        :param case_id: The ID of the test case
+        :param path: The path to the file
+        :return: response
+        """
+        file = path if isinstance(path, Path) else Path(path)
+        return self._session.attachment_request(
+            METHODS.POST,
+            f'add_attachment_to_result_for_case/{result_id}/{case_id}', file
+        )
+
+    def get_attachments_for_case(self, case_id: int) -> List[dict]:
+        """
+        http://docs.gurock.com/testrail-api2/reference-attachments#get_attachments_for_case
+
+        Returns a list of attachments for a test case.
+
+        :param case_id: The ID of the test case
+        :return: response
+        """
+        return self._session.request(METHODS.GET, f'get_attachments_for_case/{case_id}')
+
+    def get_attachments_for_test(self, test_id: int) -> List[dict]:
+        """
+        http://docs.gurock.com/testrail-api2/reference-attachments#get_attachments_for_test
+
+        Returns a list of attachments for test results.
+
+        :param test_id:
+        :return: response
+        """
+        return self._session.request(METHODS.GET, f'get_attachments_for_test/{test_id}')
+
+    def get_attachment(self, attachment_id: int):
+        """
+        http://docs.gurock.com/testrail-api2/reference-attachments#get_attachment
+
+        Returns the requested attachment identified by attachment_id.
+
+        :param attachment_id:
+        :return: response
+        """
+        return self._session.request(METHODS.GET, f'get_attachment/{attachment_id}')
+
+    def delete_attachment(self, attachment_id: int) -> None:
+        """
+        http://docs.gurock.com/testrail-api2/reference-attachments#delete_attachment
+
+        Deletes the specified attachment identified by attachment_id.
+
+        :param attachment_id:
+        :return: None
+        """
+        return self._session.request(METHODS.POST, f'delete_attachment/{attachment_id}')

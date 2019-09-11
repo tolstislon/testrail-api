@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from typing import Union
 
 import requests
 
@@ -35,7 +36,7 @@ class Session:
     def __del__(self):
         self.__session.close()
 
-    def request(self, method: METHODS, src: str, **kwargs):
+    def request(self, method: METHODS, src: str, raw: bool = False, **kwargs):
         """Base request method"""
         url = f'{self.__base_url}{src}'
         if not src.startswith('add_attachment'):
@@ -45,6 +46,10 @@ class Session:
         response = self.__session.request(method=method.value, url=url, timeout=self.__timeout, **kwargs)
 
         log.debug('Response header: %s', response.headers)
+
+        if raw:
+            return response
+
         log.debug('Response body: %s', response.text)
 
         if 'json' in response.headers.get('Content-Type', ''):
@@ -52,7 +57,20 @@ class Session:
         else:
             return response.text or None
 
-    def attachment_request(self, method: METHODS, src: str, file: Path, **kwargs):
+    @staticmethod
+    def _path(path: Union[Path, str]) -> Path:
+        return path if isinstance(path, Path) else Path(path)
+
+    def attachment_request(self, method: METHODS, src: str, file: Union[Path, str], **kwargs):
         """"""
+        file = self._path(file)
         with file.open('rb') as attachment:
             return self.request(method, src, files={'attachment': attachment}, **kwargs)
+
+    def get_attachment(self, method: METHODS, srs: str, file: Union[Path, str], **kwargs) -> Path:
+        """"""
+        file = self._path(file)
+        response = self.request(method, srs, raw=True, **kwargs)
+        with file.open('wb') as attachment:
+            attachment.write(response.content)
+        return file

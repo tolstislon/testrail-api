@@ -973,8 +973,7 @@ class Attachments(BaseCategory):
         :param path: The path to the file
         :return: response
         """
-        file = path if isinstance(path, Path) else Path(path)
-        return self._session.attachment_request(METHODS.POST, f'add_attachment_to_result/{result_id}', file)
+        return self._session.attachment_request(METHODS.POST, f'add_attachment_to_result/{result_id}', path)
 
     def add_attachment_to_result_for_case(self, result_id: int, case_id: int, path: Union[str, Path]) -> dict:
         """
@@ -987,10 +986,10 @@ class Attachments(BaseCategory):
         :param path: The path to the file
         :return: response
         """
-        file = path if isinstance(path, Path) else Path(path)
         return self._session.attachment_request(
             METHODS.POST,
-            f'add_attachment_to_result_for_case/{result_id}/{case_id}', file
+            f'add_attachment_to_result_for_case/{result_id}/{case_id}',
+            path
         )
 
     def get_attachments_for_case(self, case_id: int) -> List[dict]:
@@ -1015,16 +1014,17 @@ class Attachments(BaseCategory):
         """
         return self._session.request(METHODS.GET, f'get_attachments_for_test/{test_id}')
 
-    def get_attachment(self, attachment_id: int):
+    def get_attachment(self, attachment_id: int, path: Union[str, Path]):
         """
         http://docs.gurock.com/testrail-api2/reference-attachments#get_attachment
 
         Returns the requested attachment identified by attachment_id.
 
         :param attachment_id:
+        :param path:
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_attachment/{attachment_id}')
+        return self._session.get_attachment(METHODS.GET, f'get_attachment/{attachment_id}', path)
 
     def delete_attachment(self, attachment_id: int) -> None:
         """

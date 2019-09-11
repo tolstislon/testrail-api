@@ -754,17 +754,18 @@ class Sections(BaseCategory):
         """
         return self._session.request(METHODS.GET, f'get_section/{section_id}')
 
-    def get_sections(self, project_id: int, suite_id: int) -> List[dict]:
+    def get_sections(self, project_id: int, **kwargs) -> List[dict]:
         """
         http://docs.gurock.com/testrail-api2/reference-sections#get_sections
 
         Returns a list of sections for a project and test suite.
 
         :param project_id: The ID of the project
-        :param suite_id: The ID of the test suite (optional if the project is operating in single suite mode)
+        :param kwargs:
+                :key suite_id: The ID of the test suite (optional if the project is operating in single suite mode)
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_sections/{project_id}&suite_id={suite_id}')
+        return self._session.request(METHODS.GET, f'get_sections/{project_id}', params=kwargs)
 
     def add_section(self, project_id: int, name: str, **kwargs) -> dict:
         """

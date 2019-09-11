@@ -1,5 +1,5 @@
 """
-Description
+TestRail API Categories
 """
 
 from . import _category

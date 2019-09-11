@@ -7,11 +7,11 @@ setup(
     name='testrail_api',
     version=testrail_api.__version__,
     packages=['testrail_api'],
-    url='https://github.com/tolstislon/testrail-api',
-    license='MIT License',
-    author='tolstislon',
-    author_email='tolstislon@gmail.com',
-    description='Python wrapper of the TestRail API',
+    url=testrail_api.__url__,
+    license=testrail_api.__license__,
+    author=testrail_api.__author__,
+    author_email=testrail_api.__author_email__,
+    description=testrail_api.__description__,
     long_description=parse_from_file('README.md'),
     install_requires=[
         'requests>=2.20.1'

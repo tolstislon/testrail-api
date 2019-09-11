@@ -1,0 +1,6 @@
+__version__ = '1.3.0'
+__url__ = 'https://github.com/tolstislon/testrail-api'
+__description__ = 'Python wrapper of the TestRail API'
+__author__ = 'tolstislon'
+__author_email__ = 'tolstislon@gmail.com'
+__license__ = 'MIT License'

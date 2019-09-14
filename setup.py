@@ -1,12 +1,12 @@
 from m2r import parse_from_file
-from setuptools import setup
+from setuptools import setup, find_packages
 
 import testrail_api
 
 setup(
     name='testrail_api',
     version=testrail_api.__version__,
-    packages=['testrail_api'],
+    packages=find_packages(exclude=('tests',)),
     url=testrail_api.__url__,
     license=testrail_api.__license__,
     author=testrail_api.__author__,

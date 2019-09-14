@@ -1018,15 +1018,15 @@ class Attachments(BaseCategory):
         """
         return self._session.request(METHODS.GET, f'get_attachments_for_test/{test_id}')
 
-    def get_attachment(self, attachment_id: int, path: Union[str, Path]):
+    def get_attachment(self, attachment_id: int, path: Union[str, Path]) -> Path:
         """
         http://docs.gurock.com/testrail-api2/reference-attachments#get_attachment
 
         Returns the requested attachment identified by attachment_id.
 
         :param attachment_id:
-        :param path:
-        :return: response
+        :param path: Path
+        :return: Path
         """
         return self._session.get_attachment(METHODS.GET, f'get_attachment/{attachment_id}', path)
 

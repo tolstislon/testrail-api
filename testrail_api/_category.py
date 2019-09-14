@@ -2,12 +2,11 @@
 TestRail API categories
 """
 
+import warnings
 from pathlib import Path
 from typing import List, Optional, Union
 
 from ._enums import METHODS
-from ._utils import deprecation
-import warnings
 
 
 class BaseCategory:

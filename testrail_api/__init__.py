@@ -23,6 +23,7 @@ from .__version__ import (
 )
 
 from ._testrail_api import TestRailAPI
+from ._session import StatusCodeError
 
 __all__ = [
     'TestRailAPI',
@@ -31,5 +32,6 @@ __all__ = [
     '__author_email__',
     '__description__',
     '__license__',
-    '__url__'
+    '__url__',
+    'StatusCodeError'
 ]

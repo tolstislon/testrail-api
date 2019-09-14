@@ -6,6 +6,8 @@ from pathlib import Path
 from typing import List, Optional, Union
 
 from ._enums import METHODS
+from ._utils import deprecation
+import warnings
 
 
 class BaseCategory:
@@ -976,7 +978,7 @@ class Attachments(BaseCategory):
         """
         return self._session.attachment_request(METHODS.POST, f'add_attachment_to_result/{result_id}', path)
 
-    def add_attachment_to_result_for_case(self, result_id: int, case_id: int, path: Union[str, Path]) -> dict:
+    def add_attachment_to_result_for_case(self, result_id: int, case_id: int, path: Union[str, Path]):
         """
         http://docs.gurock.com/testrail-api2/reference-attachments#add_attachment_to_result_for_case
 
@@ -987,11 +989,13 @@ class Attachments(BaseCategory):
         :param path: The path to the file
         :return: response
         """
-        return self._session.attachment_request(
-            METHODS.POST,
-            f'add_attachment_to_result_for_case/{result_id}/{case_id}',
-            path
-        )
+        warnings.warn('Method removed from official documentation', DeprecationWarning, stacklevel=2)
+        return
+        # return self._session.attachment_request(
+        #     METHODS.POST,
+        #     f'add_attachment_to_result_for_case/{result_id}/{case_id}',
+        #     path
+        # )
 
     def get_attachments_for_case(self, case_id: int) -> List[dict]:
         """

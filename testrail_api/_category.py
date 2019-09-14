@@ -2,6 +2,7 @@
 TestRail API categories
 """
 
+import warnings
 from pathlib import Path
 from typing import List, Optional, Union
 
@@ -754,17 +755,18 @@ class Sections(BaseCategory):
         """
         return self._session.request(METHODS.GET, f'get_section/{section_id}')
 
-    def get_sections(self, project_id: int, suite_id: int) -> List[dict]:
+    def get_sections(self, project_id: int, **kwargs) -> List[dict]:
         """
         http://docs.gurock.com/testrail-api2/reference-sections#get_sections
 
         Returns a list of sections for a project and test suite.
 
         :param project_id: The ID of the project
-        :param suite_id: The ID of the test suite (optional if the project is operating in single suite mode)
+        :param kwargs:
+                :key suite_id: The ID of the test suite (optional if the project is operating in single suite mode)
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_sections/{project_id}&suite_id={suite_id}')
+        return self._session.request(METHODS.GET, f'get_sections/{project_id}', params=kwargs)
 
     def add_section(self, project_id: int, name: str, **kwargs) -> dict:
         """
@@ -975,7 +977,7 @@ class Attachments(BaseCategory):
         """
         return self._session.attachment_request(METHODS.POST, f'add_attachment_to_result/{result_id}', path)
 
-    def add_attachment_to_result_for_case(self, result_id: int, case_id: int, path: Union[str, Path]) -> dict:
+    def add_attachment_to_result_for_case(self, result_id: int, case_id: int, path: Union[str, Path]):
         """
         http://docs.gurock.com/testrail-api2/reference-attachments#add_attachment_to_result_for_case
 
@@ -986,11 +988,13 @@ class Attachments(BaseCategory):
         :param path: The path to the file
         :return: response
         """
-        return self._session.attachment_request(
-            METHODS.POST,
-            f'add_attachment_to_result_for_case/{result_id}/{case_id}',
-            path
-        )
+        warnings.warn('Method removed from official documentation', DeprecationWarning, stacklevel=2)
+        return
+        # return self._session.attachment_request(
+        #     METHODS.POST,
+        #     f'add_attachment_to_result_for_case/{result_id}/{case_id}',
+        #     path
+        # )
 
     def get_attachments_for_case(self, case_id: int) -> List[dict]:
         """
@@ -1014,15 +1018,15 @@ class Attachments(BaseCategory):
         """
         return self._session.request(METHODS.GET, f'get_attachments_for_test/{test_id}')
 
-    def get_attachment(self, attachment_id: int, path: Union[str, Path]):
+    def get_attachment(self, attachment_id: int, path: Union[str, Path]) -> Path:
         """
         http://docs.gurock.com/testrail-api2/reference-attachments#get_attachment
 
         Returns the requested attachment identified by attachment_id.
 
         :param attachment_id:
-        :param path:
-        :return: response
+        :param path: Path
+        :return: Path
         """
         return self._session.get_attachment(METHODS.GET, f'get_attachment/{attachment_id}', path)
 

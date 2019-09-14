@@ -4,8 +4,10 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-m2r = "*"
-twine = "*"
+m2r = "==0.2.1"
+twine = "==1.14.0"
+pytest = "==5.1.2"
+pytest-cov = "*"
 
 [packages]
 requests = "*"

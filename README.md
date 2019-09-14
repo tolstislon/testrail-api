@@ -16,9 +16,44 @@ pip install testrail-api
 ### Example
 
 ```python
+from datetime import datetime
+from pathlib import Path
+
 from testrail_api import TestRailAPI
 
 api = TestRailAPI('https://example.testrail.com/', 'example@mail.com', 'password')
-my_case = api.cases.get_case(22)
-api.cases.add_case(1, 'New Case', milestone_id=1)
+
+new_milestone = api.milestones.add_milestone(1, 'New milestone', start_on=int(datetime.now().timestamp()))
+
+my_test_run = api.runs.add_run(1, suite_id=2, name='My test run', include_all=True, milestone_id=new_milestone['id'])
+
+result = api.results.add_result_for_case(my_test_run['id'], 5, status_id=1, comment='Pass', version='1')
+attach = Path('.', 'attach.jpg')
+api.attachments.add_attachment_to_result(result[0]['id'], attach)
+
+api.runs.close_run(my_test_run['id'])
+api.milestones.update_milestone(new_milestone['id'], is_completed=True)
+```
+
+----
+
+### Last test
+
+* Python: 3.7.4
+* TestRail: 6.0.2.4165
+* testrail-api: 1.3.5
+
+Coverage:
+
+```cmd
+Name                            Stmts   Miss  Cover
+---------------------------------------------------
+testrail_api\__init__.py            5      0   100%
+testrail_api\__version__.py         6      0   100%
+testrail_api\_category.py         178      0   100%
+testrail_api\_enums.py              6      0   100%
+testrail_api\_session.py           69      0   100%
+testrail_api\_testrail_api.py      57      0   100%
+---------------------------------------------------
+TOTAL                             321      0   100%
 ```

@@ -22,10 +22,10 @@ class StatusCodeError(TestRailAPIError):
 class Session:
     _user_agent = f'Python TestRail API v: {__version__}'
 
-    def __init__(self, base_url: str, user: str, password: str, exc: bool = False, **kwargs):
+    def __init__(self, base_url: str, user_email: str, password: str, exc: bool = False, **kwargs):
         """
         :param base_url: TestRail address
-        :param user: Email for the account on the TestRail
+        :param user_email: Email for the account on the TestRail
         :param password: Password for the account on the TestRail
         :param exc: Catching exceptions
         :param kwargs:
@@ -41,12 +41,17 @@ class Session:
         self.__session.headers['User-Agent'] = self._user_agent
         self.__session.headers.update(kwargs.get('headers', {}))
         self.__session.verify = kwargs.get('verify', True)
-        self.__session.auth = (user, password)
+        self.__user_email = user_email
+        self.__session.auth = (self.__user_email, password)
         self.__exc = exc
         log.info(
             'Create Session{url: %s, user: %s, timeout: %s, headers: %s, verify: %s, exception: %s}',
-            base_url, user, self.__timeout, self.__session.headers, self.__session.verify, self.__exc
+            base_url, self.__user_email, self.__timeout, self.__session.headers, self.__session.verify, self.__exc
         )
+
+    @property
+    def user_email(self) -> str:
+        return self.__user_email
 
     def __del__(self):
         self.__session.close()
@@ -90,10 +95,10 @@ class Session:
         with file.open('rb') as attachment:
             return self.request(method, src, files={'attachment': attachment}, **kwargs)
 
-    def get_attachment(self, method: METHODS, srs: str, file: Union[Path, str], **kwargs) -> Path:
+    def get_attachment(self, method: METHODS, src: str, file: Union[Path, str], **kwargs) -> Path:
         """"""
         file = self._path(file)
-        response = self.request(method, srs, raw=True, **kwargs)
+        response = self.request(method, src, raw=True, **kwargs)
         if response.ok:
             with file.open('wb') as attachment:
                 attachment.write(response.content)

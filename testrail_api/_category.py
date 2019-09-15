@@ -989,7 +989,6 @@ class Attachments(BaseCategory):
         :return: response
         """
         warnings.warn('Method removed from official documentation', DeprecationWarning, stacklevel=2)
-        return
         # return self._session.attachment_request(
         #     METHODS.POST,
         #     f'add_attachment_to_result_for_case/{result_id}/{case_id}',

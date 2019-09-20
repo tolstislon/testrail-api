@@ -5,7 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 m2r = "==0.2.1"
-twine = "==1.14.0"
+twine = "==1.15.0"
 pytest = "==5.1.2"
 pytest-cov = "*"
 

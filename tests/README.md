@@ -8,4 +8,4 @@ Requirements:
 
 * pytest
 * pytest-cov
-* testrail_api >=1.3.5
+* testrail_api >=1.3.6

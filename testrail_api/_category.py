@@ -35,6 +35,9 @@ class Cases(BaseCategory):
         :param project_id: The ID of the project
             :key suite_id: int - The ID of the test suite (optional if the project is operating in single suite mode)
             :key section_id: int - The ID of the section (optional)
+            :key limit: int - The number of test cases the response should return
+            :key offset: Where to start counting the tests cases from (the offset)
+            :key filter: Only return cases with matching filter string in the case title
         :return: response
         """
         return self._session.request(METHODS.GET, f'get_cases/{project_id}', params=kwargs)

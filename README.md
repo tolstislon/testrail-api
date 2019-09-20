@@ -1,10 +1,10 @@
+# Testrail Api
+
 ![PyPI](https://img.shields.io/pypi/v/testrail-api?color=%2301a001&label=version&logo=version)
-[![Downloads](https://pepy.tech/badge/testrail-api)](https://pepy.tech/project/testrail-api)
+[![Downloads](https://pepy.tech/badge/testrail-api)](https://github.com/tolstislon/testrail-api)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/testrail-api.svg)
-# testrail-api
 
-
-This is a Python wrapper of the TestRail API(v2) according to [the official document](http://docs.gurock.com/testrail-api2/start)
+This is a Python wrapper of the TestRail API(v2) according to [the official documentation](http://docs.gurock.com/testrail-api2/start)
 
 
 ### Install
@@ -51,25 +51,3 @@ api.runs.close_run(my_test_run['id'])
 api.milestones.update_milestone(new_milestone['id'], is_completed=True)
 ```
 
-----
-
-### Last test
-
-* Python: 3.7.4
-* TestRail: 6.0.2.4165
-* testrail-api: 1.3.5
-
-Coverage:
-
-```bash
-Name                            Stmts   Miss  Cover
----------------------------------------------------
-testrail_api\__init__.py            5      0   100%
-testrail_api\__version__.py         6      0   100%
-testrail_api\_category.py         178      0   100%
-testrail_api\_enums.py              6      0   100%
-testrail_api\_session.py           69      0   100%
-testrail_api\_testrail_api.py      57      0   100%
----------------------------------------------------
-TOTAL                             321      0   100%
-```

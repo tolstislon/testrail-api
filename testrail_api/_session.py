@@ -1,31 +1,30 @@
 import logging
+import os
 from json.decoder import JSONDecodeError
 from pathlib import Path
-from typing import Union
-from .__version__ import __version__
+from typing import Union, Optional
 
 import requests
 
+from .__version__ import __version__
 from ._enums import METHODS
+from ._exception import StatusCodeError, TestRailError
 
 log = logging.getLogger(__name__)
-
-
-class TestRailAPIError(Exception):
-    pass
-
-
-class StatusCodeError(TestRailAPIError):
-    pass
 
 
 class Session:
     _user_agent = f'Python TestRail API v: {__version__}'
 
-    def __init__(self, base_url: str, user_email: str, password: str, exc: bool = False, **kwargs):
+    def __init__(self,
+                 url: Optional[str] = None,
+                 email: Optional[str] = None,
+                 password: Optional[str] = None,
+                 exc: bool = False,
+                 **kwargs):
         """
-        :param base_url: TestRail address
-        :param user_email: Email for the account on the TestRail
+        :param url: TestRail address
+        :param email: Email for the account on the TestRail
         :param password: Password for the account on the TestRail
         :param exc: Catching exceptions
         :param kwargs:
@@ -33,20 +32,25 @@ class Session:
             :key verify bool
             :key headers dict
         """
-        if base_url.endswith('/'):
-            base_url = base_url[:-1]
-        self.__base_url = f'{base_url}/index.php?/api/v2/'
+        _url = url or os.environ.get('TESTRAIL_URL')
+        _email = email or os.environ.get('TESTRAIL_EMAIL')
+        _password = password or os.environ.get('TESTRAIL_PASSWORD')
+        if not _url or not _email or not _password:
+            raise TestRailError('No url or email or password values set')
+        if _url.endswith('/'):
+            _url = _url[:-1]
+        self.__base_url = f'{_url}/index.php?/api/v2/'
         self.__timeout = kwargs.get('timeout', 30)
         self.__session = requests.Session()
         self.__session.headers['User-Agent'] = self._user_agent
         self.__session.headers.update(kwargs.get('headers', {}))
         self.__session.verify = kwargs.get('verify', True)
-        self.__user_email = user_email
-        self.__session.auth = (self.__user_email, password)
+        self.__user_email = _email
+        self.__session.auth = (self.__user_email, _password)
         self.__exc = exc
         log.info(
             'Create Session{url: %s, user: %s, timeout: %s, headers: %s, verify: %s, exception: %s}',
-            base_url, self.__user_email, self.__timeout, self.__session.headers, self.__session.verify, self.__exc
+            url, self.__user_email, self.__timeout, self.__session.headers, self.__session.verify, self.__exc
         )
 
     @property

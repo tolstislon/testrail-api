@@ -1,11 +1,16 @@
-Start tests
+### Start tests
 
-```cmd
-py.test ./tests --tr-url=https://test_host/ --tr-email=test_email --tr-password=test_password
+Install requirements
+```bash
+pipenv install --dev
 ```
 
-Requirements:
+Set environment variables
+* TESTRAIL_URL
+* TESTRAIL_EMAIL
+* TESTRAIL_PASSWORD
 
-* pytest
-* pytest-cov
-* testrail_api >=1.3.6
+Run tests
+```bash
+py.test ./tests
+```

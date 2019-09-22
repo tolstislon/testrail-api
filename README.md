@@ -3,6 +3,7 @@
 ![PyPI](https://img.shields.io/pypi/v/testrail-api?color=%2301a001&label=version&logo=version)
 [![Downloads](https://pepy.tech/badge/testrail-api)](https://github.com/tolstislon/testrail-api)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/testrail-api.svg)
+![PyPI - Python Version](https://img.shields.io/badge/TestRail-6.0.2.4165-blue)
 
 This is a Python wrapper of the TestRail API(v2) according to [the official documentation](http://docs.gurock.com/testrail-api2/start)
 
@@ -13,6 +14,11 @@ This is a Python wrapper of the TestRail API(v2) according to [the official docu
 pip install testrail-api
 ```
 
+##### Support environment variables
+* TESTRAIL_URL
+* TESTRAIL_EMAIL
+* TESTRAIL_PASSWORD
+
 ### Example
 
 ```python
@@ -22,6 +28,10 @@ from pathlib import Path
 from testrail_api import TestRailAPI
 
 api = TestRailAPI('https://example.testrail.com/', 'example@mail.com', 'password')
+
+# if use environment variables
+api = TestRailAPI()
+
 
 new_milestone = api.milestones.add_milestone(
     project_id=1, 

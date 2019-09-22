@@ -889,7 +889,7 @@ class Suites(BaseCategory):
         return self._session.request(METHODS.POST, f'delete_suite/{suite_id}')
 
 
-class Templates(BaseCategory):
+class Template(BaseCategory):
 
     def get_templates(self, project_id: int) -> List[dict]:
         """
@@ -1042,3 +1042,29 @@ class Attachments(BaseCategory):
         :return: None
         """
         return self._session.request(METHODS.POST, f'delete_attachment/{attachment_id}')
+
+
+class Reports(BaseCategory):
+
+    def get_reports(self, project_id: int) -> List[dict]:
+        """
+        http://docs.gurock.com/testrail-api2/reference-reports#get_reports
+
+        Returns a list of API available reports by project.
+
+        :param project_id: The ID of the project for which you want a list of API accessible reports
+        :return: response
+        """
+        return self._session.request(METHODS.GET, f'get_reports/{project_id}')
+
+    def run_report(self, report_template_id: int) -> dict:
+        """
+        http://docs.gurock.com/testrail-api2/reference-reports#run_report
+
+        Executes the report identified using the :report_id parameter and returns URL's for
+        accessing the report in HTML and PDF format.
+
+        :param report_template_id:
+        :return: response
+        """
+        return self._session.request(METHODS.GET, f'run_report/{report_template_id}')

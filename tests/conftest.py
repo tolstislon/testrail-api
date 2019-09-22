@@ -6,51 +6,14 @@ import pytest
 from testrail_api import TestRailAPI
 
 
-def pytest_addoption(parser):
-    group = parser.getgroup('TestRailAPI')
-    group.addoption(
-        "--tr-url",
-        action="store",
-        metavar="URL",
-        help="TestRail address",
-        type=str,
-        required=True
-    )
-    group.addoption(
-        "--tr-email",
-        action="store",
-        metavar="EMAIL",
-        help="Email for the account on the TestRail",
-        type=str,
-        required=True
-    )
-    group.addoption(
-        "--tr-password",
-        action="store",
-        metavar="PASSWORD",
-        help="Password for the account on the TestRail",
-        type=str,
-        required=True
-    )
+@pytest.fixture('session')
+def api():
+    return TestRailAPI()
 
 
 @pytest.fixture('session')
-def config(request):
-    return (
-        request.config.getoption('--tr-url'),
-        request.config.getoption('--tr-email'),
-        request.config.getoption('--tr-password')
-    )
-
-
-@pytest.fixture('session')
-def api(config):
-    return TestRailAPI(*config)
-
-
-@pytest.fixture('session')
-def time_out_api(config):
-    return TestRailAPI(*config, timeout=.001)
+def time_out_api():
+    return TestRailAPI(timeout=.001)
 
 
 @pytest.fixture('function')

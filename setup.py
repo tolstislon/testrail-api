@@ -6,7 +6,7 @@ import testrail_api
 setup(
     name='testrail_api',
     version=testrail_api.__version__,
-    packages=find_packages(exclude=('tests',)),
+    packages=find_packages(exclude=('tests', 'dev_tools')),
     url=testrail_api.__url__,
     license=testrail_api.__license__,
     author=testrail_api.__author__,

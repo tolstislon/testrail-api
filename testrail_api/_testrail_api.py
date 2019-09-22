@@ -84,9 +84,9 @@ class TestRailAPI(Session):
         return _category.Suites(self)
 
     @property
-    def templates(self) -> _category.Templates:
+    def templates(self) -> _category.Template:
         """http://docs.gurock.com/testrail-api2/reference-templates"""
-        return _category.Templates(self)
+        return _category.Template(self)
 
     @property
     def tests(self) -> _category.Tests:
@@ -97,3 +97,8 @@ class TestRailAPI(Session):
     def users(self) -> _category.Users:
         """http://docs.gurock.com/testrail-api2/reference-users"""
         return _category.Users(self)
+
+    @property
+    def reports(self) -> _category.Reports:
+        """http://docs.gurock.com/testrail-api2/reference-reports"""
+        return _category.Reports(self)

@@ -57,9 +57,6 @@ class Session:
     def user_email(self) -> str:
         return self.__user_email
 
-    def __del__(self):
-        self.__session.close()
-
     def __response(self, response: requests.Response):
         if not response.ok:
             log.error('Code: %s, reason: %s url: %s, content: %s',

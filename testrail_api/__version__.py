@@ -1,4 +1,4 @@
-__version__ = '1.4.1'
+__version__ = '1.4.2'
 __url__ = 'https://github.com/tolstislon/testrail-api'
 __description__ = 'Python wrapper of the TestRail API'
 __author__ = 'tolstislon'

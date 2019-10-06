@@ -23,7 +23,6 @@ pip install testrail-api
 
 ```python
 from datetime import datetime
-from pathlib import Path
 
 from testrail_api import TestRailAPI
 
@@ -54,7 +53,7 @@ result = api.results.add_result_for_case(
     comment='Pass', 
     version='1'
 )
-attach = Path('.', 'attach.jpg')
+attach = './attach.jpg'
 api.attachments.add_attachment_to_result(result[0]['id'], attach)
 
 api.runs.close_run(my_test_run['id'])

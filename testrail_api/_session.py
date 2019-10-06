@@ -1,5 +1,6 @@
 import logging
 import os
+import time
 from json.decoder import JSONDecodeError
 from pathlib import Path
 from typing import Union, Optional
@@ -21,6 +22,7 @@ class Session:
                  email: Optional[str] = None,
                  password: Optional[str] = None,
                  exc: bool = False,
+                 rate_limit: bool = True,
                  **kwargs):
         """
         :param url: TestRail address
@@ -48,6 +50,7 @@ class Session:
         self.__user_email = _email
         self.__session.auth = (self.__user_email, _password)
         self.__exc = exc
+        self._rate_limit = rate_limit
         log.info(
             'Create Session{url: %s, user: %s, timeout: %s, headers: %s, verify: %s, exception: %s}',
             url, self.__user_email, self.__timeout, self.__session.headers, self.__session.verify, self.__exc
@@ -77,14 +80,18 @@ class Session:
             headers = kwargs.setdefault('headers', {})
             headers.update({'Content-Type': 'application/json'})
 
-        try:
-            response = self.__session.request(method=method.value, url=url, timeout=self.__timeout, **kwargs)
-        except Exception as err:
-            log.error('%s', err, exc_info=True)
-            raise
-
-        log.debug('Response header: %s', response.headers)
-        return response if raw else self.__response(response)
+        iterations = 3
+        for count in range(iterations):
+            try:
+                response = self.__session.request(method=method.value, url=url, timeout=self.__timeout, **kwargs)
+            except Exception as err:
+                log.error('%s', err, exc_info=True)
+                raise
+            if self._rate_limit and response.status_code == 429 and count < iterations - 1:
+                time.sleep(2)
+                continue
+            log.debug('Response header: %s', response.headers)
+            return response if raw else self.__response(response)
 
     @staticmethod
     def _path(path: Union[Path, str]) -> Path:

@@ -22,4 +22,5 @@ pipenv run twine upload --repository ${repository} dist/*
 
 remove_artifacts
 
+# shellcheck disable=SC2162
 read -p "Press enter to continue"

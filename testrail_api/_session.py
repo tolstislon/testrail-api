@@ -11,7 +11,7 @@ from .__version__ import __version__
 from ._enums import METHODS
 from ._exception import StatusCodeError, TestRailError
 
-log = logging.getLogger(__name__)
+log = logging.getLogger(__name__).addHandler(logging.NullHandler())
 
 
 class Session:

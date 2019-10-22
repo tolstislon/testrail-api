@@ -6,11 +6,12 @@ verify_ssl = true
 [dev-packages]
 m2r = "==0.2.1"
 twine = "==2.0.0"
-pytest = "==5.2.0"
+pytest = "==5.2.1"
 pytest-cov = "*"
 
 [packages]
 requests = "*"
+setuptools = "==41.4.0"
 
 [requires]
 python_version = "3.7"

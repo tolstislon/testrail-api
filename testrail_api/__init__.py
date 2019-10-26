@@ -25,6 +25,11 @@ from .__version__ import (
 from ._testrail_api import TestRailAPI
 from ._session import StatusCodeError
 
+import logging
+from logging import NullHandler
+
+logging.getLogger(__name__).addHandler(NullHandler())
+
 __all__ = [
     'TestRailAPI',
     '__version__',

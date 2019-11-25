@@ -13,7 +13,7 @@ from ._exception import StatusCodeError, TestRailError
 
 log = logging.getLogger(__name__)
 
-RATE_LIMIT_TIME_OUT = 3
+RATE_LIMIT_TIMEOUT = 3
 RATE_LIMIT_STATUS_CODE = 429
 
 
@@ -91,7 +91,7 @@ class Session:
                 log.error('%s', err, exc_info=True)
                 raise
             if self._rate_limit and response.status_code == RATE_LIMIT_STATUS_CODE and count < iterations - 1:
-                time.sleep(RATE_LIMIT_TIME_OUT)
+                time.sleep(RATE_LIMIT_TIMEOUT)
                 continue
             log.debug('Response header: %s', response.headers)
             return response if raw else self.__response(response)

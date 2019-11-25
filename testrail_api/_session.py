@@ -13,6 +13,9 @@ from ._exception import StatusCodeError, TestRailError
 
 log = logging.getLogger(__name__)
 
+RATE_LIMIT_TIME_OUT = 3
+RATE_LIMIT_STATUS_CODE = 429
+
 
 class Session:
     _user_agent = f'Python TestRail API v: {__version__}'
@@ -87,8 +90,8 @@ class Session:
             except Exception as err:
                 log.error('%s', err, exc_info=True)
                 raise
-            if self._rate_limit and response.status_code == 429 and count < iterations - 1:
-                time.sleep(2)
+            if self._rate_limit and response.status_code == RATE_LIMIT_STATUS_CODE and count < iterations - 1:
+                time.sleep(RATE_LIMIT_TIME_OUT)
                 continue
             log.debug('Response header: %s', response.headers)
             return response if raw else self.__response(response)

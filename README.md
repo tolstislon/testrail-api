@@ -3,7 +3,7 @@
 ![PyPI](https://img.shields.io/pypi/v/testrail-api?color=%2301a001&label=version&logo=version)
 [![Downloads](https://pepy.tech/badge/testrail-api)](https://github.com/tolstislon/testrail-api)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/testrail-api.svg)
-![PyPI - Python Version](https://img.shields.io/badge/TestRail-6.1.0.4367-blue)
+![PyPI - Python Version](https://img.shields.io/badge/TestRail-6.1.1.1021-blue)
 
 This is a Python wrapper of the TestRail API(v2) according to [the official documentation](http://docs.gurock.com/testrail-api2/start)
 

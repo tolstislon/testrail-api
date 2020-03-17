@@ -10,7 +10,7 @@ jobs:
         provider: pypi
         user: $PYPI_USER
         password: $PYPI_PASSWORD
-        distributions: "sdist bdist_wheel"
+        distributions: "python setup.py bdist_wheel && twine upload dist/*"
         on:
           tags: true
           repo: tolstislon/testrail-api

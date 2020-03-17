@@ -1,0 +1,17 @@
+language: python
+jobs:
+  include:
+    - stage: deploy
+      dist: xenial
+      python: 3.8
+      sudo: required
+      script: skip
+      deploy:
+        provider: pypi
+        user: $PYPI_USER
+        password: $PYPI_PASSWORD
+        on:
+          tags: true
+          repo: tolstislon/testrail-api
+
+install: pip install m2r==0.2.1

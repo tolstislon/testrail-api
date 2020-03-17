@@ -10,6 +10,7 @@ jobs:
         provider: pypi
         user: $PYPI_USER
         password: $PYPI_PASSWORD
+        distributions: "sdist bdist_wheel"
         on:
           tags: true
           repo: tolstislon/testrail-api

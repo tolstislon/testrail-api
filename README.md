@@ -3,7 +3,8 @@
 ![PyPI](https://img.shields.io/pypi/v/testrail-api?color=%2301a001&label=version&logo=version)
 [![Downloads](https://pepy.tech/badge/testrail-api)](https://github.com/tolstislon/testrail-api)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/testrail-api.svg)
-![PyPI - Python Version](https://img.shields.io/badge/TestRail-6.1.1.1021-blue)
+![PyPI - Python Version](https://img.shields.io/badge/TestRail-6.2.1.1005-blue)
+[![Build Status](https://travis-ci.com/tolstislon/testrail-api.svg?branch=master)](https://travis-ci.com/tolstislon/testrail-api)
 
 This is a Python wrapper of the TestRail API(v2) according to [the official documentation](http://docs.gurock.com/testrail-api2/start)
 
@@ -53,7 +54,7 @@ result = api.results.add_result_for_case(
     comment='Pass', 
     version='1'
 )
-attach = './attach.jpg'
+attach = 'attach.jpg'
 api.attachments.add_attachment_to_result(result[0]['id'], attach)
 
 api.runs.close_run(my_test_run['id'])

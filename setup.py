@@ -22,6 +22,7 @@ setup(
         'testrail',
         'api',
         'client',
+        'api-client',
         'library',
         'testrail_api',
         'testrail-api'

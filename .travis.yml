@@ -5,7 +5,6 @@ jobs:
       dist: xenial
       python: 3.8
       sudo: required
-      script: skip
       deploy:
         provider: pypi
         user: $PYPI_USER
@@ -13,8 +12,16 @@ jobs:
         skip_cleanup: true
         distributions: "twine upload dist/*"
         on:
+          branch: master
           repo: tolstislon/testrail-api
 
 install:
   - pip install m2r==0.2.1
   - pip install twine==3.1.1
+
+script:
+  - python setup.py bdist_wheel
+
+branches:
+  only:
+    - master

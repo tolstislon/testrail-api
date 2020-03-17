@@ -10,9 +10,11 @@ jobs:
         provider: pypi
         user: $PYPI_USER
         password: $PYPI_PASSWORD
-        distributions: "sdist bdist_wheel"
+        skip_cleanup: true
+        distributions: "twine upload dist/*"
         on:
-          tags: true
           repo: tolstislon/testrail-api
 
-install: pip install m2r==0.2.1
+install:
+  - pip install m2r==0.2.1
+  - pip install twine==3.1.1

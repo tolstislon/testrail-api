@@ -12,7 +12,7 @@ jobs:
         skip_cleanup: true
         distributions: "twine upload dist/*"
         on:
-          branch: fix_deploy
+          branch: master
           repo: tolstislon/testrail-api
 
 install:
@@ -21,3 +21,7 @@ install:
 
 script:
   - python setup.py bdist_wheel
+
+branches:
+  only:
+    - master

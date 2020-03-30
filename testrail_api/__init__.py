@@ -13,30 +13,21 @@ api.cases.add_case(1, 'New Case', milestone_id=1)
 
 """
 
-from .__version__ import (
-    __version__,
-    __author__,
-    __author_email__,
-    __description__,
-    __license__,
-    __url__
-)
-
-from ._testrail_api import TestRailAPI
-from ._session import StatusCodeError
+try:
+    from .__version__ import version as __version__
+except ImportError:
+    __version__ = "unknown"
 
 import logging
 from logging import NullHandler
+
+from ._session import StatusCodeError
+from ._testrail_api import TestRailAPI
 
 logging.getLogger(__name__).addHandler(NullHandler())
 
 __all__ = [
     'TestRailAPI',
-    '__version__',
-    '__author__',
-    '__author_email__',
-    '__description__',
-    '__license__',
-    '__url__',
-    'StatusCodeError'
+    'StatusCodeError',
+    '__version__'
 ]

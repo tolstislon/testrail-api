@@ -1,0 +1,72 @@
+import json
+
+import responses
+
+
+def get_cases(r):
+    assert r.params['suite_id']
+    assert r.params['section_id']
+    assert r.params['limit']
+    assert r.params['offset']
+    return 200, {}, json.dumps([{'id': 1, 'type_id': 1, 'title': 'My case'}])
+
+
+def add_case(r):
+    data = json.loads(r.body)
+    return 200, {}, json.dumps({'id': 1, 'title': data['title'], 'priority_id': data['priority_id']})
+
+
+def update_case(r):
+    data = json.loads(r.body)
+    return 200, {}, json.dumps({'id': 1, 'title': data['title']})
+
+
+def test_get_case(api, mock, host):
+    mock.add_callback(
+        responses.GET,
+        f'{host}index.php?/api/v2/get_case/1',
+        lambda x: (200, {}, json.dumps({'id': 1, 'type_id': 1, 'title': 'My case'})),
+    )
+    resp = api.cases.get_case(1)
+    assert resp['id'] == 1
+
+
+def test_get_cases(api, mock, host):
+    mock.add_callback(
+        responses.GET,
+        f'{host}index.php?/api/v2/get_cases/1',
+        get_cases,
+    )
+    resp = api.cases.get_cases(1, suite_id=2, section_id=3, limit=5, offset=10)
+    assert resp[0]['id'] == 1
+
+
+def test_add_case(api, mock, host):
+    mock.add_callback(
+        responses.POST,
+        f'{host}index.php?/api/v2/add_case/2',
+        add_case,
+    )
+    resp = api.cases.add_case(2, 'New case', priority_id=1)
+    assert resp['title'] == 'New case'
+    assert resp['priority_id'] == 1
+
+
+def test_update_case(api, mock, host):
+    mock.add_callback(
+        responses.POST,
+        f'{host}index.php?/api/v2/update_case/1',
+        update_case,
+    )
+    resp = api.cases.update_case(1, title='New case title')
+    assert resp['title'] == 'New case title'
+
+
+def test_delete_case(api, mock, host):
+    mock.add_callback(
+        responses.POST,
+        f'{host}index.php?/api/v2/delete_case/5',
+        lambda x: (200, {}, ''),
+    )
+    resp = api.cases.delete_case(5)
+    assert resp is None

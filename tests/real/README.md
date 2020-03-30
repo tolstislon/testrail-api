@@ -12,5 +12,5 @@ Set environment variables
 
 Run tests
 ```bash
-py.test ./tests
+py.test ./tests/real
 ```

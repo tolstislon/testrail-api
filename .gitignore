@@ -106,3 +106,4 @@ venv.bak/
 /.pypirc
 todo.txt
 /dev_tools
+testrail_api/__version__.py

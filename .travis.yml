@@ -1,27 +1,30 @@
+dist: xenial
 language: python
-jobs:
-  include:
-    - stage: deploy
-      dist: xenial
-      python: 3.8
-      sudo: required
-      deploy:
-        provider: pypi
-        user: $PYPI_USER
-        password: $PYPI_PASSWORD
-        skip_cleanup: true
-        distributions: "twine upload dist/*"
-        on:
-          branch: master
-          repo: tolstislon/testrail-api
 
+python:
+  - "3.6"
+  - "3.7"
+  - "3.8"
 install:
-  - pip install m2r==0.2.1
-  - pip install twine==3.1.1
-
+  - pip install pipenv
+  - pipenv install pytest==5.4.1
+  - pipenv install pytest-cov==2.8.1
+  - pipenv install responses==0.10.12
+  - pipenv install -e .
 script:
-  - python setup.py bdist_wheel
+  - pytest tests/unit
+deploy:
+  provider: pypi
+  user: $PYPI_USER
+  password: $PYPI_PASSWORD
+  skip_existing: true
+  distributions: bdist_wheel --universal
+  on:
+    tags: true
+    repo: tolstislon/testrail-api
+    python: "3.8"
 
-branches:
-  only:
-    - master
+notifications:
+  email:
+    on_success: never
+    on_failure: always

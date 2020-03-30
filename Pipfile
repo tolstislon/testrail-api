@@ -4,9 +4,9 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-m2r = "==0.2.1"
 pytest = "==5.4.1"
 pytest-cov = "==2.8.1"
+responses = "==0.10.12"
 
 [packages]
 requests = "==2.23.0"

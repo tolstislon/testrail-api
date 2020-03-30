@@ -3,11 +3,11 @@ import os
 import time
 from json.decoder import JSONDecodeError
 from pathlib import Path
-from typing import Union, Optional
+from typing import Optional, Union
 
 import requests
 
-from .__version__ import __version__
+from . import __version__
 from ._enums import METHODS
 from ._exception import StatusCodeError, TestRailError
 

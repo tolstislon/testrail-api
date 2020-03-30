@@ -1,18 +1,23 @@
-from m2r import parse_from_file
-from setuptools import setup, find_packages
+from pathlib import Path
 
-import testrail_api
+from setuptools import find_packages, setup
+
+readme = Path('.', 'README.md').absolute()
+with readme.open('r', encoding='utf-8') as file:
+    long_description = file.read()
 
 setup(
     name='testrail_api',
-    version=testrail_api.__version__,
     packages=find_packages(exclude=('tests', 'dev_tools')),
-    url=testrail_api.__url__,
-    license=testrail_api.__license__,
-    author=testrail_api.__author__,
-    author_email=testrail_api.__author_email__,
-    description=testrail_api.__description__,
-    long_description=parse_from_file('README.md'),
+    url='https://github.com/tolstislon/testrail-api',
+    license='MIT License',
+    author='tolstislon',
+    author_email='tolstislon@gmail.com',
+    description='Python wrapper of the TestRail API',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
+    use_scm_version={"write_to": "testrail_api/__version__.py"},
+    setup_requires=['setuptools_scm'],
     install_requires=[
         'requests>=2.20.1'
     ],

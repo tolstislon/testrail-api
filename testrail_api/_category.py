@@ -1,21 +1,23 @@
+# pylint: disable=C0302
 """
 TestRail API categories
 """
 
-import warnings
 from pathlib import Path
 from typing import List, Optional, Union
 
 from ._enums import METHODS
 
 
-class BaseCategory:
+class _MetaCategory:
+    """Meta Category"""
 
-    def __init__(self, session):
+    def __init__(self, session) -> None:
         self._session = session
 
 
-class Cases(BaseCategory):
+class Cases(_MetaCategory):
+    """http://docs.gurock.com/testrail-api2/reference-cases"""
 
     def get_case(self, case_id: int) -> dict:
         """
@@ -25,7 +27,7 @@ class Cases(BaseCategory):
         :param case_id: The ID of the test case
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_case/{case_id}')
+        return self._session.request(METHODS.GET, f"get_case/{case_id}")
 
     def get_cases(self, project_id: int, **kwargs) -> List[dict]:
         """
@@ -40,7 +42,9 @@ class Cases(BaseCategory):
             :key filter: Only return cases with matching filter string in the case title
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_cases/{project_id}', params=kwargs)
+        return self._session.request(
+            METHODS.GET, f"get_cases/{project_id}", params=kwargs
+        )
 
     def add_case(self, section_id: int, title: str, **kwargs) -> dict:
         """
@@ -65,7 +69,7 @@ class Cases(BaseCategory):
         :return: response
         """
         data = dict(title=title, **kwargs)
-        return self._session.request(METHODS.POST, f'add_case/{section_id}', json=data)
+        return self._session.request(METHODS.POST, f"add_case/{section_id}", json=data)
 
     def update_case(self, case_id: int, **kwargs) -> dict:
         """
@@ -77,7 +81,9 @@ class Cases(BaseCategory):
         :param kwargs: This method supports the same POST fields as add_case (except section_id).
         :return: response
         """
-        return self._session.request(METHODS.POST, f'update_case/{case_id}', json=kwargs)
+        return self._session.request(
+            METHODS.POST, f"update_case/{case_id}", json=kwargs
+        )
 
     def delete_case(self, case_id: int) -> None:
         """
@@ -87,10 +93,11 @@ class Cases(BaseCategory):
         :param case_id: The ID of the test case
         :return: response
         """
-        return self._session.request(METHODS.POST, f'delete_case/{case_id}')
+        return self._session.request(METHODS.POST, f"delete_case/{case_id}")
 
 
-class CaseFields(BaseCategory):
+class CaseFields(_MetaCategory):
+    """http://docs.gurock.com/testrail-api2/reference-cases-fields"""
 
     def get_case_fields(self) -> List[dict]:
         """
@@ -99,9 +106,11 @@ class CaseFields(BaseCategory):
         Returns a list of available test case custom fields.
         :return: response
         """
-        return self._session.request(METHODS.GET, 'get_case_fields')
+        return self._session.request(METHODS.GET, "get_case_fields")
 
-    def add_case_field(self, type: str, name: str, label: str, **kwargs) -> dict:
+    def add_case_field(
+            self, type: str, name: str, label: str, **kwargs  # pylint: disable=W0622
+    ) -> dict:
         """
         http://docs.gurock.com/testrail-api2/reference-cases-fields#add_case_field
 
@@ -122,10 +131,11 @@ class CaseFields(BaseCategory):
         :return: response
         """
         data = dict(type=type, name=name, label=label, **kwargs)
-        return self._session.request(METHODS.POST, 'add_case_field', json=data)
+        return self._session.request(METHODS.POST, "add_case_field", json=data)
 
 
-class CaseTypes(BaseCategory):
+class CaseTypes(_MetaCategory):
+    """http://docs.gurock.com/testrail-api2/reference-cases-types"""
 
     def get_case_types(self) -> List[dict]:
         """
@@ -134,10 +144,11 @@ class CaseTypes(BaseCategory):
         Returns a list of available case types.
         :return: response
         """
-        return self._session.request(METHODS.GET, 'get_case_types')
+        return self._session.request(METHODS.GET, "get_case_types")
 
 
-class Configurations(BaseCategory):
+class Configurations(_MetaCategory):
+    """http://docs.gurock.com/testrail-api2/reference-configs"""
 
     def get_configs(self, project_id: int) -> List[dict]:
         """
@@ -147,7 +158,7 @@ class Configurations(BaseCategory):
         :param project_id: The ID of the project
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_configs/{project_id}')
+        return self._session.request(METHODS.GET, f"get_configs/{project_id}")
 
     def add_config_group(self, project_id: int, name: str) -> None:
         """
@@ -158,7 +169,9 @@ class Configurations(BaseCategory):
         :param name: The name of the configuration group (required)
         :return: response
         """
-        return self._session.request(METHODS.POST, f'add_config_group/{project_id}', json={'name': name})
+        return self._session.request(
+            METHODS.POST, f"add_config_group/{project_id}", json={"name": name}
+        )
 
     def add_config(self, config_group_id: int, name: str) -> None:
         """
@@ -169,7 +182,9 @@ class Configurations(BaseCategory):
         :param name: The name of the configuration (required)
         :return: response
         """
-        return self._session.request(METHODS.POST, f'add_config/{config_group_id}', json={'name': name})
+        return self._session.request(
+            METHODS.POST, f"add_config/{config_group_id}", json={"name": name}
+        )
 
     def update_config_group(self, config_group_id: int, name: str) -> None:
         """
@@ -180,7 +195,9 @@ class Configurations(BaseCategory):
         :param name: The name of the configuration group
         :return: response
         """
-        return self._session.request(METHODS.POST, f'update_config_group/{config_group_id}', json={'name': name})
+        return self._session.request(
+            METHODS.POST, f"update_config_group/{config_group_id}", json={"name": name}
+        )
 
     def update_config(self, config_id: int, name: str) -> None:
         """
@@ -191,7 +208,9 @@ class Configurations(BaseCategory):
         :param name: The name of the configuration
         :return: response
         """
-        return self._session.request(METHODS.POST, f'update_config/{config_id}', json={'name': name})
+        return self._session.request(
+            METHODS.POST, f"update_config/{config_id}", json={"name": name}
+        )
 
     def delete_config_group(self, config_group_id: int) -> None:
         """
@@ -201,7 +220,9 @@ class Configurations(BaseCategory):
         :param config_group_id: The ID of the configuration group
         :return: response
         """
-        return self._session.request(METHODS.POST, f'delete_config_group/{config_group_id}')
+        return self._session.request(
+            METHODS.POST, f"delete_config_group/{config_group_id}"
+        )
 
     def delete_config(self, config_id: int) -> None:
         """
@@ -211,10 +232,11 @@ class Configurations(BaseCategory):
         :param config_id: The ID of the configuration
         :return: response
         """
-        return self._session.request(METHODS.POST, f'delete_config/{config_id}')
+        return self._session.request(METHODS.POST, f"delete_config/{config_id}")
 
 
-class Milestones(BaseCategory):
+class Milestones(_MetaCategory):
+    """http://docs.gurock.com/testrail-api2/reference-milestones"""
 
     def get_milestone(self, milestone_id: int) -> dict:
         """
@@ -224,7 +246,7 @@ class Milestones(BaseCategory):
         :param milestone_id: The ID of the milestone
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_milestone/{milestone_id}')
+        return self._session.request(METHODS.GET, f"get_milestone/{milestone_id}")
 
     def get_milestones(self, project_id: int, **kwargs) -> List[dict]:
         """
@@ -238,7 +260,9 @@ class Milestones(BaseCategory):
                                 (available since TestRail 5.3).
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_milestones/{project_id}', params=kwargs)
+        return self._session.request(
+            METHODS.GET, f"get_milestones/{project_id}", params=kwargs
+        )
 
     def add_milestone(self, project_id: int, name: str, **kwargs) -> dict:
         """
@@ -257,7 +281,9 @@ class Milestones(BaseCategory):
         :return: response
         """
         data = dict(name=name, **kwargs)
-        return self._session.request(METHODS.POST, f'add_milestone/{project_id}', json=data)
+        return self._session.request(
+            METHODS.POST, f"add_milestone/{project_id}", json=data
+        )
 
     def update_milestone(self, milestone_id: int, **kwargs) -> dict:
         """
@@ -274,7 +300,9 @@ class Milestones(BaseCategory):
                                                     (available since TestRail 5.3)
         :return: response
         """
-        return self._session.request(METHODS.POST, f'update_milestone/{milestone_id}', json=kwargs)
+        return self._session.request(
+            METHODS.POST, f"update_milestone/{milestone_id}", json=kwargs
+        )
 
     def delete_milestone(self, milestone_id: int) -> None:
         """
@@ -284,10 +312,11 @@ class Milestones(BaseCategory):
         :param milestone_id: The ID of the milestone
         :return: response
         """
-        return self._session.request(METHODS.POST, f'delete_milestone/{milestone_id}')
+        return self._session.request(METHODS.POST, f"delete_milestone/{milestone_id}")
 
 
-class Plans(BaseCategory):
+class Plans(_MetaCategory):
+    """http://docs.gurock.com/testrail-api2/reference-plans"""
 
     def get_plan(self, plan_id: int) -> dict:
         """
@@ -297,7 +326,7 @@ class Plans(BaseCategory):
         :param plan_id: The ID of the test plan
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_plan/{plan_id}')
+        return self._session.request(METHODS.GET, f"get_plan/{plan_id}")
 
     def get_plans(self, project_id: int, **kwargs) -> List[dict]:
         """
@@ -314,7 +343,9 @@ class Plans(BaseCategory):
             :key milestone_id: int(list) - A comma-separated list of milestone IDs to filter by.
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_plans/{project_id}', params=kwargs)
+        return self._session.request(
+            METHODS.GET, f"get_plans/{project_id}", params=kwargs
+        )
 
     def add_plan(self, project_id: int, name: str, **kwargs) -> dict:
         """
@@ -330,7 +361,7 @@ class Plans(BaseCategory):
         :return: response
         """
         data = dict(name=name, **kwargs)
-        return self._session.request(METHODS.POST, f'add_plan/{project_id}', json=data)
+        return self._session.request(METHODS.POST, f"add_plan/{project_id}", json=data)
 
     def add_plan_entry(self, plan_id: int, suite_id: int, **kwargs) -> dict:
         """
@@ -352,7 +383,9 @@ class Plans(BaseCategory):
         :return: response
         """
         data = dict(suite_id=suite_id, **kwargs)
-        return self._session.request(METHODS.POST, f'add_plan_entry/{plan_id}', json=data)
+        return self._session.request(
+            METHODS.POST, f"add_plan_entry/{plan_id}", json=data
+        )
 
     def update_plan(self, plan_id: int, **kwargs) -> dict:
         """
@@ -364,7 +397,9 @@ class Plans(BaseCategory):
         :param kwargs: With the exception of the entries field, this method supports the same POST fields as add_plan.
         :return: response
         """
-        return self._session.request(METHODS.POST, f'update_plan/{plan_id}', json=kwargs)
+        return self._session.request(
+            METHODS.POST, f"update_plan/{plan_id}", json=kwargs
+        )
 
     def update_plan_entry(self, plan_id: int, entry_id: int, **kwargs) -> dict:
         """
@@ -382,7 +417,9 @@ class Plans(BaseCategory):
             :key case_ids: list - An array of case IDs for the custom case selection
         :return: response
         """
-        return self._session.request(METHODS.POST, f'update_plan_entry/{plan_id}/{entry_id}', json=kwargs)
+        return self._session.request(
+            METHODS.POST, f"update_plan_entry/{plan_id}/{entry_id}", json=kwargs
+        )
 
     def close_plan(self, plan_id: int) -> dict:
         """
@@ -392,7 +429,7 @@ class Plans(BaseCategory):
         :param plan_id: The ID of the test plan
         :return: response
         """
-        return self._session.request(METHODS.POST, f'close_plan/{plan_id}')
+        return self._session.request(METHODS.POST, f"close_plan/{plan_id}")
 
     def delete_plan(self, plan_id: int) -> None:
         """
@@ -402,7 +439,7 @@ class Plans(BaseCategory):
         :param plan_id: The ID of the test plan
         :return: response
         """
-        return self._session.request(METHODS.POST, f'delete_plan/{plan_id}')
+        return self._session.request(METHODS.POST, f"delete_plan/{plan_id}")
 
     def delete_plan_entry(self, plan_id: int, entry_id: int) -> None:
         """
@@ -413,10 +450,13 @@ class Plans(BaseCategory):
         :param entry_id: The ID of the test plan entry (note: not the test run ID)
         :return: response
         """
-        return self._session.request(METHODS.POST, f'delete_plan_entry/{plan_id}/{entry_id}')
+        return self._session.request(
+            METHODS.POST, f"delete_plan_entry/{plan_id}/{entry_id}"
+        )
 
 
-class Priorities(BaseCategory):
+class Priorities(_MetaCategory):
+    """http://docs.gurock.com/testrail-api2/reference-priorities"""
 
     def get_priorities(self) -> List[dict]:
         """
@@ -425,10 +465,11 @@ class Priorities(BaseCategory):
         Returns a list of available priorities.
         :return: response
         """
-        return self._session.request(METHODS.GET, 'get_priorities')
+        return self._session.request(METHODS.GET, "get_priorities")
 
 
-class Projects(BaseCategory):
+class Projects(_MetaCategory):
+    """http://docs.gurock.com/testrail-api2/reference-projects"""
 
     def get_project(self, project_id: int) -> dict:
         """
@@ -439,7 +480,7 @@ class Projects(BaseCategory):
         :param project_id: The ID of the project
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_project/{project_id}')
+        return self._session.request(METHODS.GET, f"get_project/{project_id}")
 
     def get_projects(self, **kwargs) -> List[dict]:
         """
@@ -451,7 +492,7 @@ class Projects(BaseCategory):
             :key is_completed: int - 1 to return completed projects only. 0 to return active projects only.
         :return: response
         """
-        return self._session.request(METHODS.GET, 'get_projects', params=kwargs)
+        return self._session.request(METHODS.GET, "get_projects", params=kwargs)
 
     def add_project(self, name: str, **kwargs) -> dict:
         """
@@ -468,7 +509,7 @@ class Projects(BaseCategory):
         :return: response
         """
         data = dict(name=name, **kwargs)
-        return self._session.request(METHODS.POST, 'add_project', json=data)
+        return self._session.request(METHODS.POST, "add_project", json=data)
 
     def update_project(self, project_id: int, **kwargs) -> dict:
         """
@@ -482,7 +523,9 @@ class Projects(BaseCategory):
             :key is_completed: bool - Specifies whether a project is considered completed or not
         :return: response
         """
-        return self._session.request(METHODS.POST, f'update_project/{project_id}', json=kwargs)
+        return self._session.request(
+            METHODS.POST, f"update_project/{project_id}", json=kwargs
+        )
 
     def delete_project(self, project_id: int) -> None:
         """
@@ -493,10 +536,11 @@ class Projects(BaseCategory):
         :param project_id: The ID of the project
         :return: response
         """
-        return self._session.request(METHODS.POST, f'delete_project/{project_id}')
+        return self._session.request(METHODS.POST, f"delete_project/{project_id}")
 
 
-class Results(BaseCategory):
+class Results(_MetaCategory):
+    """http://docs.gurock.com/testrail-api2/reference-results"""
 
     def get_results(self, test_id: int, **kwargs) -> List[dict]:
         """
@@ -510,7 +554,9 @@ class Results(BaseCategory):
             :key status_id: int(list) - A comma-separated list of status IDs to filter by.
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_results/{test_id}', params=kwargs)
+        return self._session.request(
+            METHODS.GET, f"get_results/{test_id}", params=kwargs
+        )
 
     def get_results_for_case(self, run_id: int, case_id: int, **kwargs) -> List[dict]:
         """
@@ -532,7 +578,9 @@ class Results(BaseCategory):
             :key status_id: int(list) - A comma-separated list of status IDs to filter by.
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_results_for_case/{run_id}/{case_id}', params=kwargs)
+        return self._session.request(
+            METHODS.GET, f"get_results_for_case/{run_id}/{case_id}", params=kwargs
+        )
 
     def get_results_for_run(self, run_id: int, **kwargs) -> List[dict]:
         """
@@ -550,7 +598,9 @@ class Results(BaseCategory):
             :key status_id: int(list) - A comma-separated list of status IDs to filter by.
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_results_for_run/{run_id}', params=kwargs)
+        return self._session.request(
+            METHODS.GET, f"get_results_for_run/{run_id}", params=kwargs
+        )
 
     def add_result(self, test_id: int, **kwargs) -> List[dict]:
         """
@@ -574,7 +624,7 @@ class Results(BaseCategory):
             :key assignedto_id: int - The ID of a user the test should be assigned to
         :return: response
         """
-        return self._session.request(METHODS.POST, f'add_result/{test_id}', json=kwargs)
+        return self._session.request(METHODS.POST, f"add_result/{test_id}", json=kwargs)
 
     def add_result_for_case(self, run_id: int, case_id: int, **kwargs) -> List[dict]:
         """
@@ -595,7 +645,9 @@ class Results(BaseCategory):
         :param kwargs: This method supports the same POST fields as add_result.
         :return: response
         """
-        return self._session.request(METHODS.POST, f'add_result_for_case/{run_id}/{case_id}', json=kwargs)
+        return self._session.request(
+            METHODS.POST, f"add_result_for_case/{run_id}/{case_id}", json=kwargs
+        )
 
     def add_results(self, run_id: int, results: List[dict]) -> List[dict]:
         """
@@ -616,7 +668,9 @@ class Results(BaseCategory):
             Please note that all referenced tests must belong to the same test run.
         :return: response
         """
-        return self._session.request(METHODS.POST, f'add_results/{run_id}', json={'results': results})
+        return self._session.request(
+            METHODS.POST, f"add_results/{run_id}", json={"results": results}
+        )
 
     def add_results_for_cases(self, run_id: int, results: List[dict]) -> List[dict]:
         """
@@ -639,10 +693,13 @@ class Results(BaseCategory):
             Please note that all referenced tests must belong to the same test run.
         :return: response
         """
-        return self._session.request(METHODS.POST, f'add_results_for_cases/{run_id}', json={'results': results})
+        return self._session.request(
+            METHODS.POST, f"add_results_for_cases/{run_id}", json={"results": results}
+        )
 
 
-class ResultFields(BaseCategory):
+class ResultFields(_MetaCategory):
+    """http://docs.gurock.com/testrail-api2/reference-results-fields"""
 
     def get_result_fields(self) -> List[dict]:
         """
@@ -652,10 +709,11 @@ class ResultFields(BaseCategory):
 
         :return: response
         """
-        return self._session.request(METHODS.GET, 'get_result_fields')
+        return self._session.request(METHODS.GET, "get_result_fields")
 
 
-class Runs(BaseCategory):
+class Runs(_MetaCategory):
+    """http://docs.gurock.com/testrail-api2/reference-runs"""
 
     def get_run(self, run_id: int) -> dict:
         """
@@ -666,7 +724,7 @@ class Runs(BaseCategory):
         :param run_id: The ID of the test run
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_run/{run_id}')
+        return self._session.request(METHODS.GET, f"get_run/{run_id}")
 
     def get_runs(self, project_id: int, **kwargs) -> List[dict]:
         """
@@ -686,7 +744,9 @@ class Runs(BaseCategory):
             :key suite_id: int(list) - A comma-separated list of test suite IDs to filter by.
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_runs/{project_id}', params=kwargs)
+        return self._session.request(
+            METHODS.GET, f"get_runs/{project_id}", params=kwargs
+        )
 
     def add_run(self, project_id: int, **kwargs) -> dict:
         """
@@ -706,7 +766,7 @@ class Runs(BaseCategory):
             :key case_ids: list - An array of case IDs for the custom case selection
         :return: response
         """
-        return self._session.request(METHODS.POST, f'add_run/{project_id}', json=kwargs)
+        return self._session.request(METHODS.POST, f"add_run/{project_id}", json=kwargs)
 
     def update_run(self, run_id: int, **kwargs) -> dict:
         """
@@ -720,7 +780,7 @@ class Runs(BaseCategory):
                         this method supports the same POST fields as add_run.
         :return: response
         """
-        return self._session.request(METHODS.POST, f'update_run/{run_id}', json=kwargs)
+        return self._session.request(METHODS.POST, f"update_run/{run_id}", json=kwargs)
 
     def close_run(self, run_id: int) -> Optional[dict]:
         """
@@ -731,7 +791,7 @@ class Runs(BaseCategory):
         :param run_id: The ID of the test run
         :return: response
         """
-        return self._session.request(METHODS.POST, f'close_run/{run_id}')
+        return self._session.request(METHODS.POST, f"close_run/{run_id}")
 
     def delete_run(self, run_id: int) -> None:
         """
@@ -742,10 +802,11 @@ class Runs(BaseCategory):
         :param run_id: The ID of the test run
         :return: response
         """
-        return self._session.request(METHODS.POST, f'delete_run/{run_id}')
+        return self._session.request(METHODS.POST, f"delete_run/{run_id}")
 
 
-class Sections(BaseCategory):
+class Sections(_MetaCategory):
+    """http://docs.gurock.com/testrail-api2/reference-runs"""
 
     def get_section(self, section_id: int) -> dict:
         """
@@ -756,7 +817,7 @@ class Sections(BaseCategory):
         :param section_id: The ID of the section
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_section/{section_id}')
+        return self._session.request(METHODS.GET, f"get_section/{section_id}")
 
     def get_sections(self, project_id: int, **kwargs) -> List[dict]:
         """
@@ -769,7 +830,9 @@ class Sections(BaseCategory):
                 :key suite_id: The ID of the test suite (optional if the project is operating in single suite mode)
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_sections/{project_id}', params=kwargs)
+        return self._session.request(
+            METHODS.GET, f"get_sections/{project_id}", params=kwargs
+        )
 
     def add_section(self, project_id: int, name: str, **kwargs) -> dict:
         """
@@ -786,7 +849,9 @@ class Sections(BaseCategory):
         :return: response
         """
         data = dict(name=name, **kwargs)
-        return self._session.request(METHODS.POST, f'add_section/{project_id}', json=data)
+        return self._session.request(
+            METHODS.POST, f"add_section/{project_id}", json=data
+        )
 
     def update_section(self, section_id: int, **kwargs) -> dict:
         """
@@ -800,7 +865,9 @@ class Sections(BaseCategory):
             :key description: str - The description of the section (added with TestRail 4.0)
         :return: response
         """
-        return self._session.request(METHODS.POST, f'update_section/{section_id}', json=kwargs)
+        return self._session.request(
+            METHODS.POST, f"update_section/{section_id}", json=kwargs
+        )
 
     def delete_section(self, section_id: int) -> None:
         """
@@ -811,10 +878,11 @@ class Sections(BaseCategory):
         :param section_id: The ID of the section
         :return: response
         """
-        return self._session.request(METHODS.POST, f'delete_section/{section_id}')
+        return self._session.request(METHODS.POST, f"delete_section/{section_id}")
 
 
-class Statuses(BaseCategory):
+class Statuses(_MetaCategory):
+    """http://docs.gurock.com/testrail-api2/reference-sections"""
 
     def get_statuses(self) -> List[dict]:
         """
@@ -824,10 +892,11 @@ class Statuses(BaseCategory):
 
         :return: response
         """
-        return self._session.request(METHODS.GET, 'get_statuses')
+        return self._session.request(METHODS.GET, "get_statuses")
 
 
-class Suites(BaseCategory):
+class Suites(_MetaCategory):
+    """http://docs.gurock.com/testrail-api2/reference-suites"""
 
     def get_suite(self, suite_id: int) -> dict:
         """
@@ -838,7 +907,7 @@ class Suites(BaseCategory):
         :param suite_id: The ID of the test suite
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_suite/{suite_id}')
+        return self._session.request(METHODS.GET, f"get_suite/{suite_id}")
 
     def get_suites(self, project_id: int) -> List[dict]:
         """
@@ -849,7 +918,7 @@ class Suites(BaseCategory):
         :param project_id: The ID of the project
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_suites/{project_id}')
+        return self._session.request(METHODS.GET, f"get_suites/{project_id}")
 
     def add_suite(self, project_id: int, name: str, **kwargs) -> dict:
         """
@@ -863,7 +932,7 @@ class Suites(BaseCategory):
         :return: response
         """
         data = dict(name=name, **kwargs)
-        return self._session.request(METHODS.POST, f'add_suite/{project_id}', json=data)
+        return self._session.request(METHODS.POST, f"add_suite/{project_id}", json=data)
 
     def update_suite(self, suite_id: int, **kwargs) -> dict:
         """
@@ -875,7 +944,9 @@ class Suites(BaseCategory):
         :param kwargs: This methods supports the same POST fields as add_suite.
         :return: response
         """
-        return self._session.request(METHODS.POST, f'update_suite/{suite_id}', json=kwargs)
+        return self._session.request(
+            METHODS.POST, f"update_suite/{suite_id}", json=kwargs
+        )
 
     def delete_suite(self, suite_id: int) -> None:
         """
@@ -886,10 +957,11 @@ class Suites(BaseCategory):
         :param suite_id: The ID of the test suite
         :return: response
         """
-        return self._session.request(METHODS.POST, f'delete_suite/{suite_id}')
+        return self._session.request(METHODS.POST, f"delete_suite/{suite_id}")
 
 
-class Template(BaseCategory):
+class Template(_MetaCategory):
+    """http://docs.gurock.com/testrail-api2/reference-templates"""
 
     def get_templates(self, project_id: int) -> List[dict]:
         """
@@ -900,10 +972,11 @@ class Template(BaseCategory):
         :param project_id: The ID of the project
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_templates/{project_id}')
+        return self._session.request(METHODS.GET, f"get_templates/{project_id}")
 
 
-class Tests(BaseCategory):
+class Tests(_MetaCategory):
+    """http://docs.gurock.com/testrail-api2/reference-tests"""
 
     def get_test(self, test_id: int) -> dict:
         """
@@ -915,7 +988,7 @@ class Tests(BaseCategory):
         :param test_id: The ID of the test
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_test/{test_id}')
+        return self._session.request(METHODS.GET, f"get_test/{test_id}")
 
     def get_tests(self, run_id: int, **kwargs) -> List[dict]:
         """
@@ -928,10 +1001,11 @@ class Tests(BaseCategory):
             :key status_id: int(list) - A comma-separated list of status IDs to filter by.
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_tests/{run_id}', params=kwargs)
+        return self._session.request(METHODS.GET, f"get_tests/{run_id}", params=kwargs)
 
 
-class Users(BaseCategory):
+class Users(_MetaCategory):
+    """http://docs.gurock.com/testrail-api2/reference-users"""
 
     def get_user(self, user_id: int) -> dict:
         """
@@ -942,7 +1016,7 @@ class Users(BaseCategory):
         :param user_id: The ID of the user
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_user/{user_id}')
+        return self._session.request(METHODS.GET, f"get_user/{user_id}")
 
     def get_user_by_email(self, email: str) -> dict:
         """
@@ -953,7 +1027,9 @@ class Users(BaseCategory):
         :param email: The email address to get the user for
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_user_by_email', params={'email': email})
+        return self._session.request(
+            METHODS.GET, f"get_user_by_email", params={"email": email}
+        )
 
     def get_users(self) -> List[dict]:
         """
@@ -963,10 +1039,11 @@ class Users(BaseCategory):
 
         :return: response
         """
-        return self._session.request(METHODS.GET, 'get_users')
+        return self._session.request(METHODS.GET, "get_users")
 
 
-class Attachments(BaseCategory):
+class Attachments(_MetaCategory):
+    """http://docs.gurock.com/testrail-api2/reference-attachments"""
 
     def add_attachment_to_result(self, result_id: int, path: Union[str, Path]) -> dict:
         """
@@ -978,25 +1055,9 @@ class Attachments(BaseCategory):
         :param path: The path to the file
         :return: response
         """
-        return self._session.attachment_request(METHODS.POST, f'add_attachment_to_result/{result_id}', path)
-
-    def add_attachment_to_result_for_case(self, result_id: int, case_id: int, path: Union[str, Path]):
-        """
-        http://docs.gurock.com/testrail-api2/reference-attachments#add_attachment_to_result_for_case
-
-        Adds attachment to a result based on a combination of result and test case IDs.
-
-        :param result_id: The ID of the result the attachment should be added to
-        :param case_id: The ID of the test case
-        :param path: The path to the file
-        :return: response
-        """
-        warnings.warn('Method removed from official documentation', DeprecationWarning, stacklevel=2)
-        # return self._session.attachment_request(
-        #     METHODS.POST,
-        #     f'add_attachment_to_result_for_case/{result_id}/{case_id}',
-        #     path
-        # )
+        return self._session.attachment_request(
+            METHODS.POST, f"add_attachment_to_result/{result_id}", path
+        )
 
     def get_attachments_for_case(self, case_id: int) -> List[dict]:
         """
@@ -1007,7 +1068,7 @@ class Attachments(BaseCategory):
         :param case_id: The ID of the test case
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_attachments_for_case/{case_id}')
+        return self._session.request(METHODS.GET, f"get_attachments_for_case/{case_id}")
 
     def get_attachments_for_test(self, test_id: int) -> List[dict]:
         """
@@ -1018,7 +1079,7 @@ class Attachments(BaseCategory):
         :param test_id:
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_attachments_for_test/{test_id}')
+        return self._session.request(METHODS.GET, f"get_attachments_for_test/{test_id}")
 
     def get_attachment(self, attachment_id: int, path: Union[str, Path]) -> Path:
         """
@@ -1030,7 +1091,9 @@ class Attachments(BaseCategory):
         :param path: Path
         :return: Path
         """
-        return self._session.get_attachment(METHODS.GET, f'get_attachment/{attachment_id}', path)
+        return self._session.get_attachment(
+            METHODS.GET, f"get_attachment/{attachment_id}", path
+        )
 
     def delete_attachment(self, attachment_id: int) -> None:
         """
@@ -1041,10 +1104,11 @@ class Attachments(BaseCategory):
         :param attachment_id:
         :return: None
         """
-        return self._session.request(METHODS.POST, f'delete_attachment/{attachment_id}')
+        return self._session.request(METHODS.POST, f"delete_attachment/{attachment_id}")
 
 
-class Reports(BaseCategory):
+class Reports(_MetaCategory):
+    """http://docs.gurock.com/testrail-api2/reference-reports"""
 
     def get_reports(self, project_id: int) -> List[dict]:
         """
@@ -1055,7 +1119,7 @@ class Reports(BaseCategory):
         :param project_id: The ID of the project for which you want a list of API accessible reports
         :return: response
         """
-        return self._session.request(METHODS.GET, f'get_reports/{project_id}')
+        return self._session.request(METHODS.GET, f"get_reports/{project_id}")
 
     def run_report(self, report_template_id: int) -> dict:
         """
@@ -1067,4 +1131,4 @@ class Reports(BaseCategory):
         :param report_template_id:
         :return: response
         """
-        return self._session.request(METHODS.GET, f'run_report/{report_template_id}')
+        return self._session.request(METHODS.GET, f"run_report/{report_template_id}")

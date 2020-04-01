@@ -1,5 +1,6 @@
 import json
 
+import pytest
 import responses
 
 
@@ -22,33 +23,36 @@ def add_results(r):
     return 200, {}, json.dumps(data['results'])
 
 
-def test_get_results(api, mock, host):
+@pytest.mark.parametrize('status_id', ('1,2,3', [1, 2, 3]))
+def test_get_results(api, mock, host, status_id):
     mock.add_callback(
         responses.GET,
         f'{host}index.php?/api/v2/get_results/221',
         get_results
     )
-    resp = api.results.get_results(221, limit=3, status_id='1,2,3')
+    resp = api.results.get_results(221, limit=3, status_id=status_id)
     assert resp[0]['status_id'] == 2
 
 
-def test_get_results_for_case(api, mock, host):
+@pytest.mark.parametrize('status_id', ('1,2,3', [1, 2, 3]))
+def test_get_results_for_case(api, mock, host, status_id):
     mock.add_callback(
         responses.GET,
         f'{host}index.php?/api/v2/get_results_for_case/23/2567',
         get_results
     )
-    resp = api.results.get_results_for_case(23, 2567, limit=3, status_id='1,2,3')
+    resp = api.results.get_results_for_case(23, 2567, limit=3, status_id=status_id)
     assert resp[0]['status_id'] == 2
 
 
-def test_get_results_for_run(api, mock, host):
+@pytest.mark.parametrize('status_id', ('1,2,3', [1, 2, 3]))
+def test_get_results_for_run(api, mock, host, status_id):
     mock.add_callback(
         responses.GET,
         f'{host}index.php?/api/v2/get_results_for_run/12',
         get_results
     )
-    resp = api.results.get_results_for_run(12, limit=3, status_id='1,2,3')
+    resp = api.results.get_results_for_run(12, limit=3, status_id=status_id)
     assert resp[0]['status_id'] == 2
 
 

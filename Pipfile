@@ -7,9 +7,15 @@ verify_ssl = true
 pytest = "==5.4.1"
 pytest-cov = "==2.8.1"
 responses = "==0.10.12"
+pylint = "==2.4.4"
+mypy = "==0.770"
+black = "==19.10b0"
 
 [packages]
 requests = "==2.23.0"
 
 [requires]
 python_version = "3.8"
+
+[pipenv]
+allow_prereleases = true

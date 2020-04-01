@@ -1,11 +1,13 @@
+"""Exceptions"""
+
+
 class TestRailError(Exception):
     """Base Exception"""
-    pass
 
 
 class TestRailAPIError(TestRailError):
-    pass
+    """Base API Exception"""
 
 
 class StatusCodeError(TestRailAPIError):
-    pass
+    """Status code Exception"""

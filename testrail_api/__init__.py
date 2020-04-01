@@ -21,13 +21,9 @@ except ImportError:
 import logging
 from logging import NullHandler
 
-from ._session import StatusCodeError
+from ._exception import StatusCodeError
 from ._testrail_api import TestRailAPI
 
 logging.getLogger(__name__).addHandler(NullHandler())
 
-__all__ = [
-    'TestRailAPI',
-    'StatusCodeError',
-    '__version__'
-]
+__all__ = ["TestRailAPI", "StatusCodeError", "__version__"]

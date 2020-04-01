@@ -1,8 +1,10 @@
+"""Enums"""
+
 from enum import Enum
 
 
 class METHODS(Enum):
-    GET = 'GET'
-    POST = 'POST'
-    PUT = 'PUT'
-    DELETE = 'DELETE'
+    """HTTP methods"""
+
+    GET = "GET"
+    POST = "POST"

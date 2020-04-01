@@ -3,7 +3,6 @@ import string as st
 from datetime import datetime
 
 import pytest
-from requests.exceptions import ConnectTimeout
 
 from testrail_api import StatusCodeError
 
@@ -248,11 +247,3 @@ def test_attachments(default_project_case):
     api.attachments.delete_attachment(attachment_id)
     with pytest.raises(StatusCodeError):
         api.attachments.get_attachment(attachment_id, '')
-
-
-def test_negative(time_out_api):
-    api = time_out_api
-    with pytest.raises(ConnectTimeout):
-        api.projects.get_projects()
-    with pytest.warns(DeprecationWarning):
-        api.attachments.add_attachment_to_result_for_case(1, 2, '.')

@@ -1,3 +1,4 @@
+# pylint: disable=R0401
 """
 TestRail API Categories
 """
@@ -7,6 +8,7 @@ from ._session import Session
 
 
 class TestRailAPI(Session):
+    """Categories"""
 
     @property
     def attachments(self) -> _category.Attachments:

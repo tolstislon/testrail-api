@@ -3,7 +3,6 @@ import string as st
 from datetime import datetime
 
 import pytest
-from requests.exceptions import ConnectTimeout
 
 from testrail_api import StatusCodeError
 
@@ -119,7 +118,7 @@ def test_case_types(api):
 
 def test_configurations(default_project):
     api, project_id = default_project
-    config_group = api.configurations.add_config_group(project_id, 'config_group')
+    config_group = api.configurations.post_config(project_id, 'config_group')
     config = api.configurations.add_config(config_group['id'], 'config')
 
     api.configurations.update_config(config['id'], 'config2')
@@ -239,20 +238,12 @@ def test_attachments(default_project_case):
     case_id = random.choice(case_ids)
     r = api.results.add_result_for_case(run_id, case_id, status_id=1, comment='pass', version='1')
     result_id, test_id = r['id'], r['test_id']
-    r = api.attachments.add_attachment_to_result(result_id, './tests/attach.jpg')
+    r = api.attachments.add_attachment_to_result(result_id, './tests/real/attach.jpg')
     attachment_id = r['attachment_id']
     api.attachments.get_attachments_for_case(case_id)
     api.attachments.get_attachments_for_test(test_id)
-    file = api.attachments.get_attachment(attachment_id, './tests/new_attach.jpg')
+    file = api.attachments.get_attachment(attachment_id, './tests/real/new_attach.jpg')
     file.unlink()
     api.attachments.delete_attachment(attachment_id)
     with pytest.raises(StatusCodeError):
         api.attachments.get_attachment(attachment_id, '')
-
-
-def test_negative(time_out_api):
-    api = time_out_api
-    with pytest.raises(ConnectTimeout):
-        api.projects.get_projects()
-    with pytest.warns(DeprecationWarning):
-        api.attachments.add_attachment_to_result_for_case(1, 2, '.')

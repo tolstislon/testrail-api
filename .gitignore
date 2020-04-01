@@ -102,7 +102,11 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# Pycharm
 .idea/
-/.pypirc
-todo.txt
+
+# Other
+Pipfile.lock
 /dev_tools
+testrail_api/__version__.py

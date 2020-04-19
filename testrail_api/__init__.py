@@ -19,11 +19,10 @@ except ImportError:
     __version__ = "unknown"
 
 import logging
-from logging import NullHandler
 
 from ._exception import StatusCodeError
 from ._testrail_api import TestRailAPI
 
-logging.getLogger(__name__).addHandler(NullHandler())
+logging.getLogger(__package__).addHandler(logging.NullHandler())
 
 __all__ = ["TestRailAPI", "StatusCodeError", "__version__"]

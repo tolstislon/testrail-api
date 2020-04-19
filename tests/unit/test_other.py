@@ -6,7 +6,7 @@ import responses
 from requests.exceptions import ConnectionError
 
 from testrail_api import StatusCodeError, TestRailAPI as TRApi
-from testrail_api._exception import TestRailError as TRError
+from testrail_api._exception import TestRailError as TRError  # noqa
 
 
 class RateLimit:
@@ -29,7 +29,7 @@ def test_rate_limit(api, mock, host):
     limit = RateLimit()
     mock.add_callback(
         responses.GET,
-        f'{host}index.php?/api/v2/get_cases/1',
+        '{}index.php?/api/v2/get_cases/1'.format(host),
         limit.rate,
     )
     resp = api.cases.get_case(1)
@@ -39,7 +39,7 @@ def test_rate_limit(api, mock, host):
 def test_raise_rate_limit(api, mock, host):
     mock.add_callback(
         responses.GET,
-        f'{host}index.php?/api/v2/get_cases/1',
+        '{}index.php?/api/v2/get_cases/1'.format(host),
         lambda x: (429, {}, ''),
     )
     with pytest.raises(StatusCodeError):
@@ -50,7 +50,7 @@ def test_exc_raise_rate_limit(auth_data, mock, host):
     api = TRApi(*auth_data, exc=True)
     mock.add_callback(
         responses.GET,
-        f'{host}index.php?/api/v2/get_cases/1',
+        '{}index.php?/api/v2/get_cases/1'.format(host),
         lambda x: (429, {}, ''),
     )
     resp = api.cases.get_case(1)
@@ -61,7 +61,7 @@ def test_exc_raise(auth_data, mock, host):
     api = TRApi(*auth_data, exc=True)
     mock.add_callback(
         responses.GET,
-        f'{host}index.php?/api/v2/get_cases/1',
+        '{}index.php?/api/v2/get_cases/1'.format(host),
         lambda x: (400, {}, ''),
     )
     resp = api.cases.get_case(1)
@@ -72,7 +72,7 @@ def test_raise(auth_data, mock, host):
     api = TRApi(*auth_data, exc=False)
     mock.add_callback(
         responses.GET,
-        f'{host}index.php?/api/v2/get_cases/1',
+        '{}index.php?/api/v2/get_cases/1'.format(host),
         lambda x: (400, {}, ''),
     )
     with pytest.raises(StatusCodeError):
@@ -103,7 +103,7 @@ def test_environment_variables(environ, mock, host):
     api = TRApi()
     mock.add_callback(
         responses.GET,
-        f'{host}index.php?/api/v2/get_cases/1',
+        '{}index.php?/api/v2/get_cases/1'.format(host),
         lambda x: (200, {}, json.dumps({'id': 1})),
     )
     resp = api.cases.get_case(1)

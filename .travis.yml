@@ -1,17 +1,27 @@
 dist: xenial
 language: python
 
+git:
+  depth: false
+
+env:
+  - REQUESTS="requests==2.20.1"  # min version
+  - REQUESTS="-U requests" # last version
+
 python:
+  - "pypy3"
+  - "3.5"
   - "3.6"
   - "3.7"
   - "3.8"
 install:
-  - pip install pipenv
-  - pipenv install pytest==5.4.1
-  - pipenv install pytest-cov==2.8.1
-  - pipenv install responses==0.10.12
-  - pipenv install -e .
+  - pip install pytest-cov==2.8.1
+  - pip install responses==0.10.12
+  - pip install pytest==5.4.1
+  - pip install $REQUESTS
+  - pip install -e .
 script:
+  - pip freeze | grep requests
   - pytest tests/unit
 deploy:
   provider: pypi
@@ -23,6 +33,9 @@ deploy:
     tags: true
     repo: tolstislon/testrail-api
     python: "3.8"
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
 
 notifications:
   email:

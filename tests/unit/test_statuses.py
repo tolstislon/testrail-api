@@ -6,7 +6,7 @@ import responses
 def test_get_statuses(api, mock, host):
     mock.add_callback(
         responses.GET,
-        f'{host}index.php?/api/v2/get_statuses',
+        '{}index.php?/api/v2/get_statuses'.format(host),
         lambda x: (200, {}, json.dumps([{'id': 1, 'label': 'Passed'}, {'id': 5, 'label': 'Failed'}]))
     )
     resp = api.statuses.get_statuses()

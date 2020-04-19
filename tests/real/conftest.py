@@ -44,7 +44,7 @@ def default_project_case(default_project):
     for i in range(3):
         r = api.cases.add_case(
             sections_id,
-            f'test case {i}',
+            'test case {}'.format(i),
             template_id=1,
             type_id=type_id,
             priority_id=priority_id,

@@ -27,7 +27,7 @@ class Cases(_MetaCategory):
         :param case_id: The ID of the test case
         :return: response
         """
-        return self._session.request(METHODS.GET, f"get_case/{case_id}")
+        return self._session.request(METHODS.GET, "get_case/{}".format(case_id))
 
     def get_cases(self, project_id: int, **kwargs) -> List[dict]:
         """
@@ -43,7 +43,7 @@ class Cases(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.GET, f"get_cases/{project_id}", params=kwargs
+            METHODS.GET, "get_cases/{}".format(project_id), params=kwargs
         )
 
     def add_case(self, section_id: int, title: str, **kwargs) -> dict:
@@ -69,7 +69,9 @@ class Cases(_MetaCategory):
         :return: response
         """
         data = dict(title=title, **kwargs)
-        return self._session.request(METHODS.POST, f"add_case/{section_id}", json=data)
+        return self._session.request(
+            METHODS.POST, "add_case/{}".format(section_id), json=data
+        )
 
     def update_case(self, case_id: int, **kwargs) -> dict:
         """
@@ -82,7 +84,7 @@ class Cases(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.POST, f"update_case/{case_id}", json=kwargs
+            METHODS.POST, "update_case/{}".format(case_id), json=kwargs
         )
 
     def delete_case(self, case_id: int) -> None:
@@ -93,7 +95,7 @@ class Cases(_MetaCategory):
         :param case_id: The ID of the test case
         :return: response
         """
-        return self._session.request(METHODS.POST, f"delete_case/{case_id}")
+        return self._session.request(METHODS.POST, "delete_case/{}".format(case_id))
 
 
 class CaseFields(_MetaCategory):
@@ -109,7 +111,7 @@ class CaseFields(_MetaCategory):
         return self._session.request(METHODS.GET, "get_case_fields")
 
     def add_case_field(
-            self, type: str, name: str, label: str, **kwargs  # pylint: disable=W0622
+        self, type: str, name: str, label: str, **kwargs  # pylint: disable=W0622
     ) -> dict:
         """
         http://docs.gurock.com/testrail-api2/reference-cases-fields#add_case_field
@@ -158,7 +160,7 @@ class Configurations(_MetaCategory):
         :param project_id: The ID of the project
         :return: response
         """
-        return self._session.request(METHODS.GET, f"get_configs/{project_id}")
+        return self._session.request(METHODS.GET, "get_configs/{}".format(project_id))
 
     def add_config_group(self, project_id: int, name: str) -> None:
         """
@@ -170,7 +172,7 @@ class Configurations(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.POST, f"add_config_group/{project_id}", json={"name": name}
+            METHODS.POST, "add_config_group/{}".format(project_id), json={"name": name}
         )
 
     def add_config(self, config_group_id: int, name: str) -> None:
@@ -183,7 +185,7 @@ class Configurations(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.POST, f"add_config/{config_group_id}", json={"name": name}
+            METHODS.POST, "add_config/{}".format(config_group_id), json={"name": name}
         )
 
     def update_config_group(self, config_group_id: int, name: str) -> None:
@@ -196,7 +198,9 @@ class Configurations(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.POST, f"update_config_group/{config_group_id}", json={"name": name}
+            METHODS.POST,
+            "update_config_group/{}".format(config_group_id),
+            json={"name": name},
         )
 
     def update_config(self, config_id: int, name: str) -> None:
@@ -209,7 +213,7 @@ class Configurations(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.POST, f"update_config/{config_id}", json={"name": name}
+            METHODS.POST, "update_config/{}".format(config_id), json={"name": name}
         )
 
     def delete_config_group(self, config_group_id: int) -> None:
@@ -221,7 +225,7 @@ class Configurations(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.POST, f"delete_config_group/{config_group_id}"
+            METHODS.POST, "delete_config_group/{}".format(config_group_id)
         )
 
     def delete_config(self, config_id: int) -> None:
@@ -232,7 +236,7 @@ class Configurations(_MetaCategory):
         :param config_id: The ID of the configuration
         :return: response
         """
-        return self._session.request(METHODS.POST, f"delete_config/{config_id}")
+        return self._session.request(METHODS.POST, "delete_config/{}".format(config_id))
 
 
 class Milestones(_MetaCategory):
@@ -246,7 +250,9 @@ class Milestones(_MetaCategory):
         :param milestone_id: The ID of the milestone
         :return: response
         """
-        return self._session.request(METHODS.GET, f"get_milestone/{milestone_id}")
+        return self._session.request(
+            METHODS.GET, "get_milestone/{}".format(milestone_id)
+        )
 
     def get_milestones(self, project_id: int, **kwargs) -> List[dict]:
         """
@@ -261,7 +267,7 @@ class Milestones(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.GET, f"get_milestones/{project_id}", params=kwargs
+            METHODS.GET, "get_milestones/{}".format(project_id), params=kwargs
         )
 
     def add_milestone(self, project_id: int, name: str, **kwargs) -> dict:
@@ -282,7 +288,7 @@ class Milestones(_MetaCategory):
         """
         data = dict(name=name, **kwargs)
         return self._session.request(
-            METHODS.POST, f"add_milestone/{project_id}", json=data
+            METHODS.POST, "add_milestone/{}".format(project_id), json=data
         )
 
     def update_milestone(self, milestone_id: int, **kwargs) -> dict:
@@ -301,7 +307,7 @@ class Milestones(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.POST, f"update_milestone/{milestone_id}", json=kwargs
+            METHODS.POST, "update_milestone/{}".format(milestone_id), json=kwargs
         )
 
     def delete_milestone(self, milestone_id: int) -> None:
@@ -312,7 +318,9 @@ class Milestones(_MetaCategory):
         :param milestone_id: The ID of the milestone
         :return: response
         """
-        return self._session.request(METHODS.POST, f"delete_milestone/{milestone_id}")
+        return self._session.request(
+            METHODS.POST, "delete_milestone/{}".format(milestone_id)
+        )
 
 
 class Plans(_MetaCategory):
@@ -326,7 +334,7 @@ class Plans(_MetaCategory):
         :param plan_id: The ID of the test plan
         :return: response
         """
-        return self._session.request(METHODS.GET, f"get_plan/{plan_id}")
+        return self._session.request(METHODS.GET, "get_plan/{}".format(plan_id))
 
     def get_plans(self, project_id: int, **kwargs) -> List[dict]:
         """
@@ -344,7 +352,7 @@ class Plans(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.GET, f"get_plans/{project_id}", params=kwargs
+            METHODS.GET, "get_plans/{}".format(project_id), params=kwargs
         )
 
     def add_plan(self, project_id: int, name: str, **kwargs) -> dict:
@@ -361,7 +369,9 @@ class Plans(_MetaCategory):
         :return: response
         """
         data = dict(name=name, **kwargs)
-        return self._session.request(METHODS.POST, f"add_plan/{project_id}", json=data)
+        return self._session.request(
+            METHODS.POST, "add_plan/{}".format(project_id), json=data
+        )
 
     def add_plan_entry(self, plan_id: int, suite_id: int, **kwargs) -> dict:
         """
@@ -384,7 +394,7 @@ class Plans(_MetaCategory):
         """
         data = dict(suite_id=suite_id, **kwargs)
         return self._session.request(
-            METHODS.POST, f"add_plan_entry/{plan_id}", json=data
+            METHODS.POST, "add_plan_entry/{}".format(plan_id), json=data
         )
 
     def update_plan(self, plan_id: int, **kwargs) -> dict:
@@ -398,7 +408,7 @@ class Plans(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.POST, f"update_plan/{plan_id}", json=kwargs
+            METHODS.POST, "update_plan/{}".format(plan_id), json=kwargs
         )
 
     def update_plan_entry(self, plan_id: int, entry_id: int, **kwargs) -> dict:
@@ -418,7 +428,9 @@ class Plans(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.POST, f"update_plan_entry/{plan_id}/{entry_id}", json=kwargs
+            METHODS.POST,
+            "update_plan_entry/{}/{}".format(plan_id, entry_id),
+            json=kwargs,
         )
 
     def close_plan(self, plan_id: int) -> dict:
@@ -429,7 +441,7 @@ class Plans(_MetaCategory):
         :param plan_id: The ID of the test plan
         :return: response
         """
-        return self._session.request(METHODS.POST, f"close_plan/{plan_id}")
+        return self._session.request(METHODS.POST, "close_plan/{}".format(plan_id))
 
     def delete_plan(self, plan_id: int) -> None:
         """
@@ -439,7 +451,7 @@ class Plans(_MetaCategory):
         :param plan_id: The ID of the test plan
         :return: response
         """
-        return self._session.request(METHODS.POST, f"delete_plan/{plan_id}")
+        return self._session.request(METHODS.POST, "delete_plan/{}".format(plan_id))
 
     def delete_plan_entry(self, plan_id: int, entry_id: int) -> None:
         """
@@ -451,7 +463,7 @@ class Plans(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.POST, f"delete_plan_entry/{plan_id}/{entry_id}"
+            METHODS.POST, "delete_plan_entry/{}/{}".format(plan_id, entry_id)
         )
 
 
@@ -480,7 +492,7 @@ class Projects(_MetaCategory):
         :param project_id: The ID of the project
         :return: response
         """
-        return self._session.request(METHODS.GET, f"get_project/{project_id}")
+        return self._session.request(METHODS.GET, "get_project/{}".format(project_id))
 
     def get_projects(self, **kwargs) -> List[dict]:
         """
@@ -524,7 +536,7 @@ class Projects(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.POST, f"update_project/{project_id}", json=kwargs
+            METHODS.POST, "update_project/{}".format(project_id), json=kwargs
         )
 
     def delete_project(self, project_id: int) -> None:
@@ -536,7 +548,9 @@ class Projects(_MetaCategory):
         :param project_id: The ID of the project
         :return: response
         """
-        return self._session.request(METHODS.POST, f"delete_project/{project_id}")
+        return self._session.request(
+            METHODS.POST, "delete_project/{}".format(project_id)
+        )
 
 
 class Results(_MetaCategory):
@@ -555,7 +569,7 @@ class Results(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.GET, f"get_results/{test_id}", params=kwargs
+            METHODS.GET, "get_results/{}".format(test_id), params=kwargs
         )
 
     def get_results_for_case(self, run_id: int, case_id: int, **kwargs) -> List[dict]:
@@ -579,7 +593,9 @@ class Results(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.GET, f"get_results_for_case/{run_id}/{case_id}", params=kwargs
+            METHODS.GET,
+            "get_results_for_case/{}/{}".format(run_id, case_id),
+            params=kwargs,
         )
 
     def get_results_for_run(self, run_id: int, **kwargs) -> List[dict]:
@@ -599,7 +615,7 @@ class Results(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.GET, f"get_results_for_run/{run_id}", params=kwargs
+            METHODS.GET, "get_results_for_run/{}".format(run_id), params=kwargs
         )
 
     def add_result(self, test_id: int, **kwargs) -> List[dict]:
@@ -624,7 +640,9 @@ class Results(_MetaCategory):
             :key assignedto_id: int - The ID of a user the test should be assigned to
         :return: response
         """
-        return self._session.request(METHODS.POST, f"add_result/{test_id}", json=kwargs)
+        return self._session.request(
+            METHODS.POST, "add_result/{}".format(test_id), json=kwargs
+        )
 
     def add_result_for_case(self, run_id: int, case_id: int, **kwargs) -> List[dict]:
         """
@@ -646,7 +664,9 @@ class Results(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.POST, f"add_result_for_case/{run_id}/{case_id}", json=kwargs
+            METHODS.POST,
+            "add_result_for_case/{}/{}".format(run_id, case_id),
+            json=kwargs,
         )
 
     def add_results(self, run_id: int, results: List[dict]) -> List[dict]:
@@ -669,7 +689,7 @@ class Results(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.POST, f"add_results/{run_id}", json={"results": results}
+            METHODS.POST, "add_results/{}".format(run_id), json={"results": results}
         )
 
     def add_results_for_cases(self, run_id: int, results: List[dict]) -> List[dict]:
@@ -694,7 +714,9 @@ class Results(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.POST, f"add_results_for_cases/{run_id}", json={"results": results}
+            METHODS.POST,
+            "add_results_for_cases/{}".format(run_id),
+            json={"results": results},
         )
 
 
@@ -724,7 +746,7 @@ class Runs(_MetaCategory):
         :param run_id: The ID of the test run
         :return: response
         """
-        return self._session.request(METHODS.GET, f"get_run/{run_id}")
+        return self._session.request(METHODS.GET, "get_run/{}".format(run_id))
 
     def get_runs(self, project_id: int, **kwargs) -> List[dict]:
         """
@@ -745,7 +767,7 @@ class Runs(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.GET, f"get_runs/{project_id}", params=kwargs
+            METHODS.GET, "get_runs/{}".format(project_id), params=kwargs
         )
 
     def add_run(self, project_id: int, **kwargs) -> dict:
@@ -766,7 +788,9 @@ class Runs(_MetaCategory):
             :key case_ids: list - An array of case IDs for the custom case selection
         :return: response
         """
-        return self._session.request(METHODS.POST, f"add_run/{project_id}", json=kwargs)
+        return self._session.request(
+            METHODS.POST, "add_run/{}".format(project_id), json=kwargs
+        )
 
     def update_run(self, run_id: int, **kwargs) -> dict:
         """
@@ -780,7 +804,9 @@ class Runs(_MetaCategory):
                         this method supports the same POST fields as add_run.
         :return: response
         """
-        return self._session.request(METHODS.POST, f"update_run/{run_id}", json=kwargs)
+        return self._session.request(
+            METHODS.POST, "update_run/{}".format(run_id), json=kwargs
+        )
 
     def close_run(self, run_id: int) -> Optional[dict]:
         """
@@ -791,7 +817,7 @@ class Runs(_MetaCategory):
         :param run_id: The ID of the test run
         :return: response
         """
-        return self._session.request(METHODS.POST, f"close_run/{run_id}")
+        return self._session.request(METHODS.POST, "close_run/{}".format(run_id))
 
     def delete_run(self, run_id: int) -> None:
         """
@@ -802,7 +828,7 @@ class Runs(_MetaCategory):
         :param run_id: The ID of the test run
         :return: response
         """
-        return self._session.request(METHODS.POST, f"delete_run/{run_id}")
+        return self._session.request(METHODS.POST, "delete_run/{}".format(run_id))
 
 
 class Sections(_MetaCategory):
@@ -817,7 +843,7 @@ class Sections(_MetaCategory):
         :param section_id: The ID of the section
         :return: response
         """
-        return self._session.request(METHODS.GET, f"get_section/{section_id}")
+        return self._session.request(METHODS.GET, "get_section/{}".format(section_id))
 
     def get_sections(self, project_id: int, **kwargs) -> List[dict]:
         """
@@ -831,7 +857,7 @@ class Sections(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.GET, f"get_sections/{project_id}", params=kwargs
+            METHODS.GET, "get_sections/{}".format(project_id), params=kwargs
         )
 
     def add_section(self, project_id: int, name: str, **kwargs) -> dict:
@@ -850,7 +876,7 @@ class Sections(_MetaCategory):
         """
         data = dict(name=name, **kwargs)
         return self._session.request(
-            METHODS.POST, f"add_section/{project_id}", json=data
+            METHODS.POST, "add_section/{}".format(project_id), json=data
         )
 
     def update_section(self, section_id: int, **kwargs) -> dict:
@@ -866,7 +892,7 @@ class Sections(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.POST, f"update_section/{section_id}", json=kwargs
+            METHODS.POST, "update_section/{}".format(section_id), json=kwargs
         )
 
     def delete_section(self, section_id: int) -> None:
@@ -878,7 +904,9 @@ class Sections(_MetaCategory):
         :param section_id: The ID of the section
         :return: response
         """
-        return self._session.request(METHODS.POST, f"delete_section/{section_id}")
+        return self._session.request(
+            METHODS.POST, "delete_section/{}".format(section_id)
+        )
 
 
 class Statuses(_MetaCategory):
@@ -907,7 +935,7 @@ class Suites(_MetaCategory):
         :param suite_id: The ID of the test suite
         :return: response
         """
-        return self._session.request(METHODS.GET, f"get_suite/{suite_id}")
+        return self._session.request(METHODS.GET, "get_suite/{}".format(suite_id))
 
     def get_suites(self, project_id: int) -> List[dict]:
         """
@@ -918,7 +946,7 @@ class Suites(_MetaCategory):
         :param project_id: The ID of the project
         :return: response
         """
-        return self._session.request(METHODS.GET, f"get_suites/{project_id}")
+        return self._session.request(METHODS.GET, "get_suites/{}".format(project_id))
 
     def add_suite(self, project_id: int, name: str, **kwargs) -> dict:
         """
@@ -932,7 +960,9 @@ class Suites(_MetaCategory):
         :return: response
         """
         data = dict(name=name, **kwargs)
-        return self._session.request(METHODS.POST, f"add_suite/{project_id}", json=data)
+        return self._session.request(
+            METHODS.POST, "add_suite/{}".format(project_id), json=data
+        )
 
     def update_suite(self, suite_id: int, **kwargs) -> dict:
         """
@@ -945,7 +975,7 @@ class Suites(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.POST, f"update_suite/{suite_id}", json=kwargs
+            METHODS.POST, "update_suite/{}".format(suite_id), json=kwargs
         )
 
     def delete_suite(self, suite_id: int) -> None:
@@ -957,7 +987,7 @@ class Suites(_MetaCategory):
         :param suite_id: The ID of the test suite
         :return: response
         """
-        return self._session.request(METHODS.POST, f"delete_suite/{suite_id}")
+        return self._session.request(METHODS.POST, "delete_suite/{}".format(suite_id))
 
 
 class Template(_MetaCategory):
@@ -972,7 +1002,7 @@ class Template(_MetaCategory):
         :param project_id: The ID of the project
         :return: response
         """
-        return self._session.request(METHODS.GET, f"get_templates/{project_id}")
+        return self._session.request(METHODS.GET, "get_templates/{}".format(project_id))
 
 
 class Tests(_MetaCategory):
@@ -988,7 +1018,7 @@ class Tests(_MetaCategory):
         :param test_id: The ID of the test
         :return: response
         """
-        return self._session.request(METHODS.GET, f"get_test/{test_id}")
+        return self._session.request(METHODS.GET, "get_test/{}".format(test_id))
 
     def get_tests(self, run_id: int, **kwargs) -> List[dict]:
         """
@@ -1001,7 +1031,9 @@ class Tests(_MetaCategory):
             :key status_id: int(list) - A comma-separated list of status IDs to filter by.
         :return: response
         """
-        return self._session.request(METHODS.GET, f"get_tests/{run_id}", params=kwargs)
+        return self._session.request(
+            METHODS.GET, "get_tests/{}".format(run_id), params=kwargs
+        )
 
 
 class Users(_MetaCategory):
@@ -1016,7 +1048,7 @@ class Users(_MetaCategory):
         :param user_id: The ID of the user
         :return: response
         """
-        return self._session.request(METHODS.GET, f"get_user/{user_id}")
+        return self._session.request(METHODS.GET, "get_user/{}".format(user_id))
 
     def get_user_by_email(self, email: str) -> dict:
         """
@@ -1028,7 +1060,7 @@ class Users(_MetaCategory):
         :return: response
         """
         return self._session.request(
-            METHODS.GET, f"get_user_by_email", params={"email": email}
+            METHODS.GET, "get_user_by_email", params={"email": email}
         )
 
     def get_users(self) -> List[dict]:
@@ -1056,7 +1088,7 @@ class Attachments(_MetaCategory):
         :return: response
         """
         return self._session.attachment_request(
-            METHODS.POST, f"add_attachment_to_result/{result_id}", path
+            METHODS.POST, "add_attachment_to_result/{}".format(result_id), path
         )
 
     def get_attachments_for_case(self, case_id: int) -> List[dict]:
@@ -1068,7 +1100,9 @@ class Attachments(_MetaCategory):
         :param case_id: The ID of the test case
         :return: response
         """
-        return self._session.request(METHODS.GET, f"get_attachments_for_case/{case_id}")
+        return self._session.request(
+            METHODS.GET, "get_attachments_for_case/{}".format(case_id)
+        )
 
     def get_attachments_for_test(self, test_id: int) -> List[dict]:
         """
@@ -1079,7 +1113,9 @@ class Attachments(_MetaCategory):
         :param test_id:
         :return: response
         """
-        return self._session.request(METHODS.GET, f"get_attachments_for_test/{test_id}")
+        return self._session.request(
+            METHODS.GET, "get_attachments_for_test/{}".format(test_id)
+        )
 
     def get_attachment(self, attachment_id: int, path: Union[str, Path]) -> Path:
         """
@@ -1092,7 +1128,7 @@ class Attachments(_MetaCategory):
         :return: Path
         """
         return self._session.get_attachment(
-            METHODS.GET, f"get_attachment/{attachment_id}", path
+            METHODS.GET, "get_attachment/{}".format(attachment_id), path
         )
 
     def delete_attachment(self, attachment_id: int) -> None:
@@ -1104,7 +1140,9 @@ class Attachments(_MetaCategory):
         :param attachment_id:
         :return: None
         """
-        return self._session.request(METHODS.POST, f"delete_attachment/{attachment_id}")
+        return self._session.request(
+            METHODS.POST, "delete_attachment/{}".format(attachment_id)
+        )
 
 
 class Reports(_MetaCategory):
@@ -1119,7 +1157,7 @@ class Reports(_MetaCategory):
         :param project_id: The ID of the project for which you want a list of API accessible reports
         :return: response
         """
-        return self._session.request(METHODS.GET, f"get_reports/{project_id}")
+        return self._session.request(METHODS.GET, "get_reports/{}".format(project_id))
 
     def run_report(self, report_template_id: int) -> dict:
         """
@@ -1131,4 +1169,6 @@ class Reports(_MetaCategory):
         :param report_template_id:
         :return: response
         """
-        return self._session.request(METHODS.GET, f"run_report/{report_template_id}")
+        return self._session.request(
+            METHODS.GET, "run_report/{}".format(report_template_id)
+        )

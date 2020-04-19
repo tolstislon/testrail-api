@@ -13,7 +13,7 @@ from . import __version__
 from ._enums import METHODS
 from ._exception import StatusCodeError, TestRailError
 
-LOGGER = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__package__)
 
 RATE_LIMIT_TIMEOUT = 3
 RATE_LIMIT_STATUS_CODE = 429
@@ -22,16 +22,16 @@ RATE_LIMIT_STATUS_CODE = 429
 class Session:
     """Base Session"""
 
-    _user_agent = f"Python TestRail API v: {__version__}"
+    _user_agent = "Python TestRail API v: {}".format(__version__)
 
     def __init__(  # pylint: disable=R0913
-            self,
-            url: Optional[str] = None,
-            email: Optional[str] = None,
-            password: Optional[str] = None,
-            exc: bool = False,
-            rate_limit: bool = True,
-            **kwargs,
+        self,
+        url: Optional[str] = None,
+        email: Optional[str] = None,
+        password: Optional[str] = None,
+        exc: bool = False,
+        rate_limit: bool = True,
+        **kwargs
     ) -> None:
         """
         :param url: TestRail address
@@ -39,8 +39,8 @@ class Session:
         :param password: Password for the account on the TestRail
         :param exc: Catching exceptions
         :param kwargs:
-            :key timeout int
-            :key verify bool
+            :key timeout int (default: 30)
+            :key verify bool (default: True)
             :key headers dict
         """
         _url = url or os.environ.get("TESTRAIL_URL")
@@ -50,7 +50,7 @@ class Session:
             raise TestRailError("No url or email or password values set")
         if _url.endswith("/"):
             _url = _url[:-1]
-        self.__base_url = f"{_url}/index.php?/api/v2/"
+        self.__base_url = "{}/index.php?/api/v2/".format(_url)
         self.__timeout = kwargs.get("timeout", 30)
         self.__session = requests.Session()
         self.__session.headers["User-Agent"] = self._user_agent
@@ -100,7 +100,7 @@ class Session:
 
     def request(self, method: METHODS, src: str, raw: bool = False, **kwargs):
         """Base request method"""
-        url = f"{self.__base_url}{src}"
+        url = "{}{}".format(self.__base_url, src)
         if not src.startswith("add_attachment"):
             headers = kwargs.setdefault("headers", {})
             headers.update({"Content-Type": "application/json"})
@@ -120,9 +120,9 @@ class Session:
                 LOGGER.error("%s", err, exc_info=True)
                 raise
             if (
-                    self._rate_limit
-                    and response.status_code == RATE_LIMIT_STATUS_CODE
-                    and count < iterations - 1
+                self._rate_limit
+                and response.status_code == RATE_LIMIT_STATUS_CODE
+                and count < iterations - 1
             ):
                 time.sleep(RATE_LIMIT_TIMEOUT)
                 continue
@@ -134,7 +134,7 @@ class Session:
         return path if isinstance(path, Path) else Path(path)
 
     def attachment_request(
-            self, method: METHODS, src: str, file: Union[Path, str], **kwargs
+        self, method: METHODS, src: str, file: Union[Path, str], **kwargs
     ):
         """Send attach"""
         file = self._path(file)
@@ -142,7 +142,7 @@ class Session:
             return self.request(method, src, files={"attachment": attachment}, **kwargs)
 
     def get_attachment(
-            self, method: METHODS, src: str, file: Union[Path, str], **kwargs
+        self, method: METHODS, src: str, file: Union[Path, str], **kwargs
     ) -> Path:
         """Downloads attach"""
         file = self._path(file)

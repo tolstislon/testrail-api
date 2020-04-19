@@ -4,7 +4,7 @@ import responses
 
 
 def add_run(r):
-    data = json.loads(r.body)
+    data = json.loads(r.body.decode())
     return 200, {}, json.dumps(
         {'id': 25, 'suite_id': data['suite_id'], 'name': data['name'], 'milestone_id': data['milestone_id']}
     )
@@ -13,7 +13,7 @@ def add_run(r):
 def test_get_run(api, mock, host):
     mock.add_callback(
         responses.GET,
-        f'{host}index.php?/api/v2/get_run/1',
+        '{}index.php?/api/v2/get_run/1'.format(host),
         lambda x: (200, {}, json.dumps({'id': 1, 'name': 'My run'}))
     )
     resp = api.runs.get_run(1)
@@ -23,7 +23,7 @@ def test_get_run(api, mock, host):
 def test_get_runs(api, mock, host):
     mock.add_callback(
         responses.GET,
-        f'{host}index.php?/api/v2/get_runs/12',
+        '{}index.php?/api/v2/get_runs/12'.format(host),
         lambda x: (200, {}, json.dumps([{'id': 1, 'name': 'My run', 'is_completed': x.params['is_completed']}]))
     )
     resp = api.runs.get_runs(12, is_completed=1)
@@ -33,7 +33,7 @@ def test_get_runs(api, mock, host):
 def test_add_run(api, mock, host):
     mock.add_callback(
         responses.POST,
-        f'{host}index.php?/api/v2/add_run/12',
+        '{}index.php?/api/v2/add_run/12'.format(host),
         add_run
     )
     resp = api.runs.add_run(12, suite_id=1, name='New Run', milestone_id=1)
@@ -45,7 +45,7 @@ def test_add_run(api, mock, host):
 def test_update_run(api, mock, host):
     mock.add_callback(
         responses.POST,
-        f'{host}index.php?/api/v2/update_run/15',
+        '{}index.php?/api/v2/update_run/15'.format(host),
         add_run
     )
     resp = api.runs.update_run(15, suite_id=1, name='New Run', milestone_id=1)
@@ -57,7 +57,7 @@ def test_update_run(api, mock, host):
 def test_close_run(api, mock, host):
     mock.add_callback(
         responses.POST,
-        f'{host}index.php?/api/v2/close_run/3',
+        '{}index.php?/api/v2/close_run/3'.format(host),
         lambda x: (200, {}, json.dumps({'id': 3, 'is_completed': True}))
     )
     resp = api.runs.close_run(3)
@@ -67,7 +67,7 @@ def test_close_run(api, mock, host):
 def test_delete_run(api, mock, host):
     mock.add_callback(
         responses.POST,
-        f'{host}index.php?/api/v2/delete_run/2',
+        '{}index.php?/api/v2/delete_run/2'.format(host),
         lambda x: (200, {}, '')
     )
     resp = api.runs.delete_run(2)

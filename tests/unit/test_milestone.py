@@ -5,7 +5,7 @@ import responses
 
 
 def add_milestone(r):
-    req = json.loads(r.body)
+    req = json.loads(r.body.decode())
     req['id'] = 1
     return 200, {}, json.dumps(req)
 
@@ -17,7 +17,7 @@ def get_milestones(r):
 
 
 def update_milestone(r):
-    req = json.loads(r.body)
+    req = json.loads(r.body.decode())
     req['id'] = 1
     return 200, {}, json.dumps(req)
 
@@ -25,7 +25,7 @@ def update_milestone(r):
 def test_get_milestone(api, mock, host):
     mock.add_callback(
         responses.GET,
-        f'{host}index.php?/api/v2/get_milestone/1',
+        '{}index.php?/api/v2/get_milestone/1'.format(host),
         lambda x: (200, {}, json.dumps({'id': 1, 'name': 'Milestone 1', 'description': 'My new milestone'})),
         content_type='application/json'
     )
@@ -37,7 +37,7 @@ def test_get_milestone(api, mock, host):
 def test_get_milestones(api, mock, host):
     mock.add_callback(
         responses.GET,
-        f'{host}index.php?/api/v2/get_milestones/1',
+        '{}index.php?/api/v2/get_milestones/1'.format(host),
         get_milestones,
         content_type='application/json'
     )
@@ -49,7 +49,7 @@ def test_get_milestones(api, mock, host):
 def test_add_milestone(api, mock, host):
     mock.add_callback(
         responses.POST,
-        f'{host}index.php?/api/v2/add_milestone/1',
+        '{}index.php?/api/v2/add_milestone/1'.format(host),
         add_milestone,
         content_type='application/json'
     )
@@ -66,7 +66,7 @@ def test_add_milestone(api, mock, host):
 def test_update_milestone(api, mock, host):
     mock.add_callback(
         responses.POST,
-        f'{host}index.php?/api/v2/update_milestone/1',
+        '{}index.php?/api/v2/update_milestone/1'.format(host),
         update_milestone,
         content_type='application/json'
     )
@@ -78,7 +78,7 @@ def test_update_milestone(api, mock, host):
 def test_delete_milestone(api, mock, host):
     mock.add_callback(
         responses.POST,
-        f'{host}index.php?/api/v2/delete_milestone/1',
+        '{}index.php?/api/v2/delete_milestone/1'.format(host),
         lambda x: (200, {}, ''),
         content_type='application/json'
     )

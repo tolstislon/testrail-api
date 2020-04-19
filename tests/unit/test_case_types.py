@@ -6,7 +6,7 @@ import responses
 def test_get_case_types(api, mock, host):
     mock.add_callback(
         responses.GET,
-        f'{host}index.php?/api/v2/get_case_types',
+        '{}index.php?/api/v2/get_case_types'.format(host),
         lambda x: (200, {}, json.dumps([{'id': 1, 'name': 'Automated'}, {'id': 6, 'name': 'Other'}]))
     )
     resp = api.case_types.get_case_types()

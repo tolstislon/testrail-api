@@ -1,9 +1,11 @@
 # Testrail Api
 
 ![PyPI](https://img.shields.io/pypi/v/testrail-api?color=%2301a001&label=version&logo=version)
-[![Downloads](https://pepy.tech/badge/testrail-api)](https://github.com/tolstislon/testrail-api)
+[![Downloads](https://pepy.tech/badge/testrail-api)](https://pepy.tech/project/testrail-api)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/testrail-api.svg)
+[![pytes_support](https://img.shields.io/badge/Pypy-3-blue.svg)](https://github.com/pytest-dev/pytest/releases)
 [![Build Status](https://travis-ci.com/tolstislon/testrail-api.svg?branch=master)](https://travis-ci.com/tolstislon/testrail-api)
+[![codecov](https://codecov.io/gh/tolstislon/testrail-api/branch/master/graph/badge.svg)](https://codecov.io/gh/tolstislon/testrail-api)
 
 This is a Python wrapper of the TestRail API(v2) according to [the official documentation](http://docs.gurock.com/testrail-api2/start)
 

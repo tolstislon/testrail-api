@@ -18,7 +18,7 @@ install:
   - pip install pytest-cov==2.8.1
   - pip install responses==0.10.12
   - pip install pytest==5.4.1
-  - pip install REQUESTS
+  - pip install $REQUESTS
   - pip install -e .
 script:
   - pip freeze | grep requests

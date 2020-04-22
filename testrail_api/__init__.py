@@ -15,7 +15,7 @@ api.cases.add_case(1, 'New Case', milestone_id=1)
 
 try:
     from .__version__ import version as __version__
-except ImportError:
+except ImportError:  # pragma: no cover
     __version__ = "unknown"
 
 import logging

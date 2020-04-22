@@ -7,7 +7,6 @@ verify_ssl = true
 pytest = "==5.4.1"
 pytest-cov = "==2.8.1"
 responses = "==0.10.12"
-pylint = "==2.4.4"
 mypy = "==0.770"
 black = "==19.10b0"
 

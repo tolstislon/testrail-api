@@ -24,7 +24,7 @@ class Session:
 
     _user_agent = "Python TestRail API v: {}".format(__version__)
 
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self,
         url: Optional[str] = None,
         email: Optional[str] = None,

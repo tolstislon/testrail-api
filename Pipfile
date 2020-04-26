@@ -12,6 +12,7 @@ black = "==19.10b0"
 
 [packages]
 requests = "==2.23.0"
+flake8 = "*"
 
 [requires]
 python_version = "3.8"

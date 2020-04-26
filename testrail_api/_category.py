@@ -1,4 +1,3 @@
-# pylint: disable=C0302
 """
 TestRail API categories
 """
@@ -111,7 +110,7 @@ class CaseFields(_MetaCategory):
         return self._session.request(METHODS.GET, "get_case_fields")
 
     def add_case_field(
-        self, type: str, name: str, label: str, **kwargs  # pylint: disable=W0622
+        self, type: str, name: str, label: str, **kwargs  # noqa
     ) -> dict:
         """
         http://docs.gurock.com/testrail-api2/reference-cases-fields#add_case_field

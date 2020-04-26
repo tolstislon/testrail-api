@@ -1,4 +1,3 @@
-# pylint: disable=R0401
 """
 TestRail API Categories
 """

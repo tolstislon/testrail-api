@@ -9,10 +9,11 @@ pytest-cov = "==2.8.1"
 responses = "==0.10.12"
 mypy = "==0.770"
 black = "==19.10b0"
+flake8 = "==3.8.0a2"
+pep8-naming = "==0.10.0"
 
 [packages]
 requests = "==2.23.0"
-flake8 = "*"
 
 [requires]
 python_version = "3.8"

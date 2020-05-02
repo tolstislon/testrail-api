@@ -1,12 +1,43 @@
-dist: xenial
+dist: bionic
 language: python
 
 git:
   depth: false
 
+stages:
+  - mypy
+  - black
+  - flake8
+  - test
+
+jobs:
+  include:
+    - stage: "mypy"
+      python: "3.5"
+      env: MYPY=0.770
+      install: pip install mypy==$MYPY
+      script: mypy ./testrail_api
+      after_success: false
+    - stage: "black"
+      python: "3.6"
+      env: BLACK=19.10b0
+      install: pip install black==$BLACK
+      script: black ./testrail_api --check
+      after_success: false
+    - stage: "flake8"
+      python: "3.6"
+      env:
+        - FLAKE8=3.8.0a2
+        - PEP8_NAMING=0.10.0
+      install:
+        - pip install flake8==$FLAKE8
+        - pip install pep8-naming==$PEP8_NAMING
+      script: flake8 ./testrail_api
+      after_success: false
+
 env:
   - REQUESTS="requests==2.20.1"  # min version
-  - REQUESTS="-U requests" # last version
+  - REQUESTS="-U requests"       # last version
 
 python:
   - "pypy3"

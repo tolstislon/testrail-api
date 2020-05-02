@@ -34,14 +34,18 @@ class Session:
         **kwargs
     ) -> None:
         """
-        :param url: TestRail address
-        :param email: Email for the account on the TestRail
-        :param password: Password for the account on the TestRail
-        :param exc: Catching exceptions
+        :param url:
+            TestRail address
+        :param email:
+            Email for the account on the TestRail
+        :param password:
+            Password for the account on the TestRail
+        :param exc:
+            Catching exceptions
         :param kwargs:
-            :key timeout int (default: 30)
-            :key verify bool (default: True)
-            :key headers dict
+            :key timeout: int (default: 30)
+            :key verify: bool (default: True)
+            :key headers: dict
         """
         _url = url or os.environ.get("TESTRAIL_URL")
         _email = email or os.environ.get("TESTRAIL_EMAIL")
@@ -61,7 +65,8 @@ class Session:
         self.__exc = exc
         self._rate_limit = rate_limit
         LOGGER.info(
-            "Create Session{url: %s, user: %s, timeout: %s, headers: %s, verify: %s, exception: %s}",
+            "Create Session{url: %s, user: %s, timeout: %s, headers: %s, verify: "
+            "%s, exception: %s}",
             url,
             self.__user_email,
             self.__timeout,
@@ -72,7 +77,7 @@ class Session:
 
     @property
     def user_email(self) -> str:
-        """get email"""
+        """Get user email"""
         return self.__user_email
 
     def __response(self, response: requests.Response):

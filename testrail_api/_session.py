@@ -15,7 +15,6 @@ from ._exception import StatusCodeError, TestRailError
 
 LOGGER = logging.getLogger(__package__)
 
-RATE_LIMIT_TIMEOUT = 3
 RATE_LIMIT_STATUS_CODE = 429
 
 
@@ -129,7 +128,7 @@ class Session:
                 and response.status_code == RATE_LIMIT_STATUS_CODE
                 and count < iterations - 1
             ):
-                time.sleep(RATE_LIMIT_TIMEOUT)
+                time.sleep(int(response.headers.get('retry-after')))
                 continue
             LOGGER.debug("Response header: %s", response.headers)
             return response if raw else self.__response(response)

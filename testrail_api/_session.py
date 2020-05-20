@@ -25,13 +25,13 @@ class Session:
     _user_agent = "Python TestRail API v: {}".format(__version__)
 
     def __init__(
-            self,
-            url: Optional[str] = None,
-            email: Optional[str] = None,
-            password: Optional[str] = None,
-            exc: bool = False,
-            rate_limit: bool = True,
-            **kwargs
+        self,
+        url: Optional[str] = None,
+        email: Optional[str] = None,
+        password: Optional[str] = None,
+        exc: bool = False,
+        rate_limit: bool = True,
+        **kwargs
     ) -> None:
         """
         :param url:
@@ -125,18 +125,11 @@ class Session:
                 LOGGER.error("%s", err, exc_info=True)
                 raise
             if (
-                    self._rate_limit
-                    and response.status_code == RATE_LIMIT_STATUS_CODE
-                    and count < iterations - 1
+                self._rate_limit
+                and response.status_code == RATE_LIMIT_STATUS_CODE
+                and count < iterations - 1
             ):
-                retry = response.headers.get('retry-after')
-                if isinstance(retry, str):
-                    to_sleep = int(retry)
-                elif isinstance(retry, int):
-                    to_sleep = retry
-                else:
-                    to_sleep = RATE_LIMIT_TIMEOUT
-                time.sleep(to_sleep)
+                time.sleep(int(response.headers.get("retry-after", RATE_LIMIT_TIMEOUT)))
                 continue
             LOGGER.debug("Response header: %s", response.headers)
             return response if raw else self.__response(response)
@@ -146,7 +139,7 @@ class Session:
         return path if isinstance(path, Path) else Path(path)
 
     def attachment_request(
-            self, method: METHODS, src: str, file: Union[Path, str], **kwargs
+        self, method: METHODS, src: str, file: Union[Path, str], **kwargs
     ):
         """Send attach"""
         file = self._path(file)
@@ -154,7 +147,7 @@ class Session:
             return self.request(method, src, files={"attachment": attachment}, **kwargs)
 
     def get_attachment(
-            self, method: METHODS, src: str, file: Union[Path, str], **kwargs
+        self, method: METHODS, src: str, file: Union[Path, str], **kwargs
     ) -> Path:
         """Downloads attach"""
         file = self._path(file)

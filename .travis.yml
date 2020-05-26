@@ -27,7 +27,7 @@ jobs:
     - stage: "flake8"
       python: "3.6"
       env:
-        - FLAKE8=3.8.0a2
+        - FLAKE8=3.8.2
         - PEP8_NAMING=0.10.0
       install:
         - pip install flake8==$FLAKE8
@@ -46,9 +46,9 @@ python:
   - "3.7"
   - "3.8"
 install:
-  - pip install pytest-cov==2.8.1
-  - pip install responses==0.10.12
-  - pip install pytest==5.4.1
+  - pip install pytest-cov==2.9.0
+  - pip install responses==0.10.14
+  - pip install pytest==5.4.2
   - pip install $REQUESTS
   - pip install -e .
 script:

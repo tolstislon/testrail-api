@@ -1,6 +1,6 @@
 # Testrail Api
 
-[![PyPI](https://img.shields.io/pypi/v/testrail-api?color=%2301a001&label=version&logo=version)](https://pypi.org/project/testrail-api/)
+[![PyPI](https://img.shields.io/pypi/v/testrail-api?color=%2301a001&label=pypi&logo=version)](https://pypi.org/project/testrail-api/)
 [![Downloads](https://pepy.tech/badge/testrail-api)](https://pepy.tech/project/testrail-api)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/testrail-api.svg)](https://pypi.org/project/testrail-api/)
 [![PyPI - Implementation](https://img.shields.io/pypi/implementation/testrail-api)](https://pypi.org/project/testrail-api/)

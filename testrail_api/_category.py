@@ -246,7 +246,7 @@ class Configurations(_MetaCategory):
         """
         return self._session.request(METHODS.GET, "get_configs/{}".format(project_id))
 
-    def add_config_group(self, project_id: int, name: str) -> None:
+    def add_config_group(self, project_id: int, name: str) -> dict:
         """
         http://docs.gurock.com/testrail-api2/reference-configs#add_config_group
 
@@ -262,7 +262,7 @@ class Configurations(_MetaCategory):
             METHODS.POST, "add_config_group/{}".format(project_id), json={"name": name}
         )
 
-    def add_config(self, config_group_id: int, name: str) -> None:
+    def add_config(self, config_group_id: int, name: str) -> dict:
         """
         http://docs.gurock.com/testrail-api2/reference-configs#add_config
 
@@ -278,7 +278,7 @@ class Configurations(_MetaCategory):
             METHODS.POST, "add_config/{}".format(config_group_id), json={"name": name}
         )
 
-    def update_config_group(self, config_group_id: int, name: str) -> None:
+    def update_config_group(self, config_group_id: int, name: str) -> dict:
         """
         http://docs.gurock.com/testrail-api2/reference-configs#update_config_group
 
@@ -296,7 +296,7 @@ class Configurations(_MetaCategory):
             json={"name": name},
         )
 
-    def update_config(self, config_id: int, name: str) -> None:
+    def update_config(self, config_id: int, name: str) -> dict:
         """
         http://docs.gurock.com/testrail-api2/reference-configs#update_config
 

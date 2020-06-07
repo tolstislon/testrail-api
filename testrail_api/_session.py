@@ -13,9 +13,8 @@ from . import __version__
 from ._enums import METHODS
 from ._exception import StatusCodeError, TestRailError
 
-LOGGER = logging.getLogger(__package__)
+logger = logging.getLogger(__package__)
 
-RATE_LIMIT_TIMEOUT = 3
 RATE_LIMIT_STATUS_CODE = 429
 
 
@@ -44,8 +43,13 @@ class Session:
             Catching exceptions
         :param kwargs:
             :key timeout: int (default: 30)
+                How many seconds to wait for the server to send data
             :key verify: bool (default: True)
+                Controls whether we verify the server's certificate
             :key headers: dict
+                Dictionary of HTTP Headers to send
+            :key retry: int (default 3)
+                Delay in receiving code 429
         """
         _url = url or os.environ.get("TESTRAIL_URL")
         _email = email or os.environ.get("TESTRAIL_EMAIL")
@@ -60,19 +64,21 @@ class Session:
         self.__session.headers["User-Agent"] = self._user_agent
         self.__session.headers.update(kwargs.get("headers", {}))
         self.__session.verify = kwargs.get("verify", True)
+        self.__retry = kwargs.get("retry", 3)
         self.__user_email = _email
         self.__session.auth = (self.__user_email, _password)
         self.__exc = exc
         self._rate_limit = rate_limit
-        LOGGER.info(
+        logger.info(
             "Create Session{url: %s, user: %s, timeout: %s, headers: %s, verify: "
-            "%s, exception: %s}",
+            "%s, exception: %s, retry: %s}",
             url,
             self.__user_email,
             self.__timeout,
             self.__session.headers,
             self.__session.verify,
             self.__exc,
+            self.__retry,
         )
 
     @property
@@ -82,7 +88,7 @@ class Session:
 
     def __response(self, response: requests.Response):
         if not response.ok:
-            LOGGER.error(
+            logger.error(
                 "Code: %s, reason: %s url: %s, content: %s",
                 response.status_code,
                 response.reason,
@@ -97,7 +103,7 @@ class Session:
                     response.content,
                 )
 
-        LOGGER.debug("Response body: %s", response.text)
+        logger.debug("Response body: %s", response.text)
         try:
             return response.json()
         except (JSONDecodeError, ValueError):
@@ -122,16 +128,16 @@ class Session:
                     method=method.value, url=url, timeout=self.__timeout, **kwargs
                 )
             except Exception as err:
-                LOGGER.error("%s", err, exc_info=True)
+                logger.error("%s", err, exc_info=True)
                 raise
             if (
                 self._rate_limit
                 and response.status_code == RATE_LIMIT_STATUS_CODE
                 and count < iterations - 1
             ):
-                time.sleep(int(response.headers.get("retry-after", RATE_LIMIT_TIMEOUT)))
+                time.sleep(int(response.headers.get("retry-after", self.__retry)))
                 continue
-            LOGGER.debug("Response header: %s", response.headers)
+            logger.debug("Response header: %s", response.headers)
             return response if raw else self.__response(response)
 
     @staticmethod

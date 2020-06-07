@@ -14,7 +14,7 @@ jobs:
   include:
     - stage: "mypy"
       python: "3.5"
-      env: MYPY=0.770
+      env: MYPY=0.780
       install: pip install mypy==$MYPY
       script: mypy ./testrail_api
       after_success: false
@@ -49,7 +49,7 @@ python:
 install:
   - pip install pytest-cov==2.9.0
   - pip install responses==0.10.14
-  - pip install pytest==5.4.2
+  - pip install pytest==5.4.3
   - pip install $REQUESTS
   - pip install -e .
 script:

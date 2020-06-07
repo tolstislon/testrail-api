@@ -4,10 +4,10 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-pytest = "==5.4.2"
+pytest = "==5.4.3"
 pytest-cov = "==2.9.0"
 responses = "==0.10.14"
-mypy = "==0.770"
+mypy = "==0.780"
 black = "==19.10b0"
 flake8 = "==3.8.2"
 pep8-naming = "==0.10.0"

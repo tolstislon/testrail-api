@@ -27,7 +27,7 @@ jobs:
     - stage: "flake8"
       python: "3.6"
       env:
-        - FLAKE8=3.8.2
+        - FLAKE8=3.8.3
         - PEP8_NAMING=0.10.0
       install:
         - pip install flake8==$FLAKE8

@@ -859,7 +859,7 @@ class Results(_MetaCategory):
             METHODS.POST, "add_result/{}".format(test_id), json=kwargs
         )
 
-    def add_result_for_case(self, run_id: int, case_id: int, **kwargs) -> List[dict]:
+    def add_result_for_case(self, run_id: int, case_id: int, **kwargs) -> dict:
         """
         http://docs.gurock.com/testrail-api2/reference-results#add_result_for_case
 

@@ -9,7 +9,7 @@ pytest-cov = "==2.9.0"
 responses = "==0.10.14"
 mypy = "==0.780"
 black = "==19.10b0"
-flake8 = "==3.8.2"
+flake8 = "==3.8.3"
 pep8-naming = "==0.10.0"
 
 [packages]

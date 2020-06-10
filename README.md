@@ -57,7 +57,7 @@ result = api.results.add_result_for_case(
     version="1"
 )
 attach = "attach.jpg"
-api.attachments.add_attachment_to_result(result[0]["id"], attach)
+api.attachments.add_attachment_to_result(result["id"], attach)
 
 api.runs.close_run(my_test_run["id"])
 api.milestones.update_milestone(new_milestone["id"], is_completed=True)

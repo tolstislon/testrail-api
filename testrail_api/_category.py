@@ -1376,6 +1376,24 @@ class Attachments(_MetaCategory):
             METHODS.POST, "add_attachment_to_result/{}".format(result_id), path
         )
 
+    def add_attachment_to_run(self, run_id: int, path: Union[str, Path]) -> dict:
+        """
+        http://docs.gurock.com/testrail-api2/reference-attachments#add_attachment_to_run
+
+        Adds attachment to test run.
+        The maximum allowable upload size is set to 256mb.
+		Requires TestRail 6.3 or later
+
+        :param run_id:
+            The ID of the test run the attachment should be added to
+        :param path:
+            The path to the file
+        :return: response
+        """
+        return self._session.attachment_request(
+            METHODS.POST, "add_attachment_to_run/{}".format(run_id), path
+        )
+
     def get_attachments_for_case(self, case_id: int) -> List[dict]:
         """
         http://docs.gurock.com/testrail-api2/reference-attachments#get_attachments_for_case

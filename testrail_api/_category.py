@@ -1382,7 +1382,7 @@ class Attachments(_MetaCategory):
 
         Adds attachment to test run.
         The maximum allowable upload size is set to 256mb.
-		Requires TestRail 6.3 or later
+        Requires TestRail 6.3 or later
 
         :param run_id:
             The ID of the test run the attachment should be added to

@@ -177,7 +177,7 @@ class CaseFields(_MetaCategory):
         return self._session.request(METHODS.GET, "get_case_fields")
 
     def add_case_field(
-        self, type: str, name: str, label: str, **kwargs  # noqa
+            self, type: str, name: str, label: str, **kwargs  # noqa
     ) -> dict:
         """
         http://docs.gurock.com/testrail-api2/reference-cases-fields#add_case_field
@@ -1357,20 +1357,56 @@ class Users(_MetaCategory):
 
 
 class Attachments(_MetaCategory):
-    """http://docs.gurock.com/testrail-api2/reference-attachments"""
+    """https://www.gurock.com/testrail/docs/api/reference/attachments"""
+
+    def add_attachment_to_plan(self, plan_id: int, path: Union[str, Path]) -> dict:
+        """
+        Adds an attachment to a test plan. The maximum allowable upload size is set to 256mb.
+        Requires TestRail 6.3 or later
+        :param plan_id:
+            The ID of the test plan the attachment should be added to
+        :param path:
+            The path to the file
+        :return: dict
+                ex: {"attachment_id": 443}
+        """
+        return self._session.attachment_request(
+            METHODS.POST, "add_attachment_to_plan/{}".format(plan_id), path
+        )
+
+    def add_attachment_to_plan_entry(
+            self, plan_id: int, entry_id: int, path: Union[str, Path]
+    ) -> dict:
+        """
+        Adds an attachment to a test plan entry. The maximum allowable upload size is set to 256mb.
+        Requires TestRail 6.3 or later
+        :param plan_id:
+            The ID of the test plan containing the entry
+        :param entry_id:
+            The ID of the test plan entry the attachment should be added to
+        :param path:
+            The path to the file
+        :return: dict
+                ex: {"attachment_id": 443}
+        """
+        return self._session.attachment_request(
+            METHODS.POST,
+            "add_attachment_to_plan_entry/{}/{}".format(plan_id, entry_id),
+            path,
+        )
 
     def add_attachment_to_result(self, result_id: int, path: Union[str, Path]) -> dict:
         """
-        http://docs.gurock.com/testrail-api2/reference-attachments#add_attachment_to_result
-
         Adds attachment to a result based on the result ID.
         The maximum allowable upload size is set to 256mb.
+        Requires TestRail 5.7 or later
 
         :param result_id:
             The ID of the result the attachment should be added to
         :param path:
             The path to the file
-        :return: response
+        :return: dict
+                ex: {"attachment_id": 443}
         """
         return self._session.attachment_request(
             METHODS.POST, "add_attachment_to_result/{}".format(result_id), path
@@ -1378,8 +1414,6 @@ class Attachments(_MetaCategory):
 
     def add_attachment_to_run(self, run_id: int, path: Union[str, Path]) -> dict:
         """
-        http://docs.gurock.com/testrail-api2/reference-attachments#add_attachment_to_run
-
         Adds attachment to test run.
         The maximum allowable upload size is set to 256mb.
         Requires TestRail 6.3 or later
@@ -1388,7 +1422,8 @@ class Attachments(_MetaCategory):
             The ID of the test run the attachment should be added to
         :param path:
             The path to the file
-        :return: response
+        :return: dict
+                ex: {"attachment_id": 443}
         """
         return self._session.attachment_request(
             METHODS.POST, "add_attachment_to_run/{}".format(run_id), path
@@ -1396,9 +1431,8 @@ class Attachments(_MetaCategory):
 
     def get_attachments_for_case(self, case_id: int) -> List[dict]:
         """
-        http://docs.gurock.com/testrail-api2/reference-attachments#get_attachments_for_case
-
         Returns a list of attachments for a test case.
+        Requires TestRail 5.7 or later
 
         :param case_id:
             The ID of the test case
@@ -1408,11 +1442,52 @@ class Attachments(_MetaCategory):
             METHODS.GET, "get_attachments_for_case/{}".format(case_id)
         )
 
+    def get_attachments_for_plan(self, plan_id: int) -> List[dict]:
+        """
+        Returns a list of attachments for a test plan.
+        Requires TestRail 6.3 or later
+
+        :param plan_id:
+            The ID of the test plan to retrieve attachments from
+        :return: response
+        """
+        return self._session.request(
+            METHODS.GET, "get_attachments_for_plan/{}".format(plan_id)
+        )
+
+    def get_attachments_for_plan_entry(self, plan_id: int, entry_id: int) -> List[dict]:
+        """
+        Returns a list of attachments for a test plan entry.
+        Requires TestRail 6.3 or later
+
+        :param plan_id:
+            The ID of the test plan containing the entry
+        :param entry_id:
+            The ID of the test plan entry to retrieve attachments from
+        :return: response
+        """
+        return self._session.request(
+            METHODS.GET,
+            "get_attachments_for_plan_entry/{}/{}".format(plan_id, entry_id),
+        )
+
+    def get_attachments_for_run(self, run_id: int) -> List[dict]:
+        """
+        Returns a list of attachments for a test run.
+        Requires TestRail 6.3 or later
+
+        :param run_id:
+            The ID of the test run to retrieve attachments from
+        :return: response
+        """
+        return self._session.request(
+            METHODS.GET, "get_attachments_for_run/{}".format(run_id)
+        )
+
     def get_attachments_for_test(self, test_id: int) -> List[dict]:
         """
-        http://docs.gurock.com/testrail-api2/reference-attachments#get_attachments_for_test
-
         Returns a list of attachments for test results.
+        Requires TestRail 5.7 or later
 
         :param test_id:
             The ID of the test
@@ -1424,9 +1499,8 @@ class Attachments(_MetaCategory):
 
     def get_attachment(self, attachment_id: int, path: Union[str, Path]) -> Path:
         """
-        http://docs.gurock.com/testrail-api2/reference-attachments#get_attachment
-
         Returns the requested attachment identified by attachment_id.
+        Requires TestRail 5.7 or later
 
         :param attachment_id:
         :param path: Path
@@ -1438,9 +1512,8 @@ class Attachments(_MetaCategory):
 
     def delete_attachment(self, attachment_id: int) -> None:
         """
-        http://docs.gurock.com/testrail-api2/reference-attachments#delete_attachment
-
         Deletes the specified attachment identified by attachment_id.
+        Requires TestRail 5.7 or later
 
         :param attachment_id:
         :return: None

@@ -14,7 +14,7 @@ jobs:
   include:
     - stage: "mypy"
       python: "3.5"
-      env: MYPY=0.780
+      env: MYPY=0.782
       install: pip install mypy==$MYPY
       script: mypy ./testrail_api
       after_success: false
@@ -28,7 +28,7 @@ jobs:
       python: "3.6"
       env:
         - FLAKE8=3.8.3
-        - PEP8_NAMING=0.10.0
+        - PEP8_NAMING=0.11.1
       install:
         - pip install flake8==$FLAKE8
         - pip install pep8-naming==$PEP8_NAMING
@@ -47,8 +47,8 @@ python:
   - "3.8"
   - "3.9-dev"
 install:
-  - pip install pytest-cov==2.9.0
-  - pip install responses==0.10.14
+  - pip install pytest-cov==2.10.0
+  - pip install responses==0.10.15
   - pip install pytest==5.4.3
   - pip install $REQUESTS
   - pip install -e .

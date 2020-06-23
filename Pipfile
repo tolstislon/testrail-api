@@ -5,15 +5,15 @@ verify_ssl = true
 
 [dev-packages]
 pytest = "==5.4.3"
-pytest-cov = "==2.9.0"
-responses = "==0.10.14"
-mypy = "==0.780"
+pytest-cov = "==2.10.0"
+responses = "==0.10.15"
+mypy = "==0.782"
 black = "==19.10b0"
 flake8 = "==3.8.3"
-pep8-naming = "==0.10.0"
+pep8-naming = "==0.11.1"
 
 [packages]
-requests = "==2.23.0"
+requests = "==2.24.0"
 
 [requires]
 python_version = "3.8"

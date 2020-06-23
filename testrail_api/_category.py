@@ -177,7 +177,7 @@ class CaseFields(_MetaCategory):
         return self._session.request(METHODS.GET, "get_case_fields")
 
     def add_case_field(
-            self, type: str, name: str, label: str, **kwargs  # noqa
+        self, type: str, name: str, label: str, **kwargs  # noqa
     ) -> dict:
         """
         http://docs.gurock.com/testrail-api2/reference-cases-fields#add_case_field
@@ -1361,7 +1361,8 @@ class Attachments(_MetaCategory):
 
     def add_attachment_to_plan(self, plan_id: int, path: Union[str, Path]) -> dict:
         """
-        Adds an attachment to a test plan. The maximum allowable upload size is set to 256mb.
+        Adds an attachment to a test plan. The maximum allowable upload size is
+        set to 256mb.
         Requires TestRail 6.3 or later
         :param plan_id:
             The ID of the test plan the attachment should be added to
@@ -1375,10 +1376,11 @@ class Attachments(_MetaCategory):
         )
 
     def add_attachment_to_plan_entry(
-            self, plan_id: int, entry_id: int, path: Union[str, Path]
+        self, plan_id: int, entry_id: int, path: Union[str, Path]
     ) -> dict:
         """
-        Adds an attachment to a test plan entry. The maximum allowable upload size is set to 256mb.
+        Adds an attachment to a test plan entry. The maximum allowable upload size is
+        set to 256mb.
         Requires TestRail 6.3 or later
         :param plan_id:
             The ID of the test plan containing the entry

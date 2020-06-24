@@ -21,6 +21,28 @@ def get_attachment(r, path):
         return 200, {}, f
 
 
+def test_add_attachment_to_plan(api, mock, host, base_path):
+    mock.add_callback(
+        responses.POST,
+        '{}index.php?/api/v2/add_attachment_to_plan/3'.format(host),
+        add_attachment
+    )
+    file = Path(base_path, 'attach.jpg')
+    resp = api.attachments.add_attachment_to_plan(3, file)
+    assert resp['attachment_id'] == 433
+
+
+def test_add_attachment_to_plan_entry(api, mock, host, base_path):
+    mock.add_callback(
+        responses.POST,
+        '{}index.php?/api/v2/add_attachment_to_plan_entry/3/4'.format(host),
+        add_attachment
+    )
+    file = Path(base_path, 'attach.jpg')
+    resp = api.attachments.add_attachment_to_plan_entry(3, 4, file)
+    assert resp['attachment_id'] == 433
+
+
 def test_add_attachment_to_result_pathlib(api, mock, host, base_path):
     mock.add_callback(
         responses.POST,
@@ -43,6 +65,17 @@ def test_add_attachment_to_result_str(api, mock, host, base_path):
     assert resp['attachment_id'] == 433
 
 
+def test_add_attachment_to_run(api, mock, host, base_path):
+    mock.add_callback(
+        method=responses.POST,
+        url='{}index.php?/api/v2/add_attachment_to_run/2'.format(host),
+        callback=add_attachment
+    )
+    file = Path(base_path, 'attach.jpg')
+    resp = api.attachments.add_attachment_to_run(2, file)
+    assert resp['attachment_id'] == 433
+
+
 def test_get_attachments_for_case(api, mock, host):
     mock.add_callback(
         responses.GET,
@@ -50,6 +83,36 @@ def test_get_attachments_for_case(api, mock, host):
         lambda x: (200, {}, json.dumps([{'id': 1, 'filename': '444.jpg'}]))
     )
     resp = api.attachments.get_attachments_for_case(2)
+    assert resp[0]['filename'] == '444.jpg'
+
+
+def test_get_attachments_for_plan(api, mock, host):
+    mock.add_callback(
+        responses.GET,
+        '{}index.php?/api/v2/get_attachments_for_plan/2'.format(host),
+        lambda x: (200, {}, json.dumps([{'id': 1, 'filename': '444.jpg'}]))
+    )
+    resp = api.attachments.get_attachments_for_plan(2)
+    assert resp[0]['filename'] == '444.jpg'
+
+
+def test_get_attachments_for_plan_entry(api, mock, host):
+    mock.add_callback(
+        responses.GET,
+        '{}index.php?/api/v2/get_attachments_for_plan_entry/2/1'.format(host),
+        lambda x: (200, {}, json.dumps([{'id': 1, 'filename': '444.jpg'}]))
+    )
+    resp = api.attachments.get_attachments_for_plan_entry(2, 1)
+    assert resp[0]['filename'] == '444.jpg'
+
+
+def test_get_attachments_for_run(api, mock, host):
+    mock.add_callback(
+        responses.GET,
+        '{}index.php?/api/v2/get_attachments_for_run/2'.format(host),
+        lambda x: (200, {}, json.dumps([{'id': 1, 'filename': '444.jpg'}]))
+    )
+    resp = api.attachments.get_attachments_for_run(2)
     assert resp[0]['filename'] == '444.jpg'
 
 

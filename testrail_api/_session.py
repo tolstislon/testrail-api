@@ -119,7 +119,7 @@ class Session:
         if "params" in kwargs:
             for key, value in kwargs["params"].items():
                 if isinstance(value, list):
-                    kwargs["params"][key] = ",".join([str(i) for i in value])
+                    kwargs["params"][key] = ",".join(str(i) for i in value)
 
         iterations = 3
         for count in range(iterations):

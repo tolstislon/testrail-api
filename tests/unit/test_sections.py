@@ -21,7 +21,7 @@ def test_get_section(api, mock, host):
 def test_get_sections(api, mock, host):
     mock.add_callback(
         responses.GET,
-        '{}index.php?/api/v2/get_sections/5&suite_id=2'.format(host),
+        '{}index.php?/api/v2/get_sections/5'.format(host),
         lambda x: (200, {}, json.dumps([{'depth': 1, 'description': 'My section'}]))
     )
     resp = api.sections.get_sections(5, suite_id=2)

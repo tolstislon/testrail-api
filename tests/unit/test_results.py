@@ -87,7 +87,7 @@ def test_add_results(api, mock, host):
         add_results
     )
     results = [{'test_id': 1, 'status_id': 5}, {'test_id': 2, 'status_id': 1}]
-    resp = api.results.add_results(12, results=results)
+    resp = api.results.add_results(15, results=results)
     assert resp == results
 
 

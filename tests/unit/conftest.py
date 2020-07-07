@@ -6,6 +6,32 @@ import responses
 
 from testrail_api import TestRailAPI
 
+BASE_HOST = 'https://example.testrail.com/index.php?/api/v2/'
+
+
+class CallbackResponse(responses.CallbackResponse):
+
+    def _url_matches(self, url: str, other, match_querystring=False):
+        base_url = url.replace(BASE_HOST, '')
+        other = other.replace(BASE_HOST, '')
+        base_other = other.split('&', 1)[0]
+        f = base_url == base_other
+        return f
+
+
+class RequestsMock(responses.RequestsMock):
+
+    def add_callback(self, method, url, callback, match_querystring=False, content_type="text/plain"):
+        self._matches.append(
+            CallbackResponse(
+                url=url,
+                method=method,
+                callback=callback,
+                content_type=content_type,
+                match_querystring=match_querystring,
+            )
+        )
+
 
 @pytest.fixture(scope='session')
 def host():
@@ -25,7 +51,7 @@ def auth_data(host):
 
 @pytest.fixture
 def mock():
-    with responses.RequestsMock() as resp:
+    with RequestsMock() as resp:
         yield resp
 
 

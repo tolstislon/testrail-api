@@ -31,7 +31,7 @@ def test_add_config_group(api, mock, host):  # no response example
 def test_add_config(api, mock, host):
     mock.add_callback(
         responses.POST,
-        '{}index.php?/api/v2/add_config/2'.format(host),
+        '{}index.php?/api/v2/add_config/1'.format(host),
         post_config
     )
     resp = api.configurations.add_config(1, 'TestRail')

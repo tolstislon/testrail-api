@@ -35,7 +35,7 @@ def test_add_suite(api, mock, host):
         '{}index.php?/api/v2/add_suite/7'.format(host),
         add_suite
     )
-    resp = api.suites.add_suite(5, 'New suite', description='My new suite')
+    resp = api.suites.add_suite(7, 'New suite', description='My new suite')
     assert resp['name'] == 'New suite'
     assert resp['description'] == 'My new suite'
 

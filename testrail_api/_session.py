@@ -50,6 +50,7 @@ class Session:
                 Dictionary of HTTP Headers to send
             :key retry: int (default 3)
                 Delay in receiving code 429
+            :key exc_iterations: int (default 3)
         """
         _url = url or os.environ.get("TESTRAIL_URL")
         _email = email or os.environ.get("TESTRAIL_EMAIL")
@@ -68,16 +69,18 @@ class Session:
         self.__user_email = _email
         self.__session.auth = (self.__user_email, _password)
         self.__exc = exc
+        self.__exc_iterations = kwargs.get("exc_iterations", 3)
         self._rate_limit = rate_limit
         logger.info(
             "Create Session{url: %s, user: %s, timeout: %s, headers: %s, verify: "
-            "%s, exception: %s, retry: %s}",
+            "%s, exception: %s, exc_iterations: %s, retry: %s}",
             url,
             self.__user_email,
             self.__timeout,
             self.__session.headers,
             self.__session.verify,
             self.__exc,
+            self.__exc_iterations,
             self.__retry,
         )
 
@@ -121,8 +124,7 @@ class Session:
                 if isinstance(value, list):
                     kwargs["params"][key] = ",".join(str(i) for i in value)
 
-        iterations = 3
-        for count in range(iterations):
+        for count in range(self.__exc_iterations):
             try:
                 response = self.__session.request(
                     method=method.value, url=url, timeout=self.__timeout, **kwargs
@@ -133,7 +135,7 @@ class Session:
             if (
                 self._rate_limit
                 and response.status_code == RATE_LIMIT_STATUS_CODE
-                and count < iterations - 1
+                and count < self.__exc_iterations - 1
             ):
                 time.sleep(int(response.headers.get("retry-after", self.__retry)))
                 continue

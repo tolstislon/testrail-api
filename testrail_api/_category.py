@@ -550,7 +550,8 @@ class Milestones(_MetaCategory):
                 (available since TestRail 4.0).
             :key is_started: int/bool
                 1/True to return started milestones only.
-                0/False to return upcoming milestones only (available since TestRail 5.3).
+                0/False to return upcoming milestones only
+                            (available since TestRail 5.3).
         :return: response
         """
         return self._session.request(

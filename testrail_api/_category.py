@@ -544,13 +544,13 @@ class Milestones(_MetaCategory):
         :param project_id:
             The ID of the project
         :param kwargs:
-            :key is_completed:
-                1 to return completed milestones only.
-                0 to return open (active/upcoming) milestones only
+            :key is_completed: int/bool
+                1/True to return completed milestones only.
+                0/False to return open (active/upcoming) milestones only
                 (available since TestRail 4.0).
-            :key is_started:
-                1 to return started milestones only.
-                0 to return upcoming milestones only (available since TestRail 5.3).
+            :key is_started: int/bool
+                1/True to return started milestones only.
+                0/False to return upcoming milestones only (available since TestRail 5.3).
         :return: response
         """
         return self._session.request(
@@ -646,9 +646,9 @@ class Plans(_MetaCategory):
                 Only return test plans created before this date (as UNIX timestamp).
             :key created_by: List[int] or comma-separated string
                 A comma-separated list of creators (user IDs) to filter by.
-            :key is_completed: int
-                1 to return completed test plans only.
-                0 to return active test plans only.
+            :key is_completed: int/bool
+                1/True to return completed test plans only.
+                0/False to return active test plans only.
             :key limit/offset: int
                 Limit the result to :limit test plans. Use :offset to skip records.
             :key milestone_id: List[int] or comma-separated string
@@ -831,9 +831,9 @@ class Projects(_MetaCategory):
         Returns the list of available projects.
 
         :param kwargs: filter
-            :key is_completed: int
-                1 to return completed projects only.
-                0 to return active projects only.
+            :key is_completed: int/bool
+                1/True to return completed projects only.
+                0/False to return active projects only.
         :return: response
         """
         return self._session.request(METHODS.GET, "get_projects", params=kwargs)
@@ -1158,9 +1158,9 @@ class Runs(_MetaCategory):
                 Only return test runs created before this date (as UNIX timestamp).
             :key created_by: List[int] or comma-separated string
                 A comma-separated list of creators (user IDs) to filter by.
-            :key is_completed: int
-                1 to return completed test runs only.
-                0 to return active test runs only.
+            :key is_completed: int/bool
+                1/True to return completed test runs only.
+                0/False to return active test runs only.
             :key limit/offset: int
                 Limit the result to :limit test runs. Use :offset to skip records.
             :key milestone_id: List[int] or comma-separated string

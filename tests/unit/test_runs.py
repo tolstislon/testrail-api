@@ -1,6 +1,12 @@
 import json
 
+import pytest
 import responses
+
+
+def get_runs(r):
+    assert r.params['is_completed'] == '1'
+    return 200, {}, json.dumps([{'id': 1, 'name': 'My run', 'is_completed': r.params['is_completed']}])
 
 
 def add_run(r):
@@ -20,13 +26,14 @@ def test_get_run(api, mock, host):
     assert resp['id'] == 1
 
 
-def test_get_runs(api, mock, host):
+@pytest.mark.parametrize('is_completed', (1, True))
+def test_get_runs(api, mock, host, is_completed):
     mock.add_callback(
         responses.GET,
         '{}index.php?/api/v2/get_runs/12'.format(host),
-        lambda x: (200, {}, json.dumps([{'id': 1, 'name': 'My run', 'is_completed': x.params['is_completed']}]))
+        get_runs
     )
-    resp = api.runs.get_runs(12, is_completed=1)
+    resp = api.runs.get_runs(12, is_completed=is_completed)
     assert resp[0]['is_completed'] == '1'
 
 

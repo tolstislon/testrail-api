@@ -38,7 +38,7 @@ class Session:
         :param email:
             Email for the account on the TestRail
         :param password:
-            Password for the account on the TestRail
+            Password for the account on the TestRail or token
         :param exc:
             Catching exceptions
         :param kwargs:
@@ -120,9 +120,14 @@ class Session:
             headers.update({"Content-Type": "application/json"})
 
         if "params" in kwargs:
+            # GET params
             for key, value in kwargs["params"].items():
-                if isinstance(value, list):
+                if isinstance(value, (list, tuple, set)):
+                    # Converting a list to a string '1,2,3'
                     kwargs["params"][key] = ",".join(str(i) for i in value)
+                elif isinstance(value, bool):
+                    # Converting a boolean value to integer
+                    kwargs["params"][key] = int(value)
 
         for count in range(self.__exc_iterations):
             try:

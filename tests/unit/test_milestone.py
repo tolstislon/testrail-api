@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 
+import pytest
 import responses
 
 
@@ -34,14 +35,15 @@ def test_get_milestone(api, mock, host):
     assert response['description'] == 'My new milestone'
 
 
-def test_get_milestones(api, mock, host):
+@pytest.mark.parametrize('is_started', (1, True))
+def test_get_milestones(api, mock, host, is_started):
     mock.add_callback(
         responses.GET,
         '{}index.php?/api/v2/get_milestones/1'.format(host),
         get_milestones,
         content_type='application/json'
     )
-    response = api.milestones.get_milestones(project_id=1, is_started=1)
+    response = api.milestones.get_milestones(project_id=1, is_started=is_started)
     assert response[0]['name'] == 'Milestone 1'
     assert response[0]['description'] == 'My new milestone'
 

@@ -1,5 +1,6 @@
 import json
 
+import pytest
 import responses
 
 
@@ -36,13 +37,14 @@ def test_get_plan(api, mock, host):
     assert resp['id'] == 5
 
 
-def test_get_plans(api, mock, host):
+@pytest.mark.parametrize('is_completed', (1, True))
+def test_get_plans(api, mock, host, is_completed):
     mock.add_callback(
         responses.GET,
         '{}index.php?/api/v2/get_plans/7'.format(host),
         get_plans
     )
-    resp = api.plans.get_plans(7, is_completed=1)
+    resp = api.plans.get_plans(7, is_completed=is_completed)
     assert resp[0]['id'] == 5
 
 

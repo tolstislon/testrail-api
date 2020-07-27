@@ -1,5 +1,6 @@
 import json
 
+import pytest
 import responses
 
 
@@ -28,13 +29,14 @@ def test_get_project(api, mock, host):
     assert resp['name'] == 'Datahub'
 
 
-def test_get_projects(api, mock, host):
+@pytest.mark.parametrize('is_completed', (0, False))
+def test_get_projects(api, mock, host, is_completed):
     mock.add_callback(
         responses.GET,
         '{}index.php?/api/v2/get_projects'.format(host),
         get_projects,
     )
-    resp = api.projects.get_projects(is_completed=0)
+    resp = api.projects.get_projects(is_completed=is_completed)
     assert resp[0]['name'] == 'Datahub'
 
 

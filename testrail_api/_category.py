@@ -574,6 +574,9 @@ class Milestones(_MetaCategory):
             :key parent_id: int
                 The ID of the parent milestone, if any (for sub-milestones)
                 (available since TestRail 5.3)
+            :key refs: str
+                A comma-separated list of references/requirements
+                (available since TestRail 6.4)
             :key start_on: int
                 The scheduled start date of the milestone (as UNIX timestamp)
                 (available since TestRail 5.3)
@@ -637,6 +640,10 @@ class Plans(_MetaCategory):
     def get_plans(self, project_id: int, **kwargs) -> List[dict]:
         """
         Returns a list of test plans for a project.
+
+        This method will return up to 250 entries in the response array.
+        To retrieve additional entries, you can make additional requests
+        using the offset filter described in the Request filters section below.
 
         :param project_id:
             The ID of the project
@@ -705,18 +712,53 @@ class Plans(_MetaCategory):
                 An array of case IDs for the custom case selection
             :key config_ids: list
                 An array of configuration IDs used for the test runs of the test
-                plan entry (requires TestRail 3.1 or later)
+                plan entry
             :key refs: str
                 A string of external requirement IDs, separated by commas.
                 (requires TestRail 6.3 or later)
             :key runs: list
-                An array of test runs with configurations, please see the example
-                below for details (requires TestRail 3.1 or later)
+                An array of test runs with configurations,
+                please see the example below for details
         :return: response
         """
         data = dict(suite_id=suite_id, **kwargs)
         return self._session.request(
             METHODS.POST, "add_plan_entry/{}".format(plan_id), json=data
+        )
+
+    def add_run_to_plan_entry(
+        self, plan_id: int, entry_id: int, config_ids: List[int], **kwargs
+    ):
+        """
+        Adds a new test run to a test plan entry (using configurations).
+        Requires TestRail 6.4 or later
+
+        :param plan_id:
+            The ID of the plan the test runs should be added to
+        :param entry_id:
+            The ID of the test plan entry
+        :param config_ids:
+            An array of configuration IDs used for the test run of the
+            test plan entry (Required)
+        :param kwargs:
+            :key description: str
+                The description of the test run
+            :key assignedto_id: int
+                The ID of the user the test run should be assigned to
+            :key include_all: bool
+                True for including all test cases of the test suite and false for
+                a custom case selection
+            :key case_ids: List[int]
+                An array of case IDs for the custom case selection
+                (Required if include_all is false)
+            :key refs: str
+                A comma-separated list of references/requirements
+        :return: response
+        """
+        return self._session.request(
+            METHODS.POST,
+            "add_run_to_plan_entry/{}/{}".format(plan_id, entry_id),
+            json=dict(config_ids=config_ids, **kwargs),
         )
 
     def update_plan(self, plan_id: int, **kwargs) -> dict:
@@ -767,6 +809,36 @@ class Plans(_MetaCategory):
             json=kwargs,
         )
 
+    def update_run_in_plan_entry(self, plan_id: int, run_id: int, **kwargs):
+        """
+        Updates a run inside a plan entry which uses configurations
+        Requires TestRail 6.4 or later
+
+        :param plan_id:
+            The ID of the test plan
+        :param run_id:
+            The ID of the test run
+        :param kwargs:
+            :key description: str
+                The description of the test run
+            :key assignedto_id: int
+                The ID of the user the test run should be assigned to
+            :key include_all: bool
+                True for including all test cases of the test suite and false for
+                a custom case selection
+            :key case_ids: List[int]
+                An array of case IDs for the custom case selection.
+                (Required if include_all is false)
+            :key refs: str
+                A comma-separated list of references/requirements
+        :return: response
+        """
+        return self._session.request(
+            METHODS.POST,
+            "update_run_in_plan_entry/{}/{}".format(plan_id, run_id),
+            json=kwargs,
+        )
+
     def close_plan(self, plan_id: int) -> dict:
         """
         Closes an existing test plan and archives its test runs & results.
@@ -799,6 +871,18 @@ class Plans(_MetaCategory):
         """
         return self._session.request(
             METHODS.POST, "delete_plan_entry/{}/{}".format(plan_id, entry_id)
+        )
+
+    def delete_run_from_plan_entry(self, run_id: int):
+        """
+        Deletes a test run from a test plan entry
+
+        :param run_id:
+            The ID of the test run
+        :return: response
+        """
+        return self._session.request(
+            METHODS.POST, "delete_run_from_plan_entry/{}".format(run_id)
         )
 
 

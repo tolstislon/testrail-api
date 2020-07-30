@@ -1475,10 +1475,14 @@ class Users(_MetaCategory):
             METHODS.GET, "get_user_by_email", params={"email": email}
         )
 
-    def get_users(self) -> List[dict]:
+    def get_users(self, **kwargs) -> List[dict]:
         """
         Returns a list of users.
-
+        :param kwargs:
+            :key project_id: int
+                The ID of the project for which you would like to retrieve
+                user information. (Required for non-administrators.
+                Requires TestRail 6.4 or later.)
         :return: response
         """
-        return self._session.request(METHODS.GET, "get_users")
+        return self._session.request(METHODS.GET, "get_users", params=kwargs)

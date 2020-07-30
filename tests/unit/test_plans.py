@@ -11,7 +11,21 @@ def get_plans(r):
 
 def add_plan(r):
     data = json.loads(r.body.decode())
-    return 200, {}, json.dumps({'id': 96, 'name': data['name'], 'milestone_id': data['milestone_id']})
+    return 200, {}, json.dumps(
+        {'id': 96, 'name': data['name'], 'milestone_id': data['milestone_id']}
+    )
+
+
+def add_run_to_plan_entry(r):
+    data = json.loads(r.body.decode())
+    assert data['config_ids'] == [1, 2]
+    return 200, {}, ''
+
+
+def update_run_in_plan_entry(r):
+    data = json.loads(r.body.decode())
+    assert data['description'] == 'Test'
+    return 200, {}, ''
 
 
 def add_plan_entry(r):
@@ -118,3 +132,30 @@ def test_delete_plan_entry(api, mock, host):
     )
     resp = api.plans.delete_plan_entry(12, 2)
     assert resp is None
+
+
+def test_add_run_to_plan_entry(api, mock, host):
+    mock.add_callback(
+        responses.POST,
+        '{}index.php?/api/v2/add_run_to_plan_entry/12/2'.format(host),
+        add_run_to_plan_entry
+    )
+    api.plans.add_run_to_plan_entry(12, 2, [1, 2])
+
+
+def test_update_run_in_plan_entry(api, mock, host):
+    mock.add_callback(
+        responses.POST,
+        '{}index.php?/api/v2/update_run_in_plan_entry/12/2'.format(host),
+        update_run_in_plan_entry
+    )
+    api.plans.update_run_in_plan_entry(12, 2, description='Test')
+
+
+def test_delete_run_from_plan_entry(api, mock, host):
+    mock.add_callback(
+        responses.POST,
+        '{}index.php?/api/v2/delete_run_from_plan_entry/2'.format(host),
+        lambda x: (200, {}, '')
+    )
+    api.plans.delete_run_from_plan_entry(2)

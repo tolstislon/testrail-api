@@ -20,7 +20,7 @@ jobs:
       after_success: false
     - stage: "black"
       python: "3.6"
-      env: BLACK=19.10b0
+      env: BLACK=20.8b1
       install: pip install black==$BLACK
       script: black ./testrail_api --check
       after_success: false
@@ -47,9 +47,9 @@ python:
   - "3.8"
   - "3.9-dev"
 install:
-  - pip install pytest-cov==2.10.0
-  - pip install responses==0.10.15
-  - pip install pytest==5.4.3
+  - pip install pytest-cov==2.10.1
+  - pip install responses==0.11.0
+  - pip install pytest==6.0.1
   - pip install $REQUESTS
   - pip install -e .
 script:

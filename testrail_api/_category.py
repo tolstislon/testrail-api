@@ -208,9 +208,9 @@ class Cases(_MetaCategory):
             :key suite_id: int
                 The ID of the test suite (optional if the project is operating in
                 single suite mode)
-            :key created_after: int
+            :key created_after: int/datetime
                 Only return test cases created after this date (as UNIX timestamp).
-            :key created_before: int
+            :key created_before: int/datetime
                 Only return test cases created before this date (as UNIX timestamp).
             :key created_by: List[int] or comma-separated string
                 A comma-separated list of creators (user IDs) to filter by.
@@ -232,9 +232,9 @@ class Cases(_MetaCategory):
                 (requires TestRail 5.2 or later)
             :key type_id: List[int] or comma-separated string
                 A comma-separated list of case type IDs to filter by.
-            :key updated_after: int
+            :key updated_after: int/datetime
                 Only return test cases updated after this date (as UNIX timestamp).
-            :key updated_before: int
+            :key updated_before: int/datetime
                 Only return test cases updated before this date (as UNIX timestamp).
             :key updated_by: List[int] or comma-separated string
                 A comma-separated list of user IDs who updated test cases to filter by.
@@ -569,7 +569,7 @@ class Milestones(_MetaCategory):
         :param kwargs:
             :key description: str
                 The description of the milestone
-            :key due_on: int
+            :key due_on: int/datetime
                 The due date of the milestone (as UNIX timestamp)
             :key parent_id: int
                 The ID of the parent milestone, if any (for sub-milestones)
@@ -577,7 +577,7 @@ class Milestones(_MetaCategory):
             :key refs: str
                 A comma-separated list of references/requirements
                 (available since TestRail 6.4)
-            :key start_on: int
+            :key start_on: int/datetime
                 The scheduled start date of the milestone (as UNIX timestamp)
                 (available since TestRail 5.3)
         :return: response
@@ -602,7 +602,7 @@ class Milestones(_MetaCategory):
             :key parent_id: int
                 The ID of the parent milestone, if any (for sub-milestones)
                 (available since TestRail 5.3)
-            :key start_on: int
+            :key start_on: int/datetime
                 The scheduled start date of the milestone (as UNIX timestamp)
                 (available since TestRail 5.3)
         :return: response
@@ -648,9 +648,9 @@ class Plans(_MetaCategory):
         :param project_id:
             The ID of the project
         :param kwargs: filters
-            :key created_after: int
+            :key created_after: int/datetime
                 Only return test plans created after this date (as UNIX timestamp).
-            :key created_before: int
+            :key created_before: int/datetime
                 Only return test plans created before this date (as UNIX timestamp).
             :key created_by: List[int] or comma-separated string
                 A comma-separated list of creators (user IDs) to filter by.
@@ -1072,9 +1072,9 @@ class Results(_MetaCategory):
         :param run_id:
             The ID of the test run
         :param kwargs: filters
-            :key created_after: int
+            :key created_after: int/datetime
                 Only return test results created after this date (as UNIX timestamp).
-            :key created_before: int
+            :key created_before: int/datetime
                 Only return test results created before this date (as UNIX timestamp).
             :key created_by: List[int] or comma-separated string
                 A comma-separated list of creators (user IDs) to filter by.
@@ -1237,9 +1237,9 @@ class Runs(_MetaCategory):
 
         :param project_id: The ID of the project
         :param kwargs: filters
-            :key created_after: int
+            :key created_after: int/datetime
                 Only return test runs created after this date (as UNIX timestamp).
-            :key created_before: int
+            :key created_before: int/datetime
                 Only return test runs created before this date (as UNIX timestamp).
             :key created_by: List[int] or comma-separated string
                 A comma-separated list of creators (user IDs) to filter by.

@@ -3,6 +3,7 @@
 import logging
 import os
 import time
+from datetime import datetime
 from json.decoder import JSONDecodeError
 from pathlib import Path
 from typing import Optional, Union
@@ -112,6 +113,28 @@ class Session:
         except (JSONDecodeError, ValueError):
             return response.text or None
 
+    @staticmethod
+    def __get_converter(params: dict) -> None:
+        """Converting GET parameters"""
+        for key, value in params.items():
+            if isinstance(value, (list, tuple, set)):
+                # Converting a list to a string '1,2,3'
+                params[key] = ",".join(str(i) for i in value)
+            elif isinstance(value, bool):
+                # Converting a boolean value to integer
+                params[key] = int(value)
+            elif isinstance(value, datetime):
+                # Converting a datetime value to integer (UNIX timestamp)
+                params[key] = round(value.timestamp())
+
+    @staticmethod
+    def __post_converter(json: dict) -> None:
+        """Converting POST parameters"""
+        for key, value in json.items():
+            if isinstance(value, datetime):
+                # Converting a datetime value to integer (UNIX timestamp)
+                json[key] = round(value.timestamp())
+
     def request(self, method: METHODS, src: str, raw: bool = False, **kwargs):
         """Base request method"""
         url = "{}{}".format(self.__base_url, src)
@@ -119,15 +142,8 @@ class Session:
             headers = kwargs.setdefault("headers", {})
             headers.update({"Content-Type": "application/json"})
 
-        if "params" in kwargs:
-            # GET params
-            for key, value in kwargs["params"].items():
-                if isinstance(value, (list, tuple, set)):
-                    # Converting a list to a string '1,2,3'
-                    kwargs["params"][key] = ",".join(str(i) for i in value)
-                elif isinstance(value, bool):
-                    # Converting a boolean value to integer
-                    kwargs["params"][key] = int(value)
+        self.__get_converter(kwargs.get("params", {}))
+        self.__post_converter(kwargs.get("json", {}))
 
         for count in range(self.__exc_iterations):
             try:

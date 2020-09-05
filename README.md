@@ -7,12 +7,12 @@
 [![Build Status](https://travis-ci.com/tolstislon/testrail-api.svg?branch=master)](https://travis-ci.com/tolstislon/testrail-api)
 [![codecov](https://codecov.io/gh/tolstislon/testrail-api/branch/master/graph/badge.svg)](https://codecov.io/gh/tolstislon/testrail-api)
 
-This is a Python wrapper of the TestRail API(v2) according to [the official documentation](http://docs.gurock.com/testrail-api2/start)
+This is a Python wrapper of the TestRail API according to [the official documentation](https://www.gurock.com/testrail/docs/api)
 
 
 Install
 ----
-
+Install using pip with
 ```bash
 pip install testrail-api
 ```
@@ -38,7 +38,7 @@ api = TestRailAPI("https://example.testrail.com/", "example@mail.com", "password
 new_milestone = api.milestones.add_milestone(
     project_id=1, 
     name="New milestone", 
-    start_on=int(datetime.now().timestamp())
+    start_on=datetime.now()
 )
 
 my_test_run = api.runs.add_run(
@@ -56,7 +56,7 @@ result = api.results.add_result_for_case(
     comment="Pass", 
     version="1"
 )
-attach = "attach.jpg"
+attach = "screenshots/attach.jpg"
 api.attachments.add_attachment_to_result(result["id"], attach)
 
 api.runs.close_run(my_test_run["id"])

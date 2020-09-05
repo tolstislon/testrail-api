@@ -1,4 +1,6 @@
 import json
+import re
+from datetime import datetime
 
 import pytest
 import responses
@@ -6,6 +8,8 @@ import responses
 
 def get_runs(r):
     assert r.params['is_completed'] == '1'
+    for key in 'created_after', 'created_before':
+        assert re.match(r'^\d+$', r.params[key])
     return 200, {}, json.dumps([{'id': 1, 'name': 'My run', 'is_completed': r.params['is_completed']}])
 
 
@@ -33,7 +37,9 @@ def test_get_runs(api, mock, host, is_completed):
         '{}index.php?/api/v2/get_runs/12'.format(host),
         get_runs
     )
-    resp = api.runs.get_runs(12, is_completed=is_completed)
+    resp = api.runs.get_runs(
+        12, is_completed=is_completed, created_after=datetime.now(), created_before=datetime.now()
+    )
     assert resp[0]['is_completed'] == '1'
 
 

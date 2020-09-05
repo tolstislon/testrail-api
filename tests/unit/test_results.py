@@ -1,4 +1,6 @@
 import json
+import re
+from datetime import datetime
 
 import pytest
 import responses
@@ -7,6 +9,14 @@ import responses
 def get_results(r):
     assert r.params['limit'] == '3'
     assert r.params['status_id'] == '1,2,3'
+    return 200, {}, json.dumps([{'id': 1, 'status_id': 2, 'test_id': 1}])
+
+
+def get_results_for_run(r):
+    assert r.params['limit'] == '3'
+    assert r.params['status_id'] == '1,2,3'
+    for key in 'created_after', 'created_before':
+        assert re.match(r'^\d+$', r.params[key])
     return 200, {}, json.dumps([{'id': 1, 'status_id': 2, 'test_id': 1}])
 
 
@@ -50,9 +60,11 @@ def test_get_results_for_run(api, mock, host, status_id):
     mock.add_callback(
         responses.GET,
         '{}index.php?/api/v2/get_results_for_run/12'.format(host),
-        get_results
+        get_results_for_run
     )
-    resp = api.results.get_results_for_run(12, limit=3, status_id=status_id)
+    resp = api.results.get_results_for_run(
+        12, limit=3, status_id=status_id, created_after=datetime.now(), created_before=datetime.now()
+    )
     assert resp[0]['status_id'] == 2
 
 

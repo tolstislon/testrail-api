@@ -1,4 +1,6 @@
 import json
+import re
+from datetime import datetime
 
 import responses
 
@@ -8,6 +10,8 @@ def get_cases(r):
     assert r.params['section_id']
     assert r.params['limit']
     assert r.params['offset']
+    for key in 'created_after', 'created_before', 'updated_after', 'updated_before':
+        assert re.match(r'^\d+$', r.params[key])
     return 200, {}, json.dumps([{'id': 1, 'type_id': 1, 'title': 'My case'}])
 
 
@@ -37,7 +41,12 @@ def test_get_cases(api, mock, host):
         '{}index.php?/api/v2/get_cases/1'.format(host),
         get_cases,
     )
-    resp = api.cases.get_cases(1, suite_id=2, section_id=3, limit=5, offset=10)
+    now = datetime.now()
+
+    resp = api.cases.get_cases(
+        1, suite_id=2, section_id=3, limit=5, offset=10,
+        created_after=now, created_before=round(now.timestamp()), updated_after=now, updated_before=now
+    )
     assert resp[0]['id'] == 1
 
 

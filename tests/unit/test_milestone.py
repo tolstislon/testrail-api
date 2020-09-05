@@ -8,6 +8,8 @@ import responses
 def add_milestone(r):
     req = json.loads(r.body.decode())
     req['id'] = 1
+    assert isinstance(req['start_on'], int)
+    assert isinstance(req['due_on'], int)
     return 200, {}, json.dumps(req)
 
 
@@ -20,6 +22,7 @@ def get_milestones(r):
 def update_milestone(r):
     req = json.loads(r.body.decode())
     req['id'] = 1
+    assert isinstance(req['start_on'], int)
     return 200, {}, json.dumps(req)
 
 
@@ -58,7 +61,8 @@ def test_add_milestone(api, mock, host):
     response = api.milestones.add_milestone(
         project_id=1,
         name='New milestone',
-        start_on=int(datetime.now().timestamp()),
+        start_on=datetime.now(),
+        due_on=int(datetime.now().timestamp()),
         description='My new milestone'
     )
     assert response['name'] == 'New milestone'
@@ -72,7 +76,7 @@ def test_update_milestone(api, mock, host):
         update_milestone,
         content_type='application/json'
     )
-    response = api.milestones.update_milestone(1, is_completed=True, parent_id=23)
+    response = api.milestones.update_milestone(1, is_completed=True, parent_id=23, start_on=datetime.now())
     assert response['is_completed'] is True
     assert response['parent_id'] == 23
 

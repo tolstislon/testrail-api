@@ -225,6 +225,9 @@ class Cases(_MetaCategory):
                 Where to start counting the tests cases from (the offset)
             :key priority_id: List[int] or comma-separated string
                 A comma-separated list of priority IDs to filter by.
+            :key refs_filter: str
+                A single Reference ID (e.g. TR-1, 4291, etc.)
+                (requires TestRail 6.5.2 or later)
             :key section_id: int
                 The ID of a test case section
             :key template_id: List[int] or comma-separated string
@@ -242,6 +245,18 @@ class Cases(_MetaCategory):
         """
         return self._session.request(
             METHODS.GET, "get_cases/{}".format(project_id), params=kwargs
+        )
+
+    def get_history_for_case(self, case_id: int) -> dict:
+        """
+        Returns the edit history for a test case_id.
+        Requires TestRail 6.5.4 or later.
+
+        :param case_id int
+            The ID of the test case
+        """
+        return self._session.request(
+            METHODS.GET, "get_history_for_case/{}".format(case_id)
         )
 
     def add_case(self, section_id: int, title: str, **kwargs) -> dict:
@@ -315,8 +330,10 @@ class Cases(_MetaCategory):
         :param kwargs:
             :key title: str
                 The title of the test case
+            :key section_id: int
+                The ID of the section (requires TestRail 6.5.2 or later)
             :key template_id: int
-                The ID of the template
+                The ID of the template (requires TestRail 5.2 or later)
             :key type_id: int
                 The ID of the case type
             :key priority_id: int
@@ -333,15 +350,84 @@ class Cases(_MetaCategory):
             METHODS.POST, "update_case/{}".format(case_id), json=kwargs
         )
 
-    def delete_case(self, case_id: int) -> None:
+    def update_cases(
+        self, project_id: int, suite_id: Optional[int] = None, **kwargs
+    ) -> dict:
+        """
+        Updates multiple test cases with the same values, such as setting a set
+        of test cases to High priority. This does not support updating multiple
+        test cases with different values per test case.
+
+        :param project_id: int
+            The ID of the project
+        :param suite_id:
+            The ID of the suite
+                (Only required if the project is in multi-suite mode)
+        :param kwargs:
+            :key title: str
+                The title of the test case
+            :key section_id: int
+                The ID of the section (requires TestRail 6.5.2 or later)
+            :key template_id: int
+                The ID of the template (requires TestRail 5.2 or later)
+            :key type_id: int
+                The ID of the case type
+            :key priority_id: int
+                The ID of the case priority
+            :key estimate: str
+                The estimate, e.g. "30s" or "1m 45s"
+            :key milestone_id: int
+                The ID of the milestone to link to the test case
+            :key refs: str
+                A comma-separated list of references/requirements
+        """
+        params = {"suite_id": suite_id} if suite_id else {}
+        return self._session.request(
+            METHODS.POST,
+            "update_case/{}".format(project_id),
+            params=params,
+            json=kwargs,
+        )
+
+    def delete_case(self, case_id: int, soft: int = 0) -> Optional[dict]:
         """
         Deletes an existing test case.
 
         :param case_id:
             The ID of the test case
+        :param soft:
+            If soft=1, this will return data on the number of affected tests.
+            Including soft=1 will not actually delete the entity.
+            Omitting the soft parameter, or submitting soft=0 will delete the test case.
         :return: response
         """
-        return self._session.request(METHODS.POST, "delete_case/{}".format(case_id))
+        return self._session.request(
+            METHODS.POST, "delete_case/{}".format(case_id), params={"soft": soft}
+        )
+
+    def delete_cases(
+        self, project_id: int, suite_id: Optional[int] = None, soft: int = 0
+    ) -> None:
+        """
+        Deletes multiple test cases from a project or test suite.
+
+        :param project_id:
+            The ID of the project
+        :param suite_id:
+            The ID of the suite (Only required if project is in multi-suite mode)
+        :param soft:
+            Optional parameter
+            If soft=1, this will return data on the number of affected tests.
+            Including soft=1 will not actually delete the entity.
+            Omitting the soft parameter, or submitting soft=0 will delete the test case.
+        """
+        params = {"soft": soft}
+        if suite_id:
+            params["suite_id"] = suite_id
+
+        return self._session.request(
+            METHODS.POST, "delete_cases/{}".format(project_id), params=params
+        )
 
 
 class CaseFields(_MetaCategory):
@@ -769,8 +855,15 @@ class Plans(_MetaCategory):
         :param plan_id:
             The ID of the test plan
         :param kwargs:
-            With the exception of the entries field, this method supports the same
-            POST fields as add_plan.
+            :key name: str
+                The name of the test plan
+            :key description: str
+                The description of the test plan
+            :key milestone_id: int
+                The ID of the milestone to link to the test plan
+            :key entries: list
+                An array of objects describing the test runs of the plan, see the
+                example below and add_plan_entry
         :return: response
         """
         return self._session.request(
@@ -1019,7 +1112,9 @@ class Results(_MetaCategory):
         :param test_id:
             The ID of the test
         :param kwargs: filters
-            :key limit/offset: int -
+            :key defects_filter: str
+                A single Defect ID (e.g. TR-1, 4291, etc.)
+            :key limit/offset: int
                 Limit the result to :limit test results. Use :offset to skip records.
             :key status_id: List[int] or comma-separated string
                 A comma-separated list of status IDs to filter by.
@@ -1047,6 +1142,8 @@ class Results(_MetaCategory):
         :param case_id:
             The ID of the test case
         :param kwargs: filters
+            :key defects_filter: str
+                A single Defect ID (e.g. TR-1, 4291, etc.)
             :key limit/offset: int
                 Limit the result to :limit test results. Use :offset to skip records.
             :key status_id: List[int] or comma-separated string
@@ -1078,6 +1175,8 @@ class Results(_MetaCategory):
                 Only return test results created before this date (as UNIX timestamp).
             :key created_by: List[int] or comma-separated string
                 A comma-separated list of creators (user IDs) to filter by.
+            :key defects_filter: str
+                A single Defect ID (e.g. TR-1, 4291, etc.)
             :key limit/offset: int
                 Limit the result to :limit test results. Use :offset to skip records.
             :key status_id: List[int] or comma-separated string
@@ -1116,6 +1215,14 @@ class Results(_MetaCategory):
                 A comma-separated list of defects to link to the test result
             :key assignedto_id: int
                 The ID of a user the test should be assigned to
+
+            Custom fields are supported as well and must be submitted with their
+            system name, prefixed with ‘custom_’, e.g.:
+                {
+                    ...
+                    "custom_comment": "This is a custom comment"
+                    ...
+                }
         :return: response
         """
         return self._session.request(
@@ -1143,7 +1250,33 @@ class Results(_MetaCategory):
         :param case_id:
             The ID of the test case
         :param kwargs:
-            This method supports the same POST fields as add_result.
+            :key status_id: int
+                The ID of the test status. The built-in system
+                statuses have the following IDs:
+                    1 - Passed
+                    2 - Blocked
+                    3 - Untested (not allowed when adding a result)
+                    4 - Retest
+                    5 - Failed
+                You can get a full list of system and custom statuses via get_statuses.
+            :key comment: str
+                The comment / description for the test result
+            :key version: str
+                The version or build you tested against
+            :key elapsed: str
+                The time it took to execute the test, e.g. "30s" or "1m 45s"
+            :key defects: str
+                A comma-separated list of defects to link to the test result
+            :key assignedto_id: int
+                The ID of a user the test should be assigned to
+
+            Custom fields are supported as well and must be submitted with their
+            system name, prefixed with ‘custom_’, e.g.:
+                {
+                    ...
+                    "custom_comment": "This is a custom comment"
+                    ...
+                }
         :return: response
         """
         return self._session.request(
@@ -1250,6 +1383,8 @@ class Runs(_MetaCategory):
                 Limit the result to :limit test runs. Use :offset to skip records.
             :key milestone_id: List[int] or comma-separated string
                 A comma-separated list of milestone IDs to filter by.
+            :key refs_filter: str
+                A single Reference ID (e.g. TR-a, 4291, etc.)
             :key suite_id: List[int] or comma-separated string
                 A comma-separated list of test suite IDs to filter by.
         :return: response
@@ -1298,8 +1433,20 @@ class Runs(_MetaCategory):
         :param run_id:
             The ID of the test run
         :param kwargs:
-            With the exception of the suite_id and assignedto_id fields,
-            this method supports the same POST fields as add_run.
+            :key name: str
+                The name of the test run
+            :key description: str
+                The description of the test run
+            :key milestone_id: int
+                The ID of the milestone to link to the test run
+            :key include_all: bool
+                True for including all test cases of the test suite and false for a
+                custom case selection (default: true)
+            :key case_ids: list
+                An array of case IDs for the custom case selection
+            :key refs: str
+                A comma-separated list of references/requirements
+                (Requires TestRail 6.1 or later)
         :return: response
         """
         return self._session.request(
@@ -1316,15 +1463,22 @@ class Runs(_MetaCategory):
         """
         return self._session.request(METHODS.POST, "close_run/{}".format(run_id))
 
-    def delete_run(self, run_id: int) -> None:
+    def delete_run(self, run_id: int, soft: int = 0) -> Optional[dict]:
         """
         Deletes an existing test run.
 
         :param run_id:
             The ID of the test run
+        :param soft:
+            Deleting a test run cannot be undone and also permanently deletes
+            all tests & results of the test run.
+            Omitting the soft parameter, or submitting soft=0 will delete the test
+            run and its tests.
         :return: response
         """
-        return self._session.request(METHODS.POST, "delete_run/{}".format(run_id))
+        return self._session.request(
+            METHODS.POST, "delete_run/{}".format(run_id), params={"soft": soft}
+        )
 
 
 class Sections(_MetaCategory):
@@ -1397,16 +1551,22 @@ class Sections(_MetaCategory):
             METHODS.POST, "update_section/{}".format(section_id), json=kwargs
         )
 
-    def delete_section(self, section_id: int) -> None:
+    def delete_section(self, section_id: int, soft: int = 0) -> None:
         """
         Deletes an existing section.
 
         :param section_id:
             The ID of the section
+        :param soft:
+            Deleting a section cannot be undone and also deletes all related test
+            cases as well as active tests & results, i.e. tests & results that
+            weren’t closed (archived) yet.
+            Omitting the soft parameter, or submitting soft=0 will delete the
+            section and its test cases
         :return: response
         """
         return self._session.request(
-            METHODS.POST, "delete_section/{}".format(section_id)
+            METHODS.POST, "delete_section/{}".format(section_id), params={"soft": soft}
         )
 
 
@@ -1471,22 +1631,33 @@ class Suites(_MetaCategory):
         :param suite_id:
             The ID of the test suite
         :param kwargs:
-            This methods supports the same POST fields as add_suite.
+            :key name: str
+                The name of the test suite
+            :key description: str
+                The description of the test suite
         :return: response
         """
         return self._session.request(
             METHODS.POST, "update_suite/{}".format(suite_id), json=kwargs
         )
 
-    def delete_suite(self, suite_id: int) -> None:
+    def delete_suite(self, suite_id: int, soft: int = 0) -> None:
         """
         Deletes an existing test suite.
 
         :param suite_id:
             The ID of the test suite
+        :param soft:
+            Deleting a test suite cannot be undone and also deletes all active
+            test runs & results, i.e. test runs & results that
+            weren’t closed (archived) yet.
+            Omitting the soft parameter, or submitting soft=0 will delete the
+            test suite and its test cases
         :return: response
         """
-        return self._session.request(METHODS.POST, "delete_suite/{}".format(suite_id))
+        return self._session.request(
+            METHODS.POST, "delete_suite/{}".format(suite_id), params={"soft": soft}
+        )
 
 
 class Template(_MetaCategory):
@@ -1547,6 +1718,16 @@ class Users(_MetaCategory):
         """
         return self._session.request(METHODS.GET, "get_user/{}".format(user_id))
 
+    def get_current_user(self, user_id: int) -> dict:
+        """
+        Returns user details for the TestRail user making the API request.
+
+        :param user_id:
+            The ID of the user
+        :return: response
+        """
+        return self._session.request(METHODS.GET, "get_current_user/{}".format(user_id))
+
     def get_user_by_email(self, email: str) -> dict:
         """
         Returns an existing user by his/her email address.
@@ -1559,14 +1740,14 @@ class Users(_MetaCategory):
             METHODS.GET, "get_user_by_email", params={"email": email}
         )
 
-    def get_users(self, **kwargs) -> List[dict]:
+    def get_users(self, project_id: Optional[int] = None) -> List[dict]:
         """
         Returns a list of users.
-        :param kwargs:
-            :key project_id: int
-                The ID of the project for which you would like to retrieve
-                user information. (Required for non-administrators.
-                Requires TestRail 6.4 or later.)
+        :param project_id:
+            The ID of the project for which you would like to retrieve
+            user information. (Required for non-administrators.
+            Requires TestRail 6.4 or later.)
         :return: response
         """
-        return self._session.request(METHODS.GET, "get_users", params=kwargs)
+        params = {} if project_id is None else {"project_id": project_id}
+        return self._session.request(METHODS.GET, "get_users", params=params)

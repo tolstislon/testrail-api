@@ -1,6 +1,7 @@
 import json
 import re
 from datetime import datetime
+from functools import partial
 
 import responses
 
@@ -17,12 +18,28 @@ def get_cases(r):
 
 def add_case(r):
     data = json.loads(r.body.decode())
-    return 200, {}, json.dumps({'id': 1, 'title': data['title'], 'priority_id': data['priority_id']})
+    return 200, {}, json.dumps(
+        {'id': 1, 'title': data['title'], 'priority_id': data['priority_id']})
 
 
 def update_case(r):
     data = json.loads(r.body.decode())
     return 200, {}, json.dumps({'id': 1, 'title': data['title']})
+
+
+def update_cases_suite(r, suite_id=None):
+    if suite_id:
+        assert int(r.params['suite_id']) == suite_id
+    return 200, {}, r.body.decode()
+
+
+def delete_cases(r, suite_id=None, soft=0):
+    assert int(r.params['soft']) == soft
+    if suite_id:
+        assert int(r.params['suite_id']) == suite_id
+    else:
+        assert 'suite_id' not in r.params
+    return 200, {}, ''
 
 
 def test_get_case(api, mock, host):
@@ -45,7 +62,8 @@ def test_get_cases(api, mock, host):
 
     resp = api.cases.get_cases(
         1, suite_id=2, section_id=3, limit=5, offset=10,
-        created_after=now, created_before=round(now.timestamp()), updated_after=now, updated_before=now
+        created_after=now, created_before=round(now.timestamp()), updated_after=now,
+        updated_before=now
     )
     assert resp[0]['id'] == 1
 
@@ -79,3 +97,61 @@ def test_delete_case(api, mock, host):
     )
     resp = api.cases.delete_case(5)
     assert resp is None
+
+
+def test_get_history_for_case(api, mock, host):
+    mock.add_callback(
+        responses.GET,
+        '{}index.php?/api/v2/get_history_for_case/7'.format(host),
+        lambda x: (200, {}, ''),
+    )
+    api.cases.get_history_for_case(7)
+
+
+def test_update_cases_no_suite(api, mock, host):
+    mock.add_callback(
+        responses.POST,
+        '{}index.php?/api/v2/update_case/1'.format(host),
+        update_cases_suite,
+    )
+    body = {'priority_id': 1, 'estimate': '5m'}
+    resp = api.cases.update_cases(1, **body)
+    assert resp == body
+
+
+def test_update_cases_suite(api, mock, host):
+    mock.add_callback(
+        responses.POST,
+        '{}index.php?/api/v2/update_case/1'.format(host),
+        partial(update_cases_suite, suite_id=2),
+    )
+    body = {'priority_id': 1, 'estimate': '5m'}
+    resp = api.cases.update_cases(1, 2, **body)
+    assert resp == body
+
+
+def test_delete_cases_no_suite_id(api, mock, host):
+    mock.add_callback(
+        responses.POST,
+        '{}index.php?/api/v2/delete_cases/5'.format(host),
+        delete_cases,
+    )
+    api.cases.delete_cases(5)
+
+
+def test_delete_cases_suite_id(api, mock, host):
+    mock.add_callback(
+        responses.POST,
+        '{}index.php?/api/v2/delete_cases/5'.format(host),
+        partial(delete_cases, suite_id=1),
+    )
+    api.cases.delete_cases(5, 1)
+
+
+def test_delete_cases_suite_id_soft(api, mock, host):
+    mock.add_callback(
+        responses.POST,
+        '{}index.php?/api/v2/delete_cases/5'.format(host),
+        partial(delete_cases, suite_id=1, soft=1),
+    )
+    api.cases.delete_cases(5, 1, 1)

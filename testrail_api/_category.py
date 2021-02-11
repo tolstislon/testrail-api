@@ -89,7 +89,24 @@ class Attachments(_MetaCategory):
         return self._session.attachment_request(
             METHODS.POST, "add_attachment_to_run/{}".format(run_id), path
         )
+    
+    def add_attachment_to_case(self, case_id: int, path: Union[str, Path]) -> dict:
+        """
+        Adds attachment to a case based on the case ID.
+        The maximum allowable upload size is set to 256mb.
+        Requires TestRail 6.5.2 or later
 
+        :param result_id:
+            The ID of the result the attachment should be added to
+        :param path:
+            The path to the file
+        :return: dict
+                ex: {"attachment_id": 443}
+        """
+        return self._session.attachment_request(
+            METHODS.POST, "add_attachment_to_case/{}".format(case_id), path
+        )
+    
     def get_attachments_for_case(self, case_id: int) -> List[dict]:
         """
         Returns a list of attachments for a test case.

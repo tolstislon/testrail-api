@@ -108,6 +108,6 @@ venv.bak/
 
 # Other
 Pipfile.lock
-/dev_tools
-testrail_api/__version__.py
 TODO.txt
+pyproject.toml
+build.sh

@@ -4,7 +4,6 @@
 [![Downloads](https://pepy.tech/badge/testrail-api)](https://pepy.tech/project/testrail-api)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/testrail-api.svg)](https://pypi.org/project/testrail-api/)
 [![PyPI - Implementation](https://img.shields.io/pypi/implementation/testrail-api)](https://pypi.org/project/testrail-api/)
-[![Build Status](https://travis-ci.com/tolstislon/testrail-api.svg?branch=master)](https://travis-ci.com/tolstislon/testrail-api)
 [![codecov](https://codecov.io/gh/tolstislon/testrail-api/branch/master/graph/badge.svg)](https://codecov.io/gh/tolstislon/testrail-api)
 
 This is a Python wrapper of the TestRail API according to [the official documentation](https://www.gurock.com/testrail/docs/api)

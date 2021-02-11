@@ -76,6 +76,28 @@ def test_add_attachment_to_run(api, mock, host, base_path):
     assert resp['attachment_id'] == 433
 
 
+def test_add_attachment_to_case_str(api, mock, host, base_path):
+    mock.add_callback(
+        responses.POST,
+        '{}index.php?/api/v2/add_attachment_to_case/2'.format(host),
+        add_attachment
+    )
+    file = Path(base_path, 'attach.jpg')
+    resp = api.attachments.add_attachment_to_case(2, str(file))
+    assert resp['attachment_id'] == 433
+
+
+def test_add_attachment_to_case(api, mock, host, base_path):
+    mock.add_callback(
+        method=responses.POST,
+        url='{}index.php?/api/v2/add_attachment_to_case/2'.format(host),
+        callback=add_attachment
+    )
+    file = Path(base_path, 'attach.jpg')
+    resp = api.attachments.add_attachment_to_case(2, file)
+    assert resp['attachment_id'] == 433
+
+
 def test_get_attachments_for_case(api, mock, host):
     mock.add_callback(
         responses.GET,

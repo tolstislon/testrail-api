@@ -96,8 +96,8 @@ class Attachments(_MetaCategory):
         The maximum allowable upload size is set to 256mb.
         Requires TestRail 6.5.2 or later
 
-        :param result_id:
-            The ID of the result the attachment should be added to
+        :param case_id:
+            The ID of the case the attachment should be added to
         :param path:
             The path to the file
         :return: dict

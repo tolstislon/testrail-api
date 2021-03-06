@@ -446,6 +446,38 @@ class Cases(_MetaCategory):
             METHODS.POST, "delete_cases/{}".format(project_id), params=params
         )
 
+    def copy_cases_to_section(self, section_id: int, case_ids: List[int]):
+        """
+        Copies the list of cases to another suite/section.
+
+        :param section_id: int
+            The ID of the section the test case should be copied to
+        :param case_ids:
+            List of case IDs.
+        """
+        cases = ",".join(str(i) for i in case_ids)
+        return self._session.request(
+            METHODS.POST,
+            "copy_cases_to_section/{}".format(section_id),
+            json={"case_ids": cases},
+        )
+
+    def move_cases_to_section(self, section_or_suite_id: int, case_ids: List[str]):
+        """
+        Moves cases to another suite or section.
+
+        :param section_or_suite_id: int
+            The ID of the section or suite the case will be moved to.
+        :param case_ids:
+            List of case IDs.
+        """
+        cases = ",".join(str(i) for i in case_ids)
+        return self._session.request(
+            METHODS.POST,
+            "move_cases_to_section/{}".format(section_or_suite_id),
+            json={"case_ids": cases},
+        )
+
 
 class CaseFields(_MetaCategory):
     """https://www.gurock.com/testrail/docs/api/reference/case-fields"""
@@ -1122,7 +1154,7 @@ class Reports(_MetaCategory):
 class Results(_MetaCategory):
     """https://www.gurock.com/testrail/docs/api/reference/results"""
 
-    def get_results(self, test_id: int, **kwargs) -> List[dict]:
+    def get_results(self, test_id: int, **kwargs) -> dict:
         """
         Returns a list of test results for a test.
 
@@ -1131,8 +1163,14 @@ class Results(_MetaCategory):
         :param kwargs: filters
             :key defects_filter: str
                 A single Defect ID (e.g. TR-1, 4291, etc.)
-            :key limit/offset: int
-                Limit the result to :limit test results. Use :offset to skip records.
+            :key limit: int
+                Number that sets the limit of test results to be shown on the response
+                (Optional parameter. The response size limit is 250 by default)
+                (requires TestRail 6.7 or later)
+            :key offset: int
+                Number that sets the position where the response should start from
+                (Optional parameter)
+                (requires TestRail 6.7 or later)
             :key status_id: List[int] or comma-separated string
                 A comma-separated list of status IDs to filter by.
         :return: response
@@ -1141,7 +1179,7 @@ class Results(_MetaCategory):
             METHODS.GET, "get_results/{}".format(test_id), params=kwargs
         )
 
-    def get_results_for_case(self, run_id: int, case_id: int, **kwargs) -> List[dict]:
+    def get_results_for_case(self, run_id: int, case_id: int, **kwargs) -> dict:
         """
         Returns a list of test results for a test run and case combination.
 
@@ -1161,8 +1199,12 @@ class Results(_MetaCategory):
         :param kwargs: filters
             :key defects_filter: str
                 A single Defect ID (e.g. TR-1, 4291, etc.)
-            :key limit/offset: int
-                Limit the result to :limit test results. Use :offset to skip records.
+            :key limit: int
+                The number of test results the response should return
+                (The response size is 250 by default) (requires TestRail 6.7 or later)
+            :key offset: int
+                Where to start counting the tests results from (the offset)
+                (requires TestRail 6.7 or later)
             :key status_id: List[int] or comma-separated string
                 A comma-separated list of status IDs to filter by.
         :return: response
@@ -1173,11 +1215,9 @@ class Results(_MetaCategory):
             params=kwargs,
         )
 
-    def get_results_for_run(self, run_id: int, **kwargs) -> List[dict]:
+    def get_results_for_run(self, run_id: int, **kwargs) -> dict:
         """
         Returns a list of test results for a test run.
-
-        This method uses the same response format as get_results.
 
         This method will return up to 250 entries in the response array.
         To retrieve additional entries, you can make additional requests using
@@ -1187,15 +1227,20 @@ class Results(_MetaCategory):
             The ID of the test run
         :param kwargs: filters
             :key created_after: int/datetime
-                Only return test results created after this date (as UNIX timestamp).
+                Only return test results created after this date.
             :key created_before: int/datetime
-                Only return test results created before this date (as UNIX timestamp).
+                Only return test results created before this date.
             :key created_by: List[int] or comma-separated string
                 A comma-separated list of creators (user IDs) to filter by.
             :key defects_filter: str
                 A single Defect ID (e.g. TR-1, 4291, etc.)
-            :key limit/offset: int
-                Limit the result to :limit test results. Use :offset to skip records.
+            :key limit: int
+                Number that sets the limit of results to be shown on the response
+                (Optional parameter. The response size limit is 250 by default)
+                (requires TestRail 6.7 or later)
+            :key offset: int
+                Number that sets the position where the response should start from
+                (Optional parameter) (requires TestRail 6.7 or later).
             :key status_id: List[int] or comma-separated string
                 A comma-separated list of status IDs to filter by.
         :return: response
@@ -1380,12 +1425,13 @@ class Runs(_MetaCategory):
         """
         return self._session.request(METHODS.GET, "get_run/{}".format(run_id))
 
-    def get_runs(self, project_id: int, **kwargs) -> List[dict]:
+    def get_runs(self, project_id: int, **kwargs) -> dict:
         """
         Returns a list of test runs for a project. Only returns those test runs that
         are not part of a test plan (please see get_plans/get_plan for this).
 
-        :param project_id: The ID of the project
+        :param project_id: int
+            The ID of the project
         :param kwargs: filters
             :key created_after: int/datetime
                 Only return test runs created after this date (as UNIX timestamp).
@@ -1473,6 +1519,7 @@ class Runs(_MetaCategory):
     def close_run(self, run_id: int) -> Optional[dict]:
         """
         Closes an existing test run and archives its tests & results.
+        Closing a test run cannot be undone.
 
         :param run_id:
             The ID of the test run
@@ -1483,6 +1530,8 @@ class Runs(_MetaCategory):
     def delete_run(self, run_id: int, soft: int = 0) -> Optional[dict]:
         """
         Deletes an existing test run.
+        Deleting a test run cannot be undone and also permanently deletes all
+        tests & results of the test run.
 
         :param run_id:
             The ID of the test run
@@ -1511,7 +1560,7 @@ class Sections(_MetaCategory):
         """
         return self._session.request(METHODS.GET, "get_section/{}".format(section_id))
 
-    def get_sections(self, project_id: int, **kwargs) -> List[dict]:
+    def get_sections(self, project_id: int, **kwargs) -> dict:
         """
         Returns a list of sections for a project and test suite.
 
@@ -1521,6 +1570,12 @@ class Sections(_MetaCategory):
             :key suite_id:
                 The ID of the test suite (optional if the project is operating in
                 single suite mode)
+            :key limit: int
+                The number of sections the response should return
+                (The response size is 250 by default) (requires TestRail 6.7 or later)
+            :key offset: int
+                Where to start counting the sections from (the offset)
+                (requires TestRail 6.7 or later)
         :return: response
         """
         return self._session.request(
@@ -1548,6 +1603,28 @@ class Sections(_MetaCategory):
         data = dict(name=name, **kwargs)
         return self._session.request(
             METHODS.POST, "add_section/{}".format(project_id), json=data
+        )
+
+    def move_section(
+        self, section_id: int, parent_id: int = 0, after_id: Optional[int] = None
+    ):
+        """
+        Moves a section to another suite or section. (Requires TestRail 6.5.2 or later)
+
+        :param section_id:
+            The ID of the section.
+        :param parent_id: int
+            The ID of the parent section
+            (it can be null if it should be moved to the root).
+            Must be in the same project and suite.
+            May not be direct child of the section being moved.
+        :param after_id: int
+            The section ID after which the section should be put (can be null)
+        """
+        return self._session.request(
+            METHODS.POST,
+            "move_section/{}".format(section_id),
+            json={"parent_id": parent_id, "after_id": after_id},
         )
 
     def update_section(self, section_id: int, **kwargs) -> dict:
@@ -1694,7 +1771,7 @@ class Template(_MetaCategory):
 class Tests(_MetaCategory):
     """https://www.gurock.com/testrail/docs/api/reference/tests"""
 
-    def get_test(self, test_id: int) -> dict:
+    def get_test(self, test_id: int, **kwargs) -> dict:
         """
         Returns an existing test.
         If you interested in the test results rather than the tests, please see
@@ -1702,11 +1779,16 @@ class Tests(_MetaCategory):
 
         :param test_id:
             The ID of the test
+        :param kwargs:
+            :key with_data:
+                The parameter to get data (This is optional)
         :return: response
         """
-        return self._session.request(METHODS.GET, "get_test/{}".format(test_id))
+        return self._session.request(
+            METHODS.GET, "get_test/{}".format(test_id), params=kwargs
+        )
 
-    def get_tests(self, run_id: int, **kwargs) -> List[dict]:
+    def get_tests(self, run_id: int, **kwargs) -> dict:
         """
         Returns a list of tests for a test run.
 
@@ -1715,6 +1797,13 @@ class Tests(_MetaCategory):
         :param kwargs: filters
             :key status_id: List[str] or comma-separated string
                 A comma-separated list of status IDs to filter by.
+            :key limit: int
+                Number that sets the limit of tests to be shown on the response
+                (Optional parameter. The response size limit is 250 by default)
+                (requires TestRail 6.7 or later)
+            :key offset: int
+                Number that sets the position where the response should start from
+                (Optional parameter) (requires TestRail 6.7 or later)
         :return: response
         """
         return self._session.request(
@@ -1761,10 +1850,114 @@ class Users(_MetaCategory):
         """
         Returns a list of users.
         :param project_id:
-            The ID of the project for which you would like to retrieve
-            user information. (Required for non-administrators.
-            Requires TestRail 6.4 or later.)
+            The ID of the project for which you would like to retrieve user information.
+            (Required for non-administrators. Requires TestRail 6.6 or later.)
         :return: response
         """
         params = {} if project_id is None else {"project_id": project_id}
         return self._session.request(METHODS.GET, "get_users", params=params)
+
+
+class SharedSteps(_MetaCategory):
+    """https://www.gurock.com/testrail/docs/api/reference/api-shared-steps"""
+
+    def get_shared_step(self, shared_step_id: int) -> dict:
+        """
+        Returns an existing set of shared steps.
+
+        :param shared_step_id: int
+            The ID of the set of shared steps.
+        """
+        return self._session.request(
+            METHODS.GET, "get_shared_step/{}".format(shared_step_id)
+        )
+
+    def get_shared_steps(self, project_id: int, **kwargs) -> dict:
+        """
+        Returns a list of shared steps for a project.
+
+        :param project_id: int
+            The ID of the project.
+        :param kwargs:
+            :key created_after: int or datetime
+                Only return shared steps created after this date
+            :key created_before: int or datetime
+                Only return shared steps created before this date
+            :key created_by: List[int] or A comma-separated str
+                A comma-separated list of creators (user IDs) to filter by.
+            :key limit/offset: int
+                Limit the result to :limit test runs. Use :offset to skip records.
+            :key updated_after: int or datetime
+                Only return shared steps updated after this date
+            :key updated_before: int or datetime
+                Only return shared steps updated before this date
+            :key refs: str
+                A single Reference ID (e.g. TR-a, 4291, etc.)
+        """
+        return self._session.request(
+            METHODS.GET, "get_shared_steps/{}".format(project_id), params=kwargs
+        )
+
+    def add_shared_step(
+        self, project_id: int, title: str, custom_steps_separated: List[dict]
+    ) -> dict:
+        """
+        Creates a new set of shared steps. Requires permission to add test cases
+        withing the project.
+
+        :param project_id: int
+            The ID of the project.
+        :param title: int
+            The title for the set of steps. (Required)
+        :param custom_steps_separated: list
+            An array of objects. Each object contains the details for
+            an individual step.
+            See the table below for more details.
+
+        custom_steps_separated fields:
+            additional_info: str: The text contents of the "Additional Info" field.
+            content: str: The text contents of the "Step" field.
+            expected: str: The text contents of the "Expected Result" field.
+            refs: str: Reference information for the "References" field.
+        """
+        return self._session.request(
+            METHODS.POST,
+            "add_shared_step/{}".format(project_id),
+            json={"title": title, "custom_steps_separated": custom_steps_separated},
+        )
+
+    def update_shared_step(self, shared_update_id: int, **kwargs) -> dict:
+        """
+        Updates an existing set of shared steps (partial updates are supported, i.e.
+        you can submit and update specific fields only).
+        Requires permission to edit test cases within the project.
+
+        :param shared_update_id: int
+            The ID of the set of shared steps.
+        :param kwargs:
+            :key title: int
+                The title for the set of steps.
+            :key custom_steps_separated: list
+                An array of objects. Each object contains the details for
+                an individual step. See the table below for more details.
+        """
+        return self._session.request(
+            METHODS.POST, "update_shared_step/{}".format(shared_update_id), json=kwargs
+        )
+
+    def delete_shared_step(self, shared_update_id: int, keep_in_cases: int = 1):
+        """
+        Deletes an existing shared step entity. Requires permission to delete
+        test cases within the project.
+
+        :param shared_update_id: int
+            The ID of the set of shared steps.
+        :param keep_in_cases: int
+            Default is 1 (true). Submit keep_in_cases=0 to delete the shared steps from
+            all test cases as well as the shared step repository.
+        """
+        return self._session.request(
+            METHODS.POST,
+            "delete_shared_step/{}".format(shared_update_id),
+            json={"keep_in_cases": keep_in_cases},
+        )

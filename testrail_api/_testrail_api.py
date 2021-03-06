@@ -134,6 +134,14 @@ class TestRailAPI(Session):
         return _category.Sections(self)
 
     @property
+    def shared_steps(self) -> _category.SharedSteps:
+        """
+        https://www.gurock.com/testrail/docs/api/reference/api-shared-steps
+        Use the following API methods to request details about shared steps.
+        """
+        return _category.SharedSteps(self)
+
+    @property
     def statuses(self) -> _category.Statuses:
         """
         https://www.gurock.com/testrail/docs/api/reference/statuses

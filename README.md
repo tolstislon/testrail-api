@@ -6,23 +6,29 @@
 [![PyPI - Implementation](https://img.shields.io/pypi/implementation/testrail-api)](https://pypi.org/project/testrail-api/)
 [![codecov](https://codecov.io/gh/tolstislon/testrail-api/branch/master/graph/badge.svg)](https://codecov.io/gh/tolstislon/testrail-api)
 
-This is a Python wrapper of the TestRail API according to [the official documentation](https://www.gurock.com/testrail/docs/api)
+This is a Python wrapper of the TestRail API according
+to [the official documentation](https://www.gurock.com/testrail/docs/api)
 
 
 Install
 ----
 Install using pip with
+
 ```bash
 pip install testrail-api
 ```
 
 ##### Support environment variables
-* `TESTRAIL_URL`
-* `TESTRAIL_EMAIL`
-* `TESTRAIL_PASSWORD`
+
+```dotenv
+TESTRAIL_URL=https://example.testrail.com/
+TESTRAIL_EMAIL=example@mail.com
+TESTRAIL_PASSWORD=password
+```
 
 Example
 ----
+
 ```python
 from datetime import datetime
 
@@ -35,24 +41,24 @@ api = TestRailAPI("https://example.testrail.com/", "example@mail.com", "password
 
 
 new_milestone = api.milestones.add_milestone(
-    project_id=1, 
-    name="New milestone", 
+    project_id=1,
+    name="New milestone",
     start_on=datetime.now()
 )
 
 my_test_run = api.runs.add_run(
-    project_id=1, 
-    suite_id=2, 
-    name="My test run", 
-    include_all=True, 
+    project_id=1,
+    suite_id=2,
+    name="My test run",
+    include_all=True,
     milestone_id=new_milestone["id"]
 )
 
 result = api.results.add_result_for_case(
-    run_id=my_test_run["id"], 
-    case_id=5, 
-    status_id=1, 
-    comment="Pass", 
+    run_id=my_test_run["id"],
+    case_id=5,
+    status_id=1,
+    comment="Pass",
     version="1"
 )
 attach = "screenshots/attach.jpg"
@@ -61,7 +67,6 @@ api.attachments.add_attachment_to_result(result["id"], attach)
 api.runs.close_run(my_test_run["id"])
 api.milestones.update_milestone(new_milestone["id"], is_completed=True)
 ```
-
 
 Contributing
 ----

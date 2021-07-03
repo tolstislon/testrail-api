@@ -55,7 +55,7 @@ import warnings
 from ._exception import StatusCodeError
 from ._testrail_api import TestRailAPI
 
-if (sys.version_info.major, sys.version_info.minor) < (3, 6):
+if (sys.version_info.major, sys.version_info.minor) < (3, 6):  # pragma: no cover
     warnings.warn(
         "Python 3.5 support will be removed in testrail-api 2.0",
         PendingDeprecationWarning,

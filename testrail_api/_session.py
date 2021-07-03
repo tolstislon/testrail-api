@@ -58,8 +58,7 @@ class Session:
         _password = password or os.environ.get("TESTRAIL_PASSWORD")
         if not _url or not _email or not _password:
             raise TestRailError("No url or email or password values set")
-        if _url.endswith("/"):
-            _url = _url[:-1]
+        _url = _url.rstrip("/")
         self.__base_url = "{}/index.php?/api/v2/".format(_url)
         self.__timeout = kwargs.get("timeout", 30)
         self.__session = requests.Session()

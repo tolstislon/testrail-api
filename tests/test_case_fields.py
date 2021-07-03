@@ -26,6 +26,12 @@ def test_add_case_field(api, mock, host):
         '{}index.php?/api/v2/add_case_field'.format(host),
         add_case_field
     )
-    resp = api.case_fields.add_case_field('Integer', 'My field', 'label', description='New field')
+    resp = api.case_fields.add_case_field(
+        'Integer', 'My field', 'label',
+        description='New field',
+        configs=[{
+            "context": {"is_global": True, "project_ids": []},
+            "options": {"is_required": True, "default_value": "1", "items": "1, First\n2, Second"}
+        }])
     assert resp['label'] == 'label'
     assert resp['description'] == 'New field'

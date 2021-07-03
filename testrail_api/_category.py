@@ -107,30 +107,50 @@ class Attachments(_MetaCategory):
             METHODS.POST, "add_attachment_to_case/{}".format(case_id), path
         )
 
-    def get_attachments_for_case(self, case_id: int) -> List[dict]:
+    def get_attachments_for_case(
+        self, case_id: int, limit: int = 250, offset: int = 0
+    ) -> dict:
         """
         Returns a list of attachments for a test case.
         Requires TestRail 5.7 or later
 
-        :param case_id:
+        :param case_id: int
             The ID of the test case
+        :param limit: int
+            The number of attachments the response should return
+            (The response size is 250 by default) (requires TestRail 6.7 or later)
+        :param offset: int
+            Where to start counting the attachments from (the offset)
+            (requires TestRail 6.7 or later)
         :return: response
         """
         return self._session.request(
-            METHODS.GET, "get_attachments_for_case/{}".format(case_id)
+            METHODS.GET,
+            "get_attachments_for_case/{}".format(case_id),
+            params={"limit": limit, "offset": offset},
         )
 
-    def get_attachments_for_plan(self, plan_id: int) -> List[dict]:
+    def get_attachments_for_plan(
+        self, plan_id: int, limit: int = 250, offset: int = 0
+    ) -> List[dict]:
         """
         Returns a list of attachments for a test plan.
         Requires TestRail 6.3 or later
 
         :param plan_id:
             The ID of the test plan to retrieve attachments from
+        :param limit:
+            The number of attachments the response should return
+            (The response size is 250 by default) (requires TestRail 6.7 or later)
+        :param offset:
+            Where to start counting the attachments from (the offset)
+            (requires TestRail 6.7 or later)
         :return: response
         """
         return self._session.request(
-            METHODS.GET, "get_attachments_for_plan/{}".format(plan_id)
+            METHODS.GET,
+            "get_attachments_for_plan/{}".format(plan_id),
+            params={"limit": limit, "offset": offset},
         )
 
     def get_attachments_for_plan_entry(self, plan_id: int, entry_id: int) -> List[dict]:
@@ -149,17 +169,27 @@ class Attachments(_MetaCategory):
             "get_attachments_for_plan_entry/{}/{}".format(plan_id, entry_id),
         )
 
-    def get_attachments_for_run(self, run_id: int) -> List[dict]:
+    def get_attachments_for_run(
+        self, run_id: int, limit: int = 250, offset: int = 0
+    ) -> List[dict]:
         """
         Returns a list of attachments for a test run.
         Requires TestRail 6.3 or later
 
         :param run_id:
             The ID of the test run to retrieve attachments from
+        :param limit:
+            The number of attachments the response should return
+            (The response size is 250 by default) (requires TestRail 6.7 or later)
+        :param offset:
+            Where to start counting the attachments from (the offset)
+            (requires TestRail 6.7 or later)
         :return: response
         """
         return self._session.request(
-            METHODS.GET, "get_attachments_for_run/{}".format(run_id)
+            METHODS.GET,
+            "get_attachments_for_run/{}".format(run_id),
+            params={"limit": limit, "offset": offset},
         )
 
     def get_attachments_for_test(self, test_id: int) -> List[dict]:
@@ -181,6 +211,7 @@ class Attachments(_MetaCategory):
         Requires TestRail 5.7 or later
 
         :param attachment_id:
+            The ID of the test to retrieve attachments from
         :param path: Path
         :return: Path
         """
@@ -194,6 +225,7 @@ class Attachments(_MetaCategory):
         Requires TestRail 5.7 or later
 
         :param attachment_id:
+            The ID of the attachment to to delete
         :return: None
         """
         return self._session.request(
@@ -214,10 +246,10 @@ class Cases(_MetaCategory):
         """
         return self._session.request(METHODS.GET, "get_case/{}".format(case_id))
 
-    def get_cases(self, project_id: int, **kwargs) -> List[dict]:
+    def get_cases(self, project_id: int, **kwargs) -> dict:
         """
-        Returns a list of test cases for a test suite or specific section in a
-        test suite.
+        Returns a list of test cases for a project or specific test suite
+        (if the project has multiple suites enabled).
 
         :param project_id:
             The ID of the project
@@ -235,14 +267,16 @@ class Cases(_MetaCategory):
                 Only return cases with matching filter string in the case title
             :key limit: int
                 The number of test cases the response should return
+                (The response size is 250 by default) (requires TestRail 6.7 or later)
             :key milestone_id: List[int] or comma-separated string
                 A comma-separated list of milestone IDs to filter by (not available
                 if the milestone field is disabled for the project).
             :key offset: int
                 Where to start counting the tests cases from (the offset)
+                (requires TestRail 6.7 or later)
             :key priority_id: List[int] or comma-separated string
                 A comma-separated list of priority IDs to filter by.
-            :key refs_filter: str
+            :key refs: str
                 A single Reference ID (e.g. TR-1, 4291, etc.)
                 (requires TestRail 6.5.2 or later)
             :key section_id: int
@@ -264,16 +298,26 @@ class Cases(_MetaCategory):
             METHODS.GET, "get_cases/{}".format(project_id), params=kwargs
         )
 
-    def get_history_for_case(self, case_id: int) -> dict:
+    def get_history_for_case(
+        self, case_id: int, limit: int = 250, offset: int = 0
+    ) -> List[dict]:
         """
         Returns the edit history for a test case_id.
         Requires TestRail 6.5.4 or later.
 
         :param case_id int
             The ID of the test case
+        :param limit int
+            The number of test cases the response should return
+            (The response size is 250 by default) (requires TestRail 6.7 or later)
+        :param offset int
+            Where to start counting the tests cases from (the offset)
+            (requires TestRail 6.7 or later)
         """
         return self._session.request(
-            METHODS.GET, "get_history_for_case/{}".format(case_id)
+            METHODS.GET,
+            "get_history_for_case/{}".format(case_id),
+            params={"limit": limit, "offset": offset},
         )
 
     def add_case(self, section_id: int, title: str, **kwargs) -> dict:
@@ -509,7 +553,7 @@ class CaseFields(_MetaCategory):
         return self._session.request(METHODS.GET, "get_case_fields")
 
     def add_case_field(
-        self, type: str, name: str, label: str, **kwargs  # noqa
+        self, type: str, name: str, label: str, configs: List[dict], **kwargs  # noqa
     ) -> dict:
         """
         Creates a new test case custom field.
@@ -527,6 +571,9 @@ class CaseFields(_MetaCategory):
             The name for new the custom field (required)
         :param label: str
             The label for the new custom field (required)
+        :param configs:
+            An object wrapped in an array with two default keys,
+            ‘context’ and ‘options’ (required)
         :param kwargs:
             :key description: str
                 The description for the new custom field
@@ -537,12 +584,9 @@ class CaseFields(_MetaCategory):
             :key template_ids: list
                 ID's of templates new custom field will apply to if include_all is
                 set to false
-            :key configs: dict
-                An object wrapped in an array with two default keys,
-                'context' and 'options'
         :return: response
         """
-        data = dict(type=type, name=name, label=label, **kwargs)
+        data = dict(type=type, name=name, label=label, configs=configs, **kwargs)
         return self._session.request(METHODS.POST, "add_case_field", json=data)
 
 
@@ -672,12 +716,20 @@ class Milestones(_MetaCategory):
             METHODS.GET, "get_milestone/{}".format(milestone_id)
         )
 
-    def get_milestones(self, project_id: int, **kwargs) -> List[dict]:
+    def get_milestones(
+        self, project_id: int, limit: int = 250, offset: int = 0, **kwargs
+    ) -> dict:
         """
         Returns the list of milestones for a project.
 
         :param project_id:
             The ID of the project
+        :param limit:
+            The number of milestones the response should return
+            (The response size is 250 by default) (requires TestRail 6.7 or later)
+        :param offset:
+            Where to start counting the milestones from (the offset)
+            (requires TestRail 6.7 or later)
         :param kwargs:
             :key is_completed: int/bool
                 1/True to return completed milestones only.
@@ -689,6 +741,7 @@ class Milestones(_MetaCategory):
                             (available since TestRail 5.3).
         :return: response
         """
+        kwargs.update({"limit": limit, "offset": offset})
         return self._session.request(
             METHODS.GET, "get_milestones/{}".format(project_id), params=kwargs
         )
@@ -772,7 +825,7 @@ class Plans(_MetaCategory):
         """
         return self._session.request(METHODS.GET, "get_plan/{}".format(plan_id))
 
-    def get_plans(self, project_id: int, **kwargs) -> List[dict]:
+    def get_plans(self, project_id: int, **kwargs) -> dict:
         """
         Returns a list of test plans for a project.
 
@@ -1053,16 +1106,22 @@ class Projects(_MetaCategory):
         """
         return self._session.request(METHODS.GET, "get_project/{}".format(project_id))
 
-    def get_projects(self, **kwargs) -> List[dict]:
+    def get_projects(self, limit: int = 250, offset: int = 0, **kwargs) -> dict:
         """
         Returns the list of available projects.
-
+        :param limit:
+            The number of projects the response should return
+            (The response size is 250 by default) (requires TestRail 6.7 or later)
+        :param offset:
+            Where to start counting the projects from (the offset)
+            (requires TestRail 6.7 or later)
         :param kwargs: filter
             :key is_completed: int/bool
                 1/True to return completed projects only.
                 0/False to return active projects only.
         :return: response
         """
+        kwargs.update({"limit": limit, "offset": offset})
         return self._session.request(METHODS.GET, "get_projects", params=kwargs)
 
     def add_project(self, name: str, **kwargs) -> dict:
@@ -1130,6 +1189,8 @@ class Reports(_MetaCategory):
         """
         Returns a list of API available reports by project.
 
+        Requires TestRail 5.7 or later.
+
         :param project_id:
             The ID of the project for which you want a list of API accessible reports
         :return: response
@@ -1154,32 +1215,36 @@ class Reports(_MetaCategory):
 class Results(_MetaCategory):
     """https://www.gurock.com/testrail/docs/api/reference/results"""
 
-    def get_results(self, test_id: int, **kwargs) -> dict:
+    def get_results(
+        self, test_id: int, limit: int = 250, offset: int = 0, **kwargs
+    ) -> dict:
         """
         Returns a list of test results for a test.
 
         :param test_id:
             The ID of the test
+        :param limit:
+            Number that sets the limit of test results to be shown on the response
+            (Optional parameter. The response size limit is 250 by default)
+            (requires TestRail 6.7 or later)
+        :param offset:
+            Number that sets the position where the response should start from
+            (Optional parameter) (requires TestRail 6.7 or later)
         :param kwargs: filters
             :key defects_filter: str
                 A single Defect ID (e.g. TR-1, 4291, etc.)
-            :key limit: int
-                Number that sets the limit of test results to be shown on the response
-                (Optional parameter. The response size limit is 250 by default)
-                (requires TestRail 6.7 or later)
-            :key offset: int
-                Number that sets the position where the response should start from
-                (Optional parameter)
-                (requires TestRail 6.7 or later)
             :key status_id: List[int] or comma-separated string
                 A comma-separated list of status IDs to filter by.
         :return: response
         """
+        kwargs.update({"limit": limit, "offset": offset})
         return self._session.request(
             METHODS.GET, "get_results/{}".format(test_id), params=kwargs
         )
 
-    def get_results_for_case(self, run_id: int, case_id: int, **kwargs) -> dict:
+    def get_results_for_case(
+        self, run_id: int, case_id: int, limit: int = 250, offset: int = 0, **kwargs
+    ) -> dict:
         """
         Returns a list of test results for a test run and case combination.
 
@@ -1196,26 +1261,29 @@ class Results(_MetaCategory):
             The ID of the test run
         :param case_id:
             The ID of the test case
+        :param limit:
+            The number of test results the response should return
+            (The response size is 250 by default) (requires TestRail 6.7 or later)
+        :param offset:
+            Where to start counting the tests results from (the offset)
+            (requires TestRail 6.7 or later)
         :param kwargs: filters
             :key defects_filter: str
                 A single Defect ID (e.g. TR-1, 4291, etc.)
-            :key limit: int
-                The number of test results the response should return
-                (The response size is 250 by default) (requires TestRail 6.7 or later)
-            :key offset: int
-                Where to start counting the tests results from (the offset)
-                (requires TestRail 6.7 or later)
             :key status_id: List[int] or comma-separated string
                 A comma-separated list of status IDs to filter by.
         :return: response
         """
+        kwargs.update({"limit": limit, "offset": offset})
         return self._session.request(
             METHODS.GET,
             "get_results_for_case/{}/{}".format(run_id, case_id),
             params=kwargs,
         )
 
-    def get_results_for_run(self, run_id: int, **kwargs) -> dict:
+    def get_results_for_run(
+        self, run_id: int, limit: int = 250, offset: int = 0, **kwargs
+    ) -> dict:
         """
         Returns a list of test results for a test run.
 
@@ -1225,6 +1293,13 @@ class Results(_MetaCategory):
 
         :param run_id:
             The ID of the test run
+        :param limit:
+            Number that sets the limit of results to be shown on the response
+            (Optional parameter. The response size limit is 250 by default)
+            (requires TestRail 6.7 or later)
+        :param offset:
+            Number that sets the position where the response should start from
+            (Optional parameter) (requires TestRail 6.7 or later)
         :param kwargs: filters
             :key created_after: int/datetime
                 Only return test results created after this date.
@@ -1234,17 +1309,11 @@ class Results(_MetaCategory):
                 A comma-separated list of creators (user IDs) to filter by.
             :key defects_filter: str
                 A single Defect ID (e.g. TR-1, 4291, etc.)
-            :key limit: int
-                Number that sets the limit of results to be shown on the response
-                (Optional parameter. The response size limit is 250 by default)
-                (requires TestRail 6.7 or later)
-            :key offset: int
-                Number that sets the position where the response should start from
-                (Optional parameter) (requires TestRail 6.7 or later).
             :key status_id: List[int] or comma-separated string
                 A comma-separated list of status IDs to filter by.
         :return: response
         """
+        kwargs.update({"limit": limit, "offset": offset})
         return self._session.request(
             METHODS.GET, "get_results_for_run/{}".format(run_id), params=kwargs
         )
@@ -1560,24 +1629,27 @@ class Sections(_MetaCategory):
         """
         return self._session.request(METHODS.GET, "get_section/{}".format(section_id))
 
-    def get_sections(self, project_id: int, **kwargs) -> dict:
+    def get_sections(
+        self, project_id: int, limit: int = 250, offset: int = 0, **kwargs
+    ) -> dict:
         """
         Returns a list of sections for a project and test suite.
 
         :param project_id:
             The ID of the project
+        :param limit: int
+                The number of sections the response should return
+                (The response size is 250 by default) (requires TestRail 6.7 or later)
+        :param offset: int
+            Where to start counting the sections from (the offset)
+            (requires TestRail 6.7 or later)
         :param kwargs:
             :key suite_id:
                 The ID of the test suite (optional if the project is operating in
                 single suite mode)
-            :key limit: int
-                The number of sections the response should return
-                (The response size is 250 by default) (requires TestRail 6.7 or later)
-            :key offset: int
-                Where to start counting the sections from (the offset)
-                (requires TestRail 6.7 or later)
         :return: response
         """
+        kwargs.update({"limit": limit, "offset": offset})
         return self._session.request(
             METHODS.GET, "get_sections/{}".format(project_id), params=kwargs
         )
@@ -1788,24 +1860,27 @@ class Tests(_MetaCategory):
             METHODS.GET, "get_test/{}".format(test_id), params=kwargs
         )
 
-    def get_tests(self, run_id: int, **kwargs) -> dict:
+    def get_tests(
+        self, run_id: int, limit: int = 250, offset: int = 0, **kwargs
+    ) -> dict:
         """
         Returns a list of tests for a test run.
 
         :param run_id:
             The ID of the test run
+        :param limit: int
+            Number that sets the limit of tests to be shown on the response
+            (Optional parameter. The response size limit is 250 by default)
+            (requires TestRail 6.7 or later)
+        :param offset: int
+            Number that sets the position where the response should start from
+            (Optional parameter) (requires TestRail 6.7 or later)
         :param kwargs: filters
             :key status_id: List[str] or comma-separated string
                 A comma-separated list of status IDs to filter by.
-            :key limit: int
-                Number that sets the limit of tests to be shown on the response
-                (Optional parameter. The response size limit is 250 by default)
-                (requires TestRail 6.7 or later)
-            :key offset: int
-                Number that sets the position where the response should start from
-                (Optional parameter) (requires TestRail 6.7 or later)
         :return: response
         """
+        kwargs.update({"limit": limit, "offset": offset})
         return self._session.request(
             METHODS.GET, "get_tests/{}".format(run_id), params=kwargs
         )
@@ -1826,7 +1901,8 @@ class Users(_MetaCategory):
 
     def get_current_user(self, user_id: int) -> dict:
         """
-        Returns user details for the TestRail user making the API request.
+        Returns user details for the TestRail user making the API request
+        (Requires TestRail 6.6 or later).
 
         :param user_id:
             The ID of the user

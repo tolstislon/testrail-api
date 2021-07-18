@@ -31,13 +31,13 @@ def test_get_user_by_email(api, mock, host):
 def test_get_users(api, mock, host):
     mock.add_callback(
         responses.GET,
-        '{}index.php?/api/v2/get_users'.format(host),
+        '{}index.php?/api/v2/get_users/15'.format(host),
         lambda x: (
             200, {}, json.dumps([{'email': 'testrail@ff.com', 'id': 1,
                                   'name': 'John Smith', 'is_active': True}])
         ),
     )
-    response = api.users.get_users()
+    response = api.users.get_users(15)
     assert response[0]['name'] == 'John Smith'
 
 

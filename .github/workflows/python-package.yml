@@ -34,7 +34,7 @@ jobs:
           flake8 testrail_api
       - name: Black
         run: |
-          black testrail_api
+          black --check testrail_api
       - name: Test with pytest
         run: |
           pytest tests

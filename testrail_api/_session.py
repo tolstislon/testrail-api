@@ -3,6 +3,7 @@
 import logging
 import os
 import time
+import warnings
 from datetime import datetime
 from json.decoder import JSONDecodeError
 from pathlib import Path
@@ -31,6 +32,7 @@ class Session:
         password: Optional[str] = None,
         exc: bool = False,
         rate_limit: bool = True,
+        warn_ignore: bool = False,
         **kwargs
     ) -> None:
         """
@@ -59,6 +61,11 @@ class Session:
         if not _url or not _email or not _password:
             raise TestRailError("No url or email or password values set")
         _url = _url.rstrip("/")
+        if _url.startswith("http://") and not warn_ignore:
+            warnings.warn(
+                "Using HTTP and not HTTPS may cause writeable API "
+                "requests to return 404 errors"
+            )
         self.__base_url = "{}/index.php?/api/v2/".format(_url)
         self.__timeout = kwargs.get("timeout", 30)
         self.__session = requests.Session()

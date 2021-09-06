@@ -35,7 +35,7 @@ class Attachments(_MetaCategory):
         )
 
     def add_attachment_to_plan_entry(
-            self, plan_id: int, entry_id: int, path: Union[str, Path]
+        self, plan_id: int, entry_id: int, path: Union[str, Path]
     ) -> dict:
         """
         Adds an attachment to a test plan entry. The maximum allowable upload size is
@@ -108,7 +108,7 @@ class Attachments(_MetaCategory):
         )
 
     def get_attachments_for_case(
-            self, case_id: int, limit: int = 250, offset: int = 0
+        self, case_id: int, limit: int = 250, offset: int = 0
     ) -> dict:
         """
         Returns a list of attachments for a test case.
@@ -131,7 +131,7 @@ class Attachments(_MetaCategory):
         )
 
     def get_attachments_for_plan(
-            self, plan_id: int, limit: int = 250, offset: int = 0
+        self, plan_id: int, limit: int = 250, offset: int = 0
     ) -> List[dict]:
         """
         Returns a list of attachments for a test plan.
@@ -170,7 +170,7 @@ class Attachments(_MetaCategory):
         )
 
     def get_attachments_for_run(
-            self, run_id: int, limit: int = 250, offset: int = 0
+        self, run_id: int, limit: int = 250, offset: int = 0
     ) -> List[dict]:
         """
         Returns a list of attachments for a test run.
@@ -299,7 +299,7 @@ class Cases(_MetaCategory):
         )
 
     def get_history_for_case(
-            self, case_id: int, limit: int = 250, offset: int = 0
+        self, case_id: int, limit: int = 250, offset: int = 0
     ) -> List[dict]:
         """
         Returns the edit history for a test case_id.
@@ -412,7 +412,7 @@ class Cases(_MetaCategory):
         )
 
     def update_cases(
-            self, project_id: int, suite_id: Optional[int] = None, **kwargs
+        self, project_id: int, suite_id: Optional[int] = None, **kwargs
     ) -> dict:
         """
         Updates multiple test cases with the same values, such as setting a set
@@ -467,7 +467,7 @@ class Cases(_MetaCategory):
         )
 
     def delete_cases(
-            self, project_id: int, suite_id: Optional[int] = None, soft: int = 0
+        self, project_id: int, suite_id: Optional[int] = None, soft: int = 0
     ) -> None:
         """
         Deletes multiple test cases from a project or test suite.
@@ -553,7 +553,7 @@ class CaseFields(_MetaCategory):
         return self._session.request(METHODS.GET, "get_case_fields")
 
     def add_case_field(
-            self, type: str, name: str, label: str, configs: List[dict], **kwargs  # noqa
+        self, type: str, name: str, label: str, configs: List[dict], **kwargs  # noqa
     ) -> dict:
         """
         Creates a new test case custom field.
@@ -717,7 +717,7 @@ class Milestones(_MetaCategory):
         )
 
     def get_milestones(
-            self, project_id: int, limit: int = 250, offset: int = 0, **kwargs
+        self, project_id: int, limit: int = 250, offset: int = 0, **kwargs
     ) -> dict:
         """
         Returns the list of milestones for a project.
@@ -915,7 +915,7 @@ class Plans(_MetaCategory):
         )
 
     def add_run_to_plan_entry(
-            self, plan_id: int, entry_id: int, config_ids: List[int], **kwargs
+        self, plan_id: int, entry_id: int, config_ids: List[int], **kwargs
     ):
         """
         Adds a new test run to a test plan entry (using configurations).
@@ -1216,7 +1216,7 @@ class Results(_MetaCategory):
     """https://www.gurock.com/testrail/docs/api/reference/results"""
 
     def get_results(
-            self, test_id: int, limit: int = 250, offset: int = 0, **kwargs
+        self, test_id: int, limit: int = 250, offset: int = 0, **kwargs
     ) -> dict:
         """
         Returns a list of test results for a test.
@@ -1243,7 +1243,7 @@ class Results(_MetaCategory):
         )
 
     def get_results_for_case(
-            self, run_id: int, case_id: int, limit: int = 250, offset: int = 0, **kwargs
+        self, run_id: int, case_id: int, limit: int = 250, offset: int = 0, **kwargs
     ) -> dict:
         """
         Returns a list of test results for a test run and case combination.
@@ -1282,7 +1282,7 @@ class Results(_MetaCategory):
         )
 
     def get_results_for_run(
-            self, run_id: int, limit: int = 250, offset: int = 0, **kwargs
+        self, run_id: int, limit: int = 250, offset: int = 0, **kwargs
     ) -> dict:
         """
         Returns a list of test results for a test run.
@@ -1630,7 +1630,7 @@ class Sections(_MetaCategory):
         return self._session.request(METHODS.GET, "get_section/{}".format(section_id))
 
     def get_sections(
-            self, project_id: int, limit: int = 250, offset: int = 0, **kwargs
+        self, project_id: int, limit: int = 250, offset: int = 0, **kwargs
     ) -> dict:
         """
         Returns a list of sections for a project and test suite.
@@ -1678,7 +1678,7 @@ class Sections(_MetaCategory):
         )
 
     def move_section(
-            self, section_id: int, parent_id: int = 0, after_id: Optional[int] = None
+        self, section_id: int, parent_id: int = 0, after_id: Optional[int] = None
     ):
         """
         Moves a section to another suite or section. (Requires TestRail 6.5.2 or later)
@@ -1861,7 +1861,7 @@ class Tests(_MetaCategory):
         )
 
     def get_tests(
-            self, run_id: int, limit: int = 250, offset: int = 0, **kwargs
+        self, run_id: int, limit: int = 250, offset: int = 0, **kwargs
     ) -> dict:
         """
         Returns a list of tests for a test run.
@@ -1974,7 +1974,7 @@ class SharedSteps(_MetaCategory):
         )
 
     def add_shared_step(
-            self, project_id: int, title: str, custom_steps_separated: List[dict]
+        self, project_id: int, title: str, custom_steps_separated: List[dict]
     ) -> dict:
         """
         Creates a new set of shared steps. Requires permission to add test cases

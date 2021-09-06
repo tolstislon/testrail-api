@@ -3,6 +3,7 @@
 import logging
 import os
 import time
+import warnings
 from datetime import datetime
 from json.decoder import JSONDecodeError
 from pathlib import Path
@@ -25,13 +26,14 @@ class Session:
     _user_agent = "Python TestRail API v: {}".format(__version__)
 
     def __init__(
-        self,
-        url: Optional[str] = None,
-        email: Optional[str] = None,
-        password: Optional[str] = None,
-        exc: bool = False,
-        rate_limit: bool = True,
-        **kwargs
+            self,
+            url: Optional[str] = None,
+            email: Optional[str] = None,
+            password: Optional[str] = None,
+            exc: bool = False,
+            rate_limit: bool = True,
+            warn_ignore: bool = False,
+            **kwargs
     ) -> None:
         """
         :param url:
@@ -59,6 +61,11 @@ class Session:
         if not _url or not _email or not _password:
             raise TestRailError("No url or email or password values set")
         _url = _url.rstrip("/")
+        if _url.startswith("http://") and not warn_ignore:
+            warnings.warn(
+                "Using HTTP and not HTTPS may cause writeable API "
+                "requests to return 404 errors"
+            )
         self.__base_url = "{}/index.php?/api/v2/".format(_url)
         self.__timeout = kwargs.get("timeout", 30)
         self.__session = requests.Session()
@@ -153,9 +160,9 @@ class Session:
                 logger.error("%s", err, exc_info=True)
                 raise
             if (
-                self._rate_limit
-                and response.status_code == RATE_LIMIT_STATUS_CODE
-                and count < self.__exc_iterations - 1
+                    self._rate_limit
+                    and response.status_code == RATE_LIMIT_STATUS_CODE
+                    and count < self.__exc_iterations - 1
             ):
                 time.sleep(int(response.headers.get("retry-after", self.__retry)))
                 continue
@@ -167,7 +174,7 @@ class Session:
         return path if isinstance(path, Path) else Path(path)
 
     def attachment_request(
-        self, method: METHODS, src: str, file: Union[Path, str], **kwargs
+            self, method: METHODS, src: str, file: Union[Path, str], **kwargs
     ):
         """Send attach"""
         file = self._path(file)
@@ -175,7 +182,7 @@ class Session:
             return self.request(method, src, files={"attachment": attachment}, **kwargs)
 
     def get_attachment(
-        self, method: METHODS, src: str, file: Union[Path, str], **kwargs
+            self, method: METHODS, src: str, file: Union[Path, str], **kwargs
     ) -> Path:
         """Downloads attach"""
         file = self._path(file)

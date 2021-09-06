@@ -80,20 +80,20 @@ def test_raise(auth_data, mock, host):
 
 
 def test_no_response_raise():
-    api = TRApi('http://asdadadsa.cd', 'asd@asd.com', 'asdasda', exc=False)
+    api = TRApi('https://asdadadsa.cd', 'asd@asd.com', 'asdasda', exc=False)
     with pytest.raises(ConnectionError):
         api.cases.get_case(1)
 
 
 def test_get_email():
     email = 'asd@asd.com'
-    api = TRApi('http://asdadadsa.cd', 'asd@asd.com', 'asdasda', exc=False)
+    api = TRApi('https://asdadadsa.cd', 'asd@asd.com', 'asdasda', exc=False)
     assert api.user_email == email
 
 
 @pytest.mark.parametrize('field', ('url', 'email', 'password'))
 def test_raise_no_arg(field):
-    data = {'url': 'http://asdadadsa.cd', 'email': 'asd@asd.com', 'password': 'asdasda'}
+    data = {'url': 'https://asdadadsa.cd', 'email': 'asd@asd.com', 'password': 'asdasda'}
     del data[field]
     with pytest.raises(TRError):
         TRApi(**data)
@@ -108,3 +108,13 @@ def test_environment_variables(environ, mock, host):
     )
     resp = api.cases.get_case(1)
     assert resp['id'] == 1
+
+
+def test_http_warn():
+    with pytest.warns(UserWarning):
+        TRApi('http://asdadadsa.cd', 'asd@asd.com', 'asdasda', exc=False)
+
+
+@pytest.mark.filterwarnings("error")
+def test_http_no_warn():
+    TRApi('http://asdadadsa.cd', 'asd@asd.com', 'asdasda', warn_ignore=True)

@@ -467,13 +467,15 @@ class Cases(_MetaCategory):
         )
 
     def delete_cases(
-        self, project_id: int, suite_id: Optional[int] = None, soft: int = 0
+        self, project_id: int, case_ids: List[int], suite_id: Optional[int] = None, soft: int = 0
     ) -> None:
         """
         Deletes multiple test cases from a project or test suite.
 
         :param project_id:
             The ID of the project
+        :param case_ids:
+            The case ids to be deleted
         :param suite_id:
             The ID of the suite (Only required if project is in multi-suite mode)
         :param soft:
@@ -482,12 +484,14 @@ class Cases(_MetaCategory):
             Including soft=1 will not actually delete the entity.
             Omitting the soft parameter, or submitting soft=0 will delete the test case.
         """
-        params = {"soft": soft}
+        params = {"soft": soft, "case_ids": case_ids}
+        
         if suite_id:
-            params["suite_id"] = suite_id
-
+            url_path = "delete_cases/{}".format(suite_id)
+        else:
+            url_path = "delete_cases"
         return self._session.request(
-            METHODS.POST, "delete_cases/{}".format(project_id), params=params
+            METHODS.POST, url_path, params=params
         )
 
     def copy_cases_to_section(self, section_id: int, case_ids: List[int]):

@@ -471,7 +471,7 @@ class Cases(_MetaCategory):
         project_id: int,
         case_ids: List[int],
         suite_id: Optional[int] = None,
-        soft: int = 0
+        soft: int = 0,
     ) -> None:
         """
         Deletes multiple test cases from a project or test suite.
@@ -494,9 +494,7 @@ class Cases(_MetaCategory):
             url_path = "delete_cases/{}".format(suite_id)
         else:
             url_path = "delete_cases"
-        return self._session.request(
-            METHODS.POST, url_path, params=params
-        )
+        return self._session.request(METHODS.POST, url_path, params=params)
 
     def copy_cases_to_section(self, section_id: int, case_ids: List[int]):
         """

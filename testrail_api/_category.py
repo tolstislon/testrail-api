@@ -488,7 +488,7 @@ class Cases(_MetaCategory):
             Including soft=1 will not actually delete the entity.
             Omitting the soft parameter, or submitting soft=0 will delete the test case.
         """
-        params = {"soft": soft, "case_ids": case_ids}
+        params = {"soft": soft, "case_ids": case_ids, "project_id": project_id}
 
         if suite_id:
             url_path = "delete_cases/{}".format(suite_id)

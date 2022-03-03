@@ -38,9 +38,9 @@ def delete_cases(r, project_id=None, case_ids=None, suite_id=None, soft=0):
     assert int(r.params['project_id']) == project_id
     assert r.params['case_ids'] == ','.join(map(str, case_ids))
     if suite_id:
-        assert r.url.endswith(str(suite_id))
+        assert 'delete_cases/{}&'.format(suite_id) in r.url
     else:
-        assert not r.url.endswith("delete_cases/")
+        assert 'delete_cases&' in r.url
     return 200, {}, ''
 
 

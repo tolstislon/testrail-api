@@ -467,7 +467,11 @@ class Cases(_MetaCategory):
         )
 
     def delete_cases(
-        self, project_id: int, case_ids: List[int], suite_id: Optional[int] = None, soft: int = 0
+        self,
+        project_id: int,
+        case_ids: List[int],
+        suite_id: Optional[int] = None,
+        soft: int = 0
     ) -> None:
         """
         Deletes multiple test cases from a project or test suite.
@@ -485,7 +489,7 @@ class Cases(_MetaCategory):
             Omitting the soft parameter, or submitting soft=0 will delete the test case.
         """
         params = {"soft": soft, "case_ids": case_ids}
-        
+
         if suite_id:
             url_path = "delete_cases/{}".format(suite_id)
         else:

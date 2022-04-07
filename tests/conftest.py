@@ -22,7 +22,7 @@ class CallbackResponse(responses.CallbackResponse):
 class RequestsMock(responses.RequestsMock):
 
     def add_callback(self, method, url, callback, match_querystring=False, content_type="text/plain"):
-        self._matches.append(
+        self._registry.add(
             CallbackResponse(
                 url=url,
                 method=method,

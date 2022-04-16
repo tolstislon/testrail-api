@@ -33,12 +33,14 @@ def update_cases_suite(r, suite_id=None):
     return 200, {}, r.body.decode()
 
 
-def delete_cases(r, suite_id=None, soft=0):
+def delete_cases(r, project_id=None, case_ids=None, suite_id=None, soft=0):
     assert int(r.params['soft']) == soft
+    assert int(r.params['project_id']) == project_id
+    assert r.params['case_ids'] == ','.join(map(str, case_ids))
     if suite_id:
-        assert int(r.params['suite_id']) == suite_id
+        assert 'delete_cases/{}&'.format(suite_id) in r.url
     else:
-        assert 'suite_id' not in r.params
+        assert 'delete_cases&' in r.url
     return 200, {}, ''
 
 
@@ -133,25 +135,25 @@ def test_update_cases_suite(api, mock, host):
 def test_delete_cases_no_suite_id(api, mock, host):
     mock.add_callback(
         responses.POST,
-        '{}index.php?/api/v2/delete_cases/5'.format(host),
-        delete_cases,
+        '{}index.php?/api/v2/delete_cases'.format(host),
+        partial(delete_cases, project_id=1, case_ids=[5,6]),
     )
-    api.cases.delete_cases(5)
+    api.cases.delete_cases(1, [5,6])
 
 
 def test_delete_cases_suite_id(api, mock, host):
     mock.add_callback(
         responses.POST,
-        '{}index.php?/api/v2/delete_cases/5'.format(host),
-        partial(delete_cases, suite_id=1),
+        '{}index.php?/api/v2/delete_cases/1'.format(host),
+        partial(delete_cases, project_id=1, suite_id=1, case_ids=[5,6]),
     )
-    api.cases.delete_cases(5, 1)
+    api.cases.delete_cases(1, [5,6], 1)
 
 
 def test_delete_cases_suite_id_soft(api, mock, host):
     mock.add_callback(
         responses.POST,
-        '{}index.php?/api/v2/delete_cases/5'.format(host),
-        partial(delete_cases, suite_id=1, soft=1),
+        '{}index.php?/api/v2/delete_cases/1'.format(host),
+        partial(delete_cases, project_id=1, suite_id=1, soft=1, case_ids=[5,6]),
     )
-    api.cases.delete_cases(5, 1, 1)
+    api.cases.delete_cases(1, [5,6], 1, 1)

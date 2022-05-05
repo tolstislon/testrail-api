@@ -36,12 +36,12 @@ def update_cases_suite(r, suite_id=None):
 def delete_cases(r, project_id=None, case_ids=None, suite_id=None, soft=0):
     assert int(r.params['soft']) == soft
     assert int(r.params['project_id']) == project_id
-    assert r.params['case_ids'] == ','.join(map(str, case_ids))
     if suite_id:
         assert 'delete_cases/{}&'.format(suite_id) in r.url
     else:
         assert 'delete_cases&' in r.url
-    return 200, {}, ''
+    assert json.loads(r.body.decode()) == {'case_ids': case_ids}
+    return 200, {}, r.body.decode()
 
 
 def test_get_case(api, mock, host):

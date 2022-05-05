@@ -488,13 +488,13 @@ class Cases(_MetaCategory):
             Including soft=1 will not actually delete the entity.
             Omitting the soft parameter, or submitting soft=0 will delete the test case.
         """
-        params = {"soft": soft, "case_ids": case_ids, "project_id": project_id}
-
+        params = {"soft": soft, "project_id": project_id}
+        body = {"case_ids": case_ids}
         if suite_id:
             url_path = "delete_cases/{}".format(suite_id)
         else:
             url_path = "delete_cases"
-        return self._session.request(METHODS.POST, url_path, params=params)
+        return self._session.request(METHODS.POST, url_path, params=params, json=body)
 
     def copy_cases_to_section(self, section_id: int, case_ids: List[int]):
         """

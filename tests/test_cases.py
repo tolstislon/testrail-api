@@ -41,7 +41,7 @@ def delete_cases(r, project_id=None, case_ids=None, suite_id=None, soft=0):
     else:
         assert 'delete_cases&' in r.url
     assert json.loads(r.body.decode()) == {'case_ids': case_ids}
-    return 200, {}, r.body.decode()
+    return 200, {}, ''
 
 
 def test_get_case(api, mock, host):

@@ -156,6 +156,14 @@ class Session:
                 response = self.__session.request(
                     method=method.value, url=url, timeout=self.__timeout, **kwargs
                 )
+            except KeyError:
+                if count < self.__exc_iterations - 1:
+                    logger.warning(
+                        "KeyError, retrying %s/%s", count + 1, self.__exc_iterations
+                    )
+                    continue
+                else:
+                    raise
             except Exception as err:
                 logger.error("%s", err, exc_info=True)
                 raise

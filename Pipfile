@@ -6,15 +6,15 @@ verify_ssl = true
 [dev-packages]
 pytest = "==7.1.2"
 pytest-cov = "==3.0.0"
-responses = "==0.20.0"
-mypy = "==0.950"
-black = "==22.3.0"
+responses = "==0.21.0"
+mypy = "==0.961"
+black = "==22.6.0"
 flake8 = "==4.0.1"
-pep8-naming = "==0.12.1"
-twine = "==4.0.0"
+pep8-naming = "==0.13.0"
+twine = "==4.0.1"
 
 [packages]
-requests = "==2.27.1"
+requests = "==2.28.1"
 testrail-api = {editable = true, path = "."}
 
 [requires]

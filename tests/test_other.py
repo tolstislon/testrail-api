@@ -1,3 +1,4 @@
+from functools import partial
 import json
 import time
 
@@ -21,6 +22,28 @@ class RateLimit:
         if self.last == 0 or now - self.last < 3:
             self.last = now
             return 429, {}, ''
+        else:
+            return 200, {}, json.dumps({'count': self.count})
+
+
+class CustomException(Exception):
+    pass
+
+
+class CustomExceptionRetry:
+
+    def __init__(self, exception=CustomException, fail=False):
+        self.count = 0
+        self.exception = exception
+        self.fail = fail
+
+    def raises(self, *args, **kwargs):
+        self.count += 1
+        if self.count < 3:
+            print(self.count)
+            raise self.exception("fail")
+        elif self.fail:
+            raise self.exception("fail")
         else:
             return 200, {}, json.dumps({'count': self.count})
 
@@ -78,6 +101,39 @@ def test_raise(auth_data, mock, host):
     with pytest.raises(StatusCodeError):
         api.cases.get_case(1)
 
+
+def test_custom_exception_fails(auth_data, mock, host):
+    retry = CustomExceptionRetry(fail=True)
+    api = TRApi(*auth_data, exc=True, retry_exceptions=(CustomException,))
+    mock.add_callback(
+        responses.GET,
+        '{}index.php?/api/v2/get_case/1'.format(host),
+        retry.raises,
+    )
+    with pytest.raises(CustomException):
+        api.cases.get_case(1)
+
+def test_custom_exception_succeeds(auth_data, mock, host):
+    retry = CustomExceptionRetry(fail=False)
+    api = TRApi(*auth_data, exc=True, retry_exceptions=(CustomException,))
+    mock.add_callback(
+        responses.GET,
+        '{}index.php?/api/v2/get_case/1'.format(host),
+        retry.raises,
+    )
+    response = api.cases.get_case(1)
+    assert response.get('count') is 3
+
+def test_custom_exception_fails_different_exception(auth_data, mock, host):
+    retry = CustomExceptionRetry(fail=True)
+    api = TRApi(*auth_data, exc=True, retry_exceptions=(KeyboardInterrupt,))
+    mock.add_callback(
+        responses.GET,
+        '{}index.php?/api/v2/get_case/1'.format(host),
+        retry.raises,
+    )
+    with pytest.raises(CustomException):
+        api.cases.get_case(1)
 
 def test_no_response_raise():
     api = TRApi('https://asdadadsa.cd', 'asd@asd.com', 'asdasda', exc=False)

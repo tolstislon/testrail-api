@@ -7,7 +7,7 @@ import warnings
 from datetime import datetime
 from json.decoder import JSONDecodeError
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional, Tuple, Union
 
 import requests
 
@@ -33,6 +33,7 @@ class Session:
         exc: bool = False,
         rate_limit: bool = True,
         warn_ignore: bool = False,
+        retry_exceptions: Tuple[Exception] = None,
         **kwargs
     ) -> None:
         """
@@ -44,6 +45,12 @@ class Session:
             Password for the account on the TestRail or token
         :param exc:
             Catching exceptions
+        :param rate_limit:
+            Check the response header for the rate limit and retry the request
+        :param warn_ignore:
+            Ignore warning when not using HTTPS
+        :param retry_exceptions:
+            Set of exceptions to retry the request
         :param kwargs:
             :key timeout: int (default: 30)
                 How many seconds to wait for the server to send data
@@ -76,6 +83,9 @@ class Session:
         self.__user_email = _email
         self.__session.auth = (self.__user_email, _password)
         self.__exc = exc
+        self.__retry_exceptions = (
+            retry_exceptions + (KeyError,) if retry_exceptions else (KeyError,)
+        )
         self.__exc_iterations = kwargs.get("exc_iterations", 3)
         self._rate_limit = rate_limit
         logger.info(
@@ -156,10 +166,13 @@ class Session:
                 response = self.__session.request(
                     method=method.value, url=url, timeout=self.__timeout, **kwargs
                 )
-            except KeyError:
+            except self.__retry_exceptions as exc:
                 if count < self.__exc_iterations - 1:
                     logger.warning(
-                        "KeyError, retrying %s/%s", count + 1, self.__exc_iterations
+                        "%s, retrying %s/%s",
+                        exc,
+                        count + 1,
+                        self.__exc_iterations,
                     )
                     continue
                 else:

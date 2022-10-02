@@ -16,7 +16,7 @@ setup(
     description="Python wrapper of the TestRail API",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    version='1.10.6',
+    version="1.11.0",
     install_requires=["requests>=2.20.1"],
     python_requires=">=3.5",
     include_package_data=True,

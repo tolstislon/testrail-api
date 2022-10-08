@@ -131,7 +131,7 @@ class Attachments(_MetaCategory):
         """
         return self.s.get(
             endpoint=f"get_attachments_for_case/{case_id}",
-            params={"limit": limit, "offset": offset}
+            params={"limit": limit, "offset": offset},
         )
 
     def get_attachments_for_plan(
@@ -202,9 +202,7 @@ class Attachments(_MetaCategory):
             The ID of the test
         :return: response
         """
-        return self.s.get(
-            endpoint=f"get_attachments_for_test/{test_id}"
-        )
+        return self.s.get(endpoint=f"get_attachments_for_test/{test_id}")
 
     def get_attachment(self, attachment_id: int, path: Union[str, Path]) -> Path:
         """
@@ -229,9 +227,7 @@ class Attachments(_MetaCategory):
             The ID of the attachment to to delete
         :return: None
         """
-        return self.s.post(
-            endpoint=f"delete_attachment/{attachment_id}"
-        )
+        return self.s.post(endpoint=f"delete_attachment/{attachment_id}")
 
 
 class Cases(_MetaCategory):
@@ -245,9 +241,7 @@ class Cases(_MetaCategory):
             The ID of the test case
         :return: response
         """
-        return self.s.get(
-            endpoint=f"get_case/{case_id}"
-        )
+        return self.s.get(endpoint=f"get_case/{case_id}")
 
     def get_cases(self, project_id: int, **kwargs) -> dict:
         """
@@ -297,10 +291,7 @@ class Cases(_MetaCategory):
                 A comma-separated list of user IDs who updated test cases to filter by.
         :return: response
         """
-        return self.s.get(
-            endpoint=f"get_cases/{project_id}",
-            params=kwargs
-        )
+        return self.s.get(endpoint=f"get_cases/{project_id}", params=kwargs)
 
     def get_history_for_case(
         self, case_id: int, limit: int = 250, offset: int = 0
@@ -380,8 +371,7 @@ class Cases(_MetaCategory):
         :return: response
         """
         return self.s.post(
-            endpoint=f"add_case/{section_id}",
-            json=dict(title=title, **kwargs)
+            endpoint=f"add_case/{section_id}", json=dict(title=title, **kwargs)
         )
 
     def update_case(self, case_id: int, **kwargs) -> dict:
@@ -410,10 +400,7 @@ class Cases(_MetaCategory):
                 A comma-separated list of references/requirements
         :return: response
         """
-        return self.s.post(
-            endpoint=f"update_case/{case_id}",
-            json=kwargs
-        )
+        return self.s.post(endpoint=f"update_case/{case_id}", json=kwargs)
 
     def update_cases(
         self, project_id: int, suite_id: Optional[int] = None, **kwargs
@@ -464,10 +451,7 @@ class Cases(_MetaCategory):
             Omitting the soft parameter, or submitting soft=0 will delete the test case.
         :return: response
         """
-        return self.s.post(
-            endpoint=f"delete_case/{case_id}",
-            params={"soft": soft}
-        )
+        return self.s.post(endpoint=f"delete_case/{case_id}", params={"soft": soft})
 
     def delete_cases(
         self,
@@ -494,7 +478,7 @@ class Cases(_MetaCategory):
         return self.s.post(
             endpoint=f"delete_cases/{suite_id}" if suite_id else "delete_cases",
             params={"soft": soft, "project_id": project_id},
-            json={"case_ids": case_ids}
+            json={"case_ids": case_ids},
         )
 
     def copy_cases_to_section(self, section_id: int, case_ids: List[int]):
@@ -553,9 +537,7 @@ class CaseFields(_MetaCategory):
             12 - Multi-select
         :return: response
         """
-        return self.s.get(
-            endpoint="get_case_fields"
-        )
+        return self.s.get(endpoint="get_case_fields")
 
     def add_case_field(
         self, type: str, name: str, label: str, configs: List[dict], **kwargs  # noqa
@@ -593,7 +575,7 @@ class CaseFields(_MetaCategory):
         """
         return self.s.post(
             endpoint="add_case_field",
-            json=dict(type=type, name=name, label=label, configs=configs, **kwargs)
+            json=dict(type=type, name=name, label=label, configs=configs, **kwargs),
         )
 
 
@@ -610,9 +592,7 @@ class CaseTypes(_MetaCategory):
 
         :return: response
         """
-        return self.s.get(
-            endpoint="get_case_types"
-        )
+        return self.s.get(endpoint="get_case_types")
 
 
 class Configurations(_MetaCategory):
@@ -626,9 +606,7 @@ class Configurations(_MetaCategory):
             The ID of the project
         :return: response
         """
-        return self.s.get(
-            endpoint=f"get_configs/{project_id}"
-        )
+        return self.s.get(endpoint=f"get_configs/{project_id}")
 
     def add_config_group(self, project_id: int, name: str) -> dict:
         """
@@ -641,8 +619,7 @@ class Configurations(_MetaCategory):
         :return: response
         """
         return self.s.post(
-            endpoint=f"add_config_group/{project_id}",
-            json={"name": name}
+            endpoint=f"add_config_group/{project_id}", json={"name": name}
         )
 
     def add_config(self, config_group_id: int, name: str) -> dict:
@@ -656,8 +633,7 @@ class Configurations(_MetaCategory):
         :return: response
         """
         return self.s.post(
-            endpoint=f"add_config/{config_group_id}",
-            json={"name": name}
+            endpoint=f"add_config/{config_group_id}", json={"name": name}
         )
 
     def update_config_group(self, config_group_id: int, name: str) -> dict:
@@ -685,10 +661,7 @@ class Configurations(_MetaCategory):
             The name of the configuration
         :return: response
         """
-        return self.s.post(
-            endpoint=f"update_config/{config_id}",
-            json={"name": name}
-        )
+        return self.s.post(endpoint=f"update_config/{config_id}", json={"name": name})
 
     def delete_config_group(self, config_group_id: int) -> None:
         """
@@ -699,9 +672,7 @@ class Configurations(_MetaCategory):
             The ID of the configuration group
         :return: response
         """
-        return self.s.post(
-            endpoint=f"delete_config_group/{config_group_id}"
-        )
+        return self.s.post(endpoint=f"delete_config_group/{config_group_id}")
 
     def delete_config(self, config_id: int) -> None:
         """
@@ -711,9 +682,7 @@ class Configurations(_MetaCategory):
             The ID of the configuration
         :return: response
         """
-        return self.s.post(
-            endpoint=f"delete_config/{config_id}"
-        )
+        return self.s.post(endpoint=f"delete_config/{config_id}")
 
 
 class Milestones(_MetaCategory):
@@ -727,9 +696,7 @@ class Milestones(_MetaCategory):
             The ID of the milestone
         :return: response
         """
-        return self.s.get(
-            endpoint=f"get_milestone/{milestone_id}"
-        )
+        return self.s.get(endpoint=f"get_milestone/{milestone_id}")
 
     def get_milestones(
         self, project_id: int, limit: int = 250, offset: int = 0, **kwargs
@@ -758,7 +725,7 @@ class Milestones(_MetaCategory):
         """
         return self.s.get(
             endpoint=f"get_milestones/{project_id}",
-            params=dict(limit=limit, offset=offset, **kwargs)
+            params=dict(limit=limit, offset=offset, **kwargs),
         )
 
     def add_milestone(self, project_id: int, name: str, **kwargs) -> dict:
@@ -786,8 +753,7 @@ class Milestones(_MetaCategory):
         :return: response
         """
         return self.s.post(
-            endpoint=f"add_milestone/{project_id}",
-            json=dict(name=name, **kwargs)
+            endpoint=f"add_milestone/{project_id}", json=dict(name=name, **kwargs)
         )
 
     def update_milestone(self, milestone_id: int, **kwargs) -> dict:
@@ -810,10 +776,7 @@ class Milestones(_MetaCategory):
                 (available since TestRail 5.3)
         :return: response
         """
-        return self.s.post(
-            endpoint=f"update_milestone/{milestone_id}",
-            json=kwargs
-        )
+        return self.s.post(endpoint=f"update_milestone/{milestone_id}", json=kwargs)
 
     def delete_milestone(self, milestone_id: int) -> None:
         """
@@ -823,9 +786,7 @@ class Milestones(_MetaCategory):
             The ID of the milestone
         :return: response
         """
-        return self.s.post(
-            endpoint=f"delete_milestone/{milestone_id}"
-        )
+        return self.s.post(endpoint=f"delete_milestone/{milestone_id}")
 
 
 class Plans(_MetaCategory):
@@ -839,9 +800,7 @@ class Plans(_MetaCategory):
             The ID of the test plan
         :return: response
         """
-        return self.s.get(
-            endpoint=f"get_plan/{plan_id}"
-        )
+        return self.s.get(endpoint=f"get_plan/{plan_id}")
 
     def get_plans(self, project_id: int, **kwargs) -> dict:
         """
@@ -869,10 +828,7 @@ class Plans(_MetaCategory):
                 A comma-separated list of milestone IDs to filter by.
         :return: response
         """
-        return self.s.get(
-            endpoint=f"get_plans/{project_id}",
-            params=kwargs
-        )
+        return self.s.get(endpoint=f"get_plans/{project_id}", params=kwargs)
 
     def add_plan(self, project_id: int, name: str, **kwargs) -> dict:
         """
@@ -893,8 +849,7 @@ class Plans(_MetaCategory):
         :return: response
         """
         return self.s.post(
-            endpoint=f"add_plan/{project_id}",
-            json=dict(name=name, **kwargs)
+            endpoint=f"add_plan/{project_id}", json=dict(name=name, **kwargs)
         )
 
     def add_plan_entry(self, plan_id: int, suite_id: int, **kwargs) -> dict:
@@ -929,8 +884,7 @@ class Plans(_MetaCategory):
         :return: response
         """
         return self.s.post(
-            endpoint=f"add_plan_entry/{plan_id}",
-            json=dict(suite_id=suite_id, **kwargs)
+            endpoint=f"add_plan_entry/{plan_id}", json=dict(suite_id=suite_id, **kwargs)
         )
 
     def add_run_to_plan_entry(
@@ -986,10 +940,7 @@ class Plans(_MetaCategory):
                 example below and add_plan_entry
         :return: response
         """
-        return self.s.post(
-            endpoint=f"update_plan/{plan_id}",
-            json=kwargs
-        )
+        return self.s.post(endpoint=f"update_plan/{plan_id}", json=kwargs)
 
     def update_plan_entry(self, plan_id: int, entry_id: int, **kwargs) -> dict:
         """
@@ -1018,8 +969,7 @@ class Plans(_MetaCategory):
         :return: response
         """
         return self.s.post(
-            endpoint=f"update_plan_entry/{plan_id}/{entry_id}",
-            json=kwargs
+            endpoint=f"update_plan_entry/{plan_id}/{entry_id}", json=kwargs
         )
 
     def update_run_in_plan_entry(self, plan_id: int, run_id: int, **kwargs):
@@ -1047,8 +997,7 @@ class Plans(_MetaCategory):
         :return: response
         """
         return self.s.post(
-            endpoint=f"update_run_in_plan_entry/{plan_id}/{run_id}",
-            json=kwargs
+            endpoint=f"update_run_in_plan_entry/{plan_id}/{run_id}", json=kwargs
         )
 
     def close_plan(self, plan_id: int) -> dict:
@@ -1059,9 +1008,7 @@ class Plans(_MetaCategory):
             The ID of the test plan
         :return: response
         """
-        return self.s.post(
-            endpoint=f"close_plan/{plan_id}"
-        )
+        return self.s.post(endpoint=f"close_plan/{plan_id}")
 
     def delete_plan(self, plan_id: int) -> None:
         """
@@ -1071,9 +1018,7 @@ class Plans(_MetaCategory):
             The ID of the test plan
         :return: response
         """
-        return self.s.post(
-            endpoint=f"delete_plan/{plan_id}"
-        )
+        return self.s.post(endpoint=f"delete_plan/{plan_id}")
 
     def delete_plan_entry(self, plan_id: int, entry_id: int) -> None:
         """
@@ -1085,9 +1030,7 @@ class Plans(_MetaCategory):
             The ID of the test plan entry (note: not the test run ID)
         :return: response
         """
-        return self.s.post(
-            endpoint=f"delete_plan_entry/{plan_id}/{entry_id}"
-        )
+        return self.s.post(endpoint=f"delete_plan_entry/{plan_id}/{entry_id}")
 
     def delete_run_from_plan_entry(self, run_id: int):
         """
@@ -1097,9 +1040,7 @@ class Plans(_MetaCategory):
             The ID of the test run
         :return: response
         """
-        return self.s.post(
-            endpoint=f"delete_run_from_plan_entry/{run_id}"
-        )
+        return self.s.post(endpoint=f"delete_run_from_plan_entry/{run_id}")
 
 
 class Priorities(_MetaCategory):
@@ -1111,9 +1052,7 @@ class Priorities(_MetaCategory):
 
         :return: response
         """
-        return self.s.get(
-            endpoint="get_priorities"
-        )
+        return self.s.get(endpoint="get_priorities")
 
 
 class Projects(_MetaCategory):
@@ -1127,9 +1066,7 @@ class Projects(_MetaCategory):
             The ID of the project
         :return: response
         """
-        return self.s.get(
-            endpoint=f"get_project/{project_id}"
-        )
+        return self.s.get(endpoint=f"get_project/{project_id}")
 
     def get_projects(self, limit: int = 250, offset: int = 0, **kwargs) -> dict:
         """
@@ -1147,8 +1084,7 @@ class Projects(_MetaCategory):
         :return: response
         """
         return self.s.get(
-            endpoint="get_projects",
-            params=dict(limit=limit, offset=offset, **kwargs)
+            endpoint="get_projects", params=dict(limit=limit, offset=offset, **kwargs)
         )
 
     def add_project(self, name: str, **kwargs) -> dict:
@@ -1170,10 +1106,7 @@ class Projects(_MetaCategory):
                     3 for multiple suite
         :return: response
         """
-        return self.s.post(
-            endpoint="add_project",
-            json=dict(name=name, **kwargs)
-        )
+        return self.s.post(endpoint="add_project", json=dict(name=name, **kwargs))
 
     def update_project(self, project_id: int, **kwargs) -> dict:
         """
@@ -1194,10 +1127,7 @@ class Projects(_MetaCategory):
                 Specifies whether a project is considered completed or not
         :return: response
         """
-        return self.s.post(
-            endpoint=f"update_project/{project_id}",
-            json=kwargs
-        )
+        return self.s.post(endpoint=f"update_project/{project_id}", json=kwargs)
 
     def delete_project(self, project_id: int) -> None:
         """
@@ -1207,9 +1137,7 @@ class Projects(_MetaCategory):
             The ID of the project
         :return: response
         """
-        return self.s.post(
-            endpoint=f"delete_project/{project_id}"
-        )
+        return self.s.post(endpoint=f"delete_project/{project_id}")
 
 
 class Reports(_MetaCategory):
@@ -1225,9 +1153,7 @@ class Reports(_MetaCategory):
             The ID of the project for which you want a list of API accessible reports
         :return: response
         """
-        return self.s.get(
-            endpoint=f"get_reports/{project_id}"
-        )
+        return self.s.get(endpoint=f"get_reports/{project_id}")
 
     def run_report(self, report_template_id: int) -> dict:
         """
@@ -1239,9 +1165,7 @@ class Reports(_MetaCategory):
         :param report_template_id:
         :return: response
         """
-        return self.s.get(
-            endpoint=f"run_report/{report_template_id}"
-        )
+        return self.s.get(endpoint=f"run_report/{report_template_id}")
 
 
 class Results(_MetaCategory):
@@ -1271,7 +1195,7 @@ class Results(_MetaCategory):
         """
         return self.s.get(
             endpoint=f"get_results/{test_id}",
-            params=dict(limit=limit, offset=offset, **kwargs)
+            params=dict(limit=limit, offset=offset, **kwargs),
         )
 
     def get_results_for_case(
@@ -1308,7 +1232,7 @@ class Results(_MetaCategory):
         """
         return self.s.get(
             endpoint=f"get_results_for_case/{run_id}/{case_id}",
-            params=dict(limit=limit, offset=offset, **kwargs)
+            params=dict(limit=limit, offset=offset, **kwargs),
         )
 
     def get_results_for_run(
@@ -1345,7 +1269,7 @@ class Results(_MetaCategory):
         """
         return self.s.get(
             endpoint=f"get_results_for_run/{run_id}",
-            params=dict(limit=limit, offset=offset, **kwargs)
+            params=dict(limit=limit, offset=offset, **kwargs),
         )
 
     def add_result(self, test_id: int, **kwargs) -> List[dict]:
@@ -1386,10 +1310,7 @@ class Results(_MetaCategory):
                 }
         :return: response
         """
-        return self.s.post(
-            endpoint=f"add_result/{test_id}",
-            json=kwargs
-        )
+        return self.s.post(endpoint=f"add_result/{test_id}", json=kwargs)
 
     def add_result_for_case(self, run_id: int, case_id: int, **kwargs) -> dict:
         """
@@ -1465,10 +1386,7 @@ class Results(_MetaCategory):
             Please note that all referenced tests must belong to the same test run.
         :return: response
         """
-        return self.s.post(
-            endpoint=f"add_results/{run_id}",
-            json={"results": results}
-        )
+        return self.s.post(endpoint=f"add_results/{run_id}", json={"results": results})
 
     def add_results_for_cases(self, run_id: int, results: List[dict]) -> List[dict]:
         """
@@ -1507,9 +1425,7 @@ class ResultFields(_MetaCategory):
 
         :return: response
         """
-        return self.s.get(
-            endpoint="get_result_fields"
-        )
+        return self.s.get(endpoint="get_result_fields")
 
 
 class Runs(_MetaCategory):
@@ -1524,9 +1440,7 @@ class Runs(_MetaCategory):
             The ID of the test run
         :return: response
         """
-        return self.s.get(
-            endpoint=f"get_run/{run_id}"
-        )
+        return self.s.get(endpoint=f"get_run/{run_id}")
 
     def get_runs(self, project_id: int, **kwargs) -> dict:
         """
@@ -1555,10 +1469,7 @@ class Runs(_MetaCategory):
                 A comma-separated list of test suite IDs to filter by.
         :return: response
         """
-        return self.s.get(
-            endpoint=f"get_runs/{project_id}",
-            params=kwargs
-        )
+        return self.s.get(endpoint=f"get_runs/{project_id}", params=kwargs)
 
     def add_run(self, project_id: int, **kwargs) -> dict:
         """
@@ -1588,10 +1499,7 @@ class Runs(_MetaCategory):
                 (Requires TestRail 6.1 or later)
         :return: response
         """
-        return self.s.post(
-            endpoint=f"add_run/{project_id}",
-            json=kwargs
-        )
+        return self.s.post(endpoint=f"add_run/{project_id}", json=kwargs)
 
     def update_run(self, run_id: int, **kwargs) -> dict:
         """
@@ -1617,10 +1525,7 @@ class Runs(_MetaCategory):
                 (Requires TestRail 6.1 or later)
         :return: response
         """
-        return self.s.post(
-            endpoint=f"update_run/{run_id}",
-            json=kwargs
-        )
+        return self.s.post(endpoint=f"update_run/{run_id}", json=kwargs)
 
     def close_run(self, run_id: int) -> Optional[dict]:
         """
@@ -1631,9 +1536,7 @@ class Runs(_MetaCategory):
             The ID of the test run
         :return: response
         """
-        return self.s.post(
-            endpoint=f"close_run/{run_id}"
-        )
+        return self.s.post(endpoint=f"close_run/{run_id}")
 
     def delete_run(self, run_id: int, soft: int = 0) -> Optional[dict]:
         """
@@ -1650,10 +1553,7 @@ class Runs(_MetaCategory):
             run and its tests.
         :return: response
         """
-        return self.s.post(
-            endpoint=f"delete_run/{run_id}",
-            params={"soft": soft}
-        )
+        return self.s.post(endpoint=f"delete_run/{run_id}", params={"soft": soft})
 
 
 class Sections(_MetaCategory):
@@ -1667,9 +1567,7 @@ class Sections(_MetaCategory):
             The ID of the section
         :return: response
         """
-        return self.s.get(
-            endpoint=f"get_section/{section_id}"
-        )
+        return self.s.get(endpoint=f"get_section/{section_id}")
 
     def get_sections(
         self, project_id: int, limit: int = 250, offset: int = 0, **kwargs
@@ -1693,7 +1591,7 @@ class Sections(_MetaCategory):
         """
         return self.s.get(
             endpoint=f"get_sections/{project_id}",
-            params=dict(limit=limit, offset=offset, **kwargs)
+            params=dict(limit=limit, offset=offset, **kwargs),
         )
 
     def add_section(self, project_id: int, name: str, **kwargs) -> dict:
@@ -1715,8 +1613,7 @@ class Sections(_MetaCategory):
         :return: response
         """
         return self.s.post(
-            endpoint=f"add_section/{project_id}",
-            json=dict(name=name, **kwargs)
+            endpoint=f"add_section/{project_id}", json=dict(name=name, **kwargs)
         )
 
     def move_section(
@@ -1754,10 +1651,7 @@ class Sections(_MetaCategory):
                 The description of the section
         :return: response
         """
-        return self.s.post(
-            endpoint=f"update_section/{section_id}",
-            json=kwargs
-        )
+        return self.s.post(endpoint=f"update_section/{section_id}", json=kwargs)
 
     def delete_section(self, section_id: int, soft: int = 0) -> None:
         """
@@ -1774,8 +1668,7 @@ class Sections(_MetaCategory):
         :return: response
         """
         return self.s.post(
-            endpoint=f"delete_section/{section_id}",
-            params={"soft": soft}
+            endpoint=f"delete_section/{section_id}", params={"soft": soft}
         )
 
 
@@ -1788,9 +1681,7 @@ class Statuses(_MetaCategory):
 
         :return: response
         """
-        return self.s.get(
-            endpoint="get_statuses"
-        )
+        return self.s.get(endpoint="get_statuses")
 
 
 class Suites(_MetaCategory):
@@ -1804,9 +1695,7 @@ class Suites(_MetaCategory):
             The ID of the test suite
         :return: response
         """
-        return self.s.get(
-            endpoint=f"get_suite/{suite_id}"
-        )
+        return self.s.get(endpoint=f"get_suite/{suite_id}")
 
     def get_suites(self, project_id: int) -> List[dict]:
         """
@@ -1816,9 +1705,7 @@ class Suites(_MetaCategory):
             The ID of the project
         :return: response
         """
-        return self.s.get(
-            endpoint=f"get_suites/{project_id}"
-        )
+        return self.s.get(endpoint=f"get_suites/{project_id}")
 
     def add_suite(self, project_id: int, name: str, **kwargs) -> dict:
         """
@@ -1834,8 +1721,7 @@ class Suites(_MetaCategory):
         :return: response
         """
         return self.s.post(
-            endpoint=f"add_suite/{project_id}",
-            json=dict(name=name, **kwargs)
+            endpoint=f"add_suite/{project_id}", json=dict(name=name, **kwargs)
         )
 
     def update_suite(self, suite_id: int, **kwargs) -> dict:
@@ -1852,10 +1738,7 @@ class Suites(_MetaCategory):
                 The description of the test suite
         :return: response
         """
-        return self.s.post(
-            endpoint=f"update_suite/{suite_id}",
-            json=kwargs
-        )
+        return self.s.post(endpoint=f"update_suite/{suite_id}", json=kwargs)
 
     def delete_suite(self, suite_id: int, soft: int = 0) -> None:
         """
@@ -1871,10 +1754,7 @@ class Suites(_MetaCategory):
             test suite and its test cases
         :return: response
         """
-        return self.s.post(
-            endpoint=f"delete_suite/{suite_id}",
-            params={"soft": soft}
-        )
+        return self.s.post(endpoint=f"delete_suite/{suite_id}", params={"soft": soft})
 
 
 class Template(_MetaCategory):
@@ -1888,9 +1768,7 @@ class Template(_MetaCategory):
             The ID of the project
         :return: response
         """
-        return self.s.get(
-            endpoint=f"get_templates/{project_id}"
-        )
+        return self.s.get(endpoint=f"get_templates/{project_id}")
 
 
 class Tests(_MetaCategory):
@@ -1909,10 +1787,7 @@ class Tests(_MetaCategory):
                 The parameter to get data (This is optional)
         :return: response
         """
-        return self.s.get(
-            endpoint=f"get_test/{test_id}",
-            params=kwargs
-        )
+        return self.s.get(endpoint=f"get_test/{test_id}", params=kwargs)
 
     def get_tests(
         self, run_id: int, limit: int = 250, offset: int = 0, **kwargs
@@ -1936,7 +1811,7 @@ class Tests(_MetaCategory):
         """
         return self.s.get(
             endpoint=f"get_tests/{run_id}",
-            params=dict(limit=limit, offset=offset, **kwargs)
+            params=dict(limit=limit, offset=offset, **kwargs),
         )
 
 
@@ -1951,9 +1826,7 @@ class Users(_MetaCategory):
             The ID of the user
         :return: response
         """
-        return self.s.get(
-            endpoint=f"get_user/{user_id}"
-        )
+        return self.s.get(endpoint=f"get_user/{user_id}")
 
     def get_current_user(self, user_id: int) -> dict:
         """
@@ -1964,9 +1837,7 @@ class Users(_MetaCategory):
             The ID of the user
         :return: response
         """
-        return self.s.get(
-            endpoint=f"get_current_user/{user_id}"
-        )
+        return self.s.get(endpoint=f"get_current_user/{user_id}")
 
     def get_user_by_email(self, email: str) -> dict:
         """
@@ -1976,10 +1847,7 @@ class Users(_MetaCategory):
             The email address to get the user for
         :return: response
         """
-        return self.s.get(
-            endpoint="get_user_by_email",
-            params={"email": email}
-        )
+        return self.s.get(endpoint="get_user_by_email", params={"email": email})
 
     def get_users(self, project_id: int) -> List[dict]:
         """
@@ -1989,9 +1857,7 @@ class Users(_MetaCategory):
             (Required for non-administrators. Requires TestRail 6.6 or later.)
         :return: response
         """
-        return self.s.get(
-            endpoint=f"get_users/{project_id}"
-        )
+        return self.s.get(endpoint=f"get_users/{project_id}")
 
 
 class SharedSteps(_MetaCategory):
@@ -2004,9 +1870,7 @@ class SharedSteps(_MetaCategory):
         :param shared_step_id: int
             The ID of the set of shared steps.
         """
-        return self.s.get(
-            endpoint=f"get_shared_step/{shared_step_id}"
-        )
+        return self.s.get(endpoint=f"get_shared_step/{shared_step_id}")
 
     def get_shared_steps(self, project_id: int, **kwargs) -> dict:
         """
@@ -2030,10 +1894,7 @@ class SharedSteps(_MetaCategory):
             :key refs: str
                 A single Reference ID (e.g. TR-a, 4291, etc.)
         """
-        return self.s.get(
-            endpoint=f"get_shared_steps/{project_id}",
-            params=kwargs
-        )
+        return self.s.get(endpoint=f"get_shared_steps/{project_id}", params=kwargs)
 
     def add_shared_step(
         self, project_id: int, title: str, custom_steps_separated: List[dict]
@@ -2078,8 +1939,7 @@ class SharedSteps(_MetaCategory):
                 an individual step. See the table below for more details.
         """
         return self.s.post(
-            endpoint=f"update_shared_step/{shared_update_id}",
-            json=kwargs
+            endpoint=f"update_shared_step/{shared_update_id}", json=kwargs
         )
 
     def delete_shared_step(self, shared_update_id: int, keep_in_cases: int = 1):

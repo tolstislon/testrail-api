@@ -36,7 +36,7 @@ class Session:
         warn_ignore: bool = False,
         retry_exceptions: Tuple[Type[BaseException], ...] = (),
         response_handler: Callable[[requests.Response], Any] = None,
-        **kwargs
+        **kwargs,
     ) -> None:
         """
         :param url:
@@ -161,8 +161,12 @@ class Session:
             params=params or {},
         )
 
-    def post(self, endpoint: str, params: Optional[Dict[Any, Any]] = None,
-             json: Optional[Dict[Any, Any]] = None):
+    def post(
+        self,
+        endpoint: str,
+        params: Optional[Dict[Any, Any]] = None,
+        json: Optional[Dict[Any, Any]] = None,
+    ):
         """POST method"""
         return self.request(
             method=METHODS.POST,
@@ -184,10 +188,7 @@ class Session:
         for count in range(self.__exc_iterations):
             try:
                 response = self.__session.request(
-                    method=str(method.value),
-                    url=url,
-                    timeout=self.__timeout,
-                    **kwargs
+                    method=str(method.value), url=url, timeout=self.__timeout, **kwargs
                 )
             except self.__retry_exceptions as exc:
                 if count < self.__exc_iterations - 1:

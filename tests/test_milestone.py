@@ -16,7 +16,9 @@ def add_milestone(r):
 def get_milestones(r):
     req = r.params
     assert req['is_started'] == '1'
-    return 200, {}, json.dumps([{'id': 1, 'name': 'Milestone 1', 'description': 'My new milestone'}])
+    return 200, {}, json.dumps(
+        [{'id': 1, 'name': 'Milestone 1', 'description': 'My new milestone'}]
+    )
 
 
 def update_milestone(r):
@@ -26,11 +28,12 @@ def update_milestone(r):
     return 200, {}, json.dumps(req)
 
 
-def test_get_milestone(api, mock, host):
+def test_get_milestone(api, mock, url):
     mock.add_callback(
         responses.GET,
-        '{}index.php?/api/v2/get_milestone/1'.format(host),
-        lambda x: (200, {}, json.dumps({'id': 1, 'name': 'Milestone 1', 'description': 'My new milestone'})),
+        url('get_milestone/1'),
+        lambda x: (200, {}, json.dumps(
+            {'id': 1, 'name': 'Milestone 1', 'description': 'My new milestone'})),
         content_type='application/json'
     )
     response = api.milestones.get_milestone(1)
@@ -39,10 +42,10 @@ def test_get_milestone(api, mock, host):
 
 
 @pytest.mark.parametrize('is_started', (1, True))
-def test_get_milestones(api, mock, host, is_started):
+def test_get_milestones(api, mock, url, is_started):
     mock.add_callback(
         responses.GET,
-        '{}index.php?/api/v2/get_milestones/1'.format(host),
+        url('get_milestones/1'),
         get_milestones,
         content_type='application/json'
     )
@@ -51,10 +54,10 @@ def test_get_milestones(api, mock, host, is_started):
     assert response[0]['description'] == 'My new milestone'
 
 
-def test_add_milestone(api, mock, host):
+def test_add_milestone(api, mock, url):
     mock.add_callback(
         responses.POST,
-        '{}index.php?/api/v2/add_milestone/1'.format(host),
+        url('add_milestone/1'),
         add_milestone,
         content_type='application/json'
     )
@@ -69,22 +72,23 @@ def test_add_milestone(api, mock, host):
     assert response['description'] == 'My new milestone'
 
 
-def test_update_milestone(api, mock, host):
+def test_update_milestone(api, mock, url):
     mock.add_callback(
         responses.POST,
-        '{}index.php?/api/v2/update_milestone/1'.format(host),
+        url('update_milestone/1'),
         update_milestone,
         content_type='application/json'
     )
-    response = api.milestones.update_milestone(1, is_completed=True, parent_id=23, start_on=datetime.now())
+    response = api.milestones.update_milestone(1, is_completed=True, parent_id=23,
+                                               start_on=datetime.now())
     assert response['is_completed'] is True
     assert response['parent_id'] == 23
 
 
-def test_delete_milestone(api, mock, host):
+def test_delete_milestone(api, mock, url):
     mock.add_callback(
         responses.POST,
-        '{}index.php?/api/v2/delete_milestone/1'.format(host),
+        url('delete_milestone/1'),
         lambda x: (200, {}, ''),
         content_type='application/json'
     )

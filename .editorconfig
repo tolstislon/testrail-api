@@ -1,0 +1,36 @@
+root = true
+
+[*]
+indent_style = space
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+end_of_line = lf
+indent_size = 4
+
+# Python files
+[*.py]
+max_line_length = 88
+ij_python_optimize_imports_always_split_from_imports = false
+ij_python_optimize_imports_case_insensitive_order = false
+ij_python_optimize_imports_join_from_imports_with_same_source = true
+ij_python_optimize_imports_sort_by_type_first = true
+ij_python_optimize_imports_sort_imports = true
+ij_python_optimize_imports_sort_names_in_from_imports = true
+ij_python_from_import_trailing_comma_if_multiline = true
+ij_python_new_line_after_colon_multi_clause = true
+ij_python_from_import_new_line_after_left_parenthesis = true
+ij_python_from_import_new_line_before_right_parenthesis = true
+ij_python_from_import_parentheses_force_if_multiline = true
+ij_wrap_on_typing = false
+ij_python_blank_lines_around_class = 1
+ij_python_blank_lines_after_imports = 2
+ij_python_blank_lines_before_first_method = 1
+
+# JSON files
+[*.json]
+indent_size = 2
+
+# YAML files
+[*.{yml, yaml}]
+indent_size = 2

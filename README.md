@@ -67,6 +67,30 @@ api.runs.close_run(my_test_run["id"])
 api.milestones.update_milestone(new_milestone["id"], is_completed=True)
 ```
 
+#### Custom response handler
+
+```python
+from datetime import datetime
+import simplejson
+
+from testrail_api import TestRailAPI
+
+
+def my_handler(response):
+    if response.ok:
+        return simplejson.loads(response.text)
+    return 'Error'
+
+
+api = TestRailAPI("https://example.testrail.com/", "example@mail.com", "password", response_handler=my_handler)
+new_milestone = api.milestones.add_milestone(
+    project_id=1,
+    name="New milestone",
+    start_on=datetime.now()
+)
+
+```
+
 Contributing
 ----
 Contributions are very welcome.

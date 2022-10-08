@@ -7,13 +7,14 @@ import warnings
 from datetime import datetime
 from json.decoder import JSONDecodeError
 from pathlib import Path
-from typing import Optional, Tuple, Union
+from typing import Any, Callable, Dict, Optional, Tuple, Type, Union
 
 import requests
 
 from . import __version__
 from ._enums import METHODS
 from ._exception import StatusCodeError, TestRailError
+
 
 logger = logging.getLogger(__package__)
 
@@ -33,8 +34,9 @@ class Session:
         exc: bool = False,
         rate_limit: bool = True,
         warn_ignore: bool = False,
-        retry_exceptions: Tuple[Exception] = None,
-        **kwargs
+        retry_exceptions: Tuple[Type[BaseException], ...] = (),
+        response_handler: Callable[[requests.Response], Any] = None,
+        **kwargs,
     ) -> None:
         """
         :param url:
@@ -51,6 +53,8 @@ class Session:
             Ignore warning when not using HTTPS
         :param retry_exceptions:
             Set of exceptions to retry the request
+        :param response_hook:
+            Override default response handling
         :param kwargs:
             :key timeout: int (default: 30)
                 How many seconds to wait for the server to send data
@@ -73,7 +77,7 @@ class Session:
                 "Using HTTP and not HTTPS may cause writeable API "
                 "requests to return 404 errors"
             )
-        self.__base_url = "{}/index.php?/api/v2/".format(_url)
+        self.__base_url = f"{_url}/index.php?/api/v2/"
         self.__timeout = kwargs.get("timeout", 30)
         self.__session = requests.Session()
         self.__session.headers["User-Agent"] = self._user_agent
@@ -83,10 +87,9 @@ class Session:
         self.__user_email = _email
         self.__session.auth = (self.__user_email, _password)
         self.__exc = exc
-        self.__retry_exceptions = (
-            retry_exceptions + (KeyError,) if retry_exceptions else (KeyError,)
-        )
+        self.__retry_exceptions = (KeyError, *retry_exceptions)
         self.__exc_iterations = kwargs.get("exc_iterations", 3)
+        self.__response_handler = response_handler or self.__default_response_handler
         self._rate_limit = rate_limit
         logger.info(
             "Create Session{url: %s, user: %s, timeout: %s, headers: %s, verify: "
@@ -106,7 +109,7 @@ class Session:
         """Get user email"""
         return self.__user_email
 
-    def __response(self, response: requests.Response):
+    def __default_response_handler(self, response: requests.Response):
         if not response.ok:
             logger.error(
                 "Code: %s, reason: %s url: %s, content: %s",
@@ -122,7 +125,6 @@ class Session:
                     response.url,
                     response.content,
                 )
-
         logger.debug("Response body: %s", response.text)
         try:
             return response.json()
@@ -151,10 +153,32 @@ class Session:
                 # Converting a datetime value to integer (UNIX timestamp)
                 json[key] = round(value.timestamp())
 
-    def request(self, method: METHODS, src: str, raw: bool = False, **kwargs):
+    def get(self, endpoint: str, params: Optional[Dict[Any, Any]] = None):
+        """GET method"""
+        return self.request(
+            method=METHODS.GET,
+            endpoint=endpoint,
+            params=params or {},
+        )
+
+    def post(
+        self,
+        endpoint: str,
+        params: Optional[Dict[Any, Any]] = None,
+        json: Optional[Dict[Any, Any]] = None,
+    ):
+        """POST method"""
+        return self.request(
+            method=METHODS.POST,
+            endpoint=endpoint,
+            params=params or {},
+            json=json or {},
+        )
+
+    def request(self, method: METHODS, endpoint: str, raw: bool = False, **kwargs):
         """Base request method"""
-        url = "{}{}".format(self.__base_url, src)
-        if not src.startswith("add_attachment"):
+        url = f"{self.__base_url}{endpoint}"
+        if not endpoint.startswith("add_attachment"):
             headers = kwargs.setdefault("headers", {})
             headers.update({"Content-Type": "application/json"})
 
@@ -164,7 +188,7 @@ class Session:
         for count in range(self.__exc_iterations):
             try:
                 response = self.__session.request(
-                    method=method.value, url=url, timeout=self.__timeout, **kwargs
+                    method=str(method.value), url=url, timeout=self.__timeout, **kwargs
                 )
             except self.__retry_exceptions as exc:
                 if count < self.__exc_iterations - 1:
@@ -188,7 +212,7 @@ class Session:
                 time.sleep(int(response.headers.get("retry-after", self.__retry)))
                 continue
             logger.debug("Response header: %s", response.headers)
-            return response if raw else self.__response(response)
+            return response if raw else self.__response_handler(response)
 
     @staticmethod
     def _path(path: Union[Path, str]) -> Path:
@@ -212,4 +236,4 @@ class Session:
             with file.open("wb") as attachment:
                 attachment.write(response.content)
             return file
-        return self.__response(response)
+        return self.__default_response_handler(response)

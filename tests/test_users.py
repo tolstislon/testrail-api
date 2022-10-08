@@ -3,22 +3,23 @@ import json
 import responses
 
 
-def test_get_user(api, mock, host):
+def test_get_user(api, mock, url):
     mock.add_callback(
         responses.GET,
-        '{}index.php?/api/v2/get_user/1'.format(host),
+        url('get_user/1'),
         lambda x: (200, {}, json.dumps(
             {'email': 'testrail@ff.com', 'id': 1, 'name': 'John Smith',
-             'is_active': True}))
+             'is_active': True}
+        ))
     )
     response = api.users.get_user(1)
     assert response['name'] == 'John Smith'
 
 
-def test_get_user_by_email(api, mock, host):
+def test_get_user_by_email(api, mock, url):
     mock.add_callback(
         responses.GET,
-        '{}index.php?/api/v2/get_user_by_email'.format(host),
+        url('get_user_by_email'),
         lambda x: (200, {}, json.dumps(
             {'email': x.params["email"], 'id': 1, 'name': 'John Smith',
              'is_active': True}))
@@ -28,10 +29,10 @@ def test_get_user_by_email(api, mock, host):
     assert response['email'] == email
 
 
-def test_get_users(api, mock, host):
+def test_get_users(api, mock, url):
     mock.add_callback(
         responses.GET,
-        '{}index.php?/api/v2/get_users/15'.format(host),
+        url('get_users/15'),
         lambda x: (
             200, {}, json.dumps([{'email': 'testrail@ff.com', 'id': 1,
                                   'name': 'John Smith', 'is_active': True}])
@@ -41,10 +42,10 @@ def test_get_users(api, mock, host):
     assert response[0]['name'] == 'John Smith'
 
 
-def test_get_current_user(api, mock, host):
+def test_get_current_user(api, mock, url):
     mock.add_callback(
         responses.GET,
-        '{}index.php?/api/v2/get_current_user/1'.format(host),
+        url('get_current_user/1'),
         lambda x: (
             200, {},
             json.dumps({'email': 'testrail@ff.com', 'id': 1, 'name': 'John Smith',

@@ -7,7 +7,7 @@ import warnings
 from datetime import datetime
 from json.decoder import JSONDecodeError
 from pathlib import Path
-from typing import Any, Callable, Dict, Final, Optional, Tuple, Type, Union
+from typing import Any, Callable, Dict, Optional, Tuple, Type, Union
 
 import requests
 
@@ -18,7 +18,7 @@ from ._exception import StatusCodeError, TestRailError
 
 logger = logging.getLogger(__package__)
 
-RATE_LIMIT_STATUS_CODE: Final[int] = 429
+RATE_LIMIT_STATUS_CODE = 429
 
 
 class Session:

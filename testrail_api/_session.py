@@ -26,15 +26,15 @@ class Session:
     _user_agent = "Python TestRail API v: {}".format(__version__)
 
     def __init__(
-        self,
-        url: Optional[str] = None,
-        email: Optional[str] = None,
-        password: Optional[str] = None,
-        exc: bool = False,
-        rate_limit: bool = True,
-        warn_ignore: bool = False,
-        retry_exceptions: Tuple[Exception] = None,
-        **kwargs
+            self,
+            url: Optional[str] = None,
+            email: Optional[str] = None,
+            password: Optional[str] = None,
+            exc: bool = False,
+            rate_limit: bool = True,
+            warn_ignore: bool = False,
+            retry_exceptions: Tuple[Exception] = None,
+            **kwargs
     ) -> None:
         """
         :param url:
@@ -73,7 +73,7 @@ class Session:
                 "Using HTTP and not HTTPS may cause writeable API "
                 "requests to return 404 errors"
             )
-        self.__base_url = "{}/index.php?/api/v2/".format(_url)
+        self.__base_url = f"{_url}/index.php?/api/v2/"
         self.__timeout = kwargs.get("timeout", 30)
         self.__session = requests.Session()
         self.__session.headers["User-Agent"] = self._user_agent
@@ -181,9 +181,9 @@ class Session:
                 logger.error("%s", err, exc_info=True)
                 raise
             if (
-                self._rate_limit
-                and response.status_code == RATE_LIMIT_STATUS_CODE
-                and count < self.__exc_iterations - 1
+                    self._rate_limit
+                    and response.status_code == RATE_LIMIT_STATUS_CODE
+                    and count < self.__exc_iterations - 1
             ):
                 time.sleep(int(response.headers.get("retry-after", self.__retry)))
                 continue
@@ -195,7 +195,7 @@ class Session:
         return path if isinstance(path, Path) else Path(path)
 
     def attachment_request(
-        self, method: METHODS, src: str, file: Union[Path, str], **kwargs
+            self, method: METHODS, src: str, file: Union[Path, str], **kwargs
     ):
         """Send attach"""
         file = self._path(file)
@@ -203,7 +203,7 @@ class Session:
             return self.request(method, src, files={"attachment": attachment}, **kwargs)
 
     def get_attachment(
-        self, method: METHODS, src: str, file: Union[Path, str], **kwargs
+            self, method: METHODS, src: str, file: Union[Path, str], **kwargs
     ) -> Path:
         """Downloads attach"""
         file = self._path(file)

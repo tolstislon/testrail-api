@@ -7,13 +7,14 @@ import warnings
 from datetime import datetime
 from json.decoder import JSONDecodeError
 from pathlib import Path
-from typing import Optional, Tuple, Union
+from typing import Any, Dict, Optional, Tuple, Type, Union
 
 import requests
 
 from . import __version__
 from ._enums import METHODS
 from ._exception import StatusCodeError, TestRailError
+
 
 logger = logging.getLogger(__package__)
 
@@ -26,15 +27,15 @@ class Session:
     _user_agent = "Python TestRail API v: {}".format(__version__)
 
     def __init__(
-            self,
-            url: Optional[str] = None,
-            email: Optional[str] = None,
-            password: Optional[str] = None,
-            exc: bool = False,
-            rate_limit: bool = True,
-            warn_ignore: bool = False,
-            retry_exceptions: Tuple[Exception] = None,
-            **kwargs
+        self,
+        url: Optional[str] = None,
+        email: Optional[str] = None,
+        password: Optional[str] = None,
+        exc: bool = False,
+        rate_limit: bool = True,
+        warn_ignore: bool = False,
+        retry_exceptions: Optional[Tuple[Type[BaseException], ...]] = None,
+        **kwargs
     ) -> None:
         """
         :param url:
@@ -151,10 +152,28 @@ class Session:
                 # Converting a datetime value to integer (UNIX timestamp)
                 json[key] = round(value.timestamp())
 
-    def request(self, method: METHODS, src: str, raw: bool = False, **kwargs):
+    def get(self, endpoint: str, params: Optional[Dict[Any, Any]] = None):
+        """GET method"""
+        return self.request(
+            method=METHODS.GET,
+            endpoint=endpoint,
+            params=params or {},
+        )
+
+    def post(self, endpoint: str, params: Optional[Dict[Any, Any]] = None,
+             json: Optional[Dict[Any, Any]] = None):
+        """POST method"""
+        return self.request(
+            method=METHODS.POST,
+            endpoint=endpoint,
+            params=params or {},
+            json=json or {},
+        )
+
+    def request(self, method: METHODS, endpoint: str, raw: bool = False, **kwargs):
         """Base request method"""
-        url = "{}{}".format(self.__base_url, src)
-        if not src.startswith("add_attachment"):
+        url = f"{self.__base_url}{endpoint}"
+        if not endpoint.startswith("add_attachment"):
             headers = kwargs.setdefault("headers", {})
             headers.update({"Content-Type": "application/json"})
 
@@ -164,7 +183,10 @@ class Session:
         for count in range(self.__exc_iterations):
             try:
                 response = self.__session.request(
-                    method=method.value, url=url, timeout=self.__timeout, **kwargs
+                    method=str(method.value),
+                    url=url,
+                    timeout=self.__timeout,
+                    **kwargs
                 )
             except self.__retry_exceptions as exc:
                 if count < self.__exc_iterations - 1:
@@ -181,9 +203,9 @@ class Session:
                 logger.error("%s", err, exc_info=True)
                 raise
             if (
-                    self._rate_limit
-                    and response.status_code == RATE_LIMIT_STATUS_CODE
-                    and count < self.__exc_iterations - 1
+                self._rate_limit
+                and response.status_code == RATE_LIMIT_STATUS_CODE
+                and count < self.__exc_iterations - 1
             ):
                 time.sleep(int(response.headers.get("retry-after", self.__retry)))
                 continue
@@ -195,7 +217,7 @@ class Session:
         return path if isinstance(path, Path) else Path(path)
 
     def attachment_request(
-            self, method: METHODS, src: str, file: Union[Path, str], **kwargs
+        self, method: METHODS, src: str, file: Union[Path, str], **kwargs
     ):
         """Send attach"""
         file = self._path(file)
@@ -203,7 +225,7 @@ class Session:
             return self.request(method, src, files={"attachment": attachment}, **kwargs)
 
     def get_attachment(
-            self, method: METHODS, src: str, file: Union[Path, str], **kwargs
+        self, method: METHODS, src: str, file: Union[Path, str], **kwargs
     ) -> Path:
         """Downloads attach"""
         file = self._path(file)

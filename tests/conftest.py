@@ -6,6 +6,7 @@ import responses
 
 from testrail_api import TestRailAPI
 
+
 BASE_HOST = 'https://example.testrail.com/index.php?/api/v2/'
 
 
@@ -21,7 +22,8 @@ class CallbackResponse(responses.CallbackResponse):
 
 class RequestsMock(responses.RequestsMock):
 
-    def add_callback(self, method, url, callback, match_querystring=False, content_type="text/plain"):
+    def add_callback(self, method, url, callback, match_querystring=False,
+                     content_type="text/plain", match=()):
         self._registry.add(
             CallbackResponse(
                 url=url,
@@ -29,6 +31,7 @@ class RequestsMock(responses.RequestsMock):
                 callback=callback,
                 content_type=content_type,
                 match_querystring=match_querystring,
+                match=match
             )
         )
 
@@ -36,6 +39,14 @@ class RequestsMock(responses.RequestsMock):
 @pytest.fixture(scope='session')
 def host():
     yield 'https://example.testrail.com/'
+
+
+@pytest.fixture(scope='session')
+def url(host):
+    def _wrap(endpoint: str) -> str:
+        return f'{host}index.php?/api/v2/{endpoint}'
+
+    yield _wrap
 
 
 @pytest.fixture(scope='session')

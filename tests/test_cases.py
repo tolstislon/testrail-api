@@ -44,36 +44,36 @@ def delete_cases(r, project_id=None, case_ids=None, suite_id=None, soft=0):
     return 200, {}, ''
 
 
-def test_get_case(api, mock, host):
+def test_get_case(api, mock, url):
     mock.add_callback(
         responses.GET,
-        '{}index.php?/api/v2/get_case/1'.format(host),
+        url('get_case/1'),
         lambda x: (200, {}, json.dumps({'id': 1, 'type_id': 1, 'title': 'My case'})),
     )
     resp = api.cases.get_case(1)
     assert resp['id'] == 1
 
 
-def test_get_cases(api, mock, host):
+def test_get_cases(api, mock, url):
     mock.add_callback(
         responses.GET,
-        '{}index.php?/api/v2/get_cases/1'.format(host),
+        url('get_cases/1'),
         get_cases,
     )
     now = datetime.now()
 
     resp = api.cases.get_cases(
         1, suite_id=2, section_id=3, limit=5, offset=10,
-        created_after=now, created_before=round(now.timestamp()), updated_after=now,
-        updated_before=now
+        created_after=now, created_before=round(now.timestamp()),
+        updated_after=now, updated_before=now
     )
     assert resp[0]['id'] == 1
 
 
-def test_add_case(api, mock, host):
+def test_add_case(api, mock, url):
     mock.add_callback(
         responses.POST,
-        '{}index.php?/api/v2/add_case/2'.format(host),
+        url('add_case/2'),
         add_case,
     )
     resp = api.cases.add_case(2, 'New case', priority_id=1)
@@ -81,39 +81,39 @@ def test_add_case(api, mock, host):
     assert resp['priority_id'] == 1
 
 
-def test_update_case(api, mock, host):
+def test_update_case(api, mock, url):
     mock.add_callback(
         responses.POST,
-        '{}index.php?/api/v2/update_case/1'.format(host),
+        url('update_case/1'),
         update_case,
     )
     resp = api.cases.update_case(1, title='New case title')
     assert resp['title'] == 'New case title'
 
 
-def test_delete_case(api, mock, host):
+def test_delete_case(api, mock, url):
     mock.add_callback(
         responses.POST,
-        '{}index.php?/api/v2/delete_case/5'.format(host),
+        url('delete_case/5'),
         lambda x: (200, {}, ''),
     )
     resp = api.cases.delete_case(5)
     assert resp is None
 
 
-def test_get_history_for_case(api, mock, host):
+def test_get_history_for_case(api, mock, url):
     mock.add_callback(
         responses.GET,
-        '{}index.php?/api/v2/get_history_for_case/7'.format(host),
+        url('get_history_for_case/7'),
         lambda x: (200, {}, ''),
     )
     api.cases.get_history_for_case(7)
 
 
-def test_update_cases_no_suite(api, mock, host):
+def test_update_cases_no_suite(api, mock, url):
     mock.add_callback(
         responses.POST,
-        '{}index.php?/api/v2/update_case/1'.format(host),
+        url('update_case/1'),
         update_cases_suite,
     )
     body = {'priority_id': 1, 'estimate': '5m'}
@@ -121,10 +121,10 @@ def test_update_cases_no_suite(api, mock, host):
     assert resp == body
 
 
-def test_update_cases_suite(api, mock, host):
+def test_update_cases_suite(api, mock, url):
     mock.add_callback(
         responses.POST,
-        '{}index.php?/api/v2/update_case/1'.format(host),
+        url('update_case/1'),
         partial(update_cases_suite, suite_id=2),
     )
     body = {'priority_id': 1, 'estimate': '5m'}
@@ -132,28 +132,28 @@ def test_update_cases_suite(api, mock, host):
     assert resp == body
 
 
-def test_delete_cases_no_suite_id(api, mock, host):
+def test_delete_cases_no_suite_id(api, mock, url):
     mock.add_callback(
         responses.POST,
-        '{}index.php?/api/v2/delete_cases'.format(host),
-        partial(delete_cases, project_id=1, case_ids=[5,6]),
+        url('delete_cases'),
+        partial(delete_cases, project_id=1, case_ids=[5, 6]),
     )
-    api.cases.delete_cases(1, [5,6])
+    api.cases.delete_cases(1, [5, 6])
 
 
-def test_delete_cases_suite_id(api, mock, host):
+def test_delete_cases_suite_id(api, mock, url):
     mock.add_callback(
         responses.POST,
-        '{}index.php?/api/v2/delete_cases/1'.format(host),
-        partial(delete_cases, project_id=1, suite_id=1, case_ids=[5,6]),
+        url('delete_cases/1'),
+        partial(delete_cases, project_id=1, suite_id=1, case_ids=[5, 6]),
     )
-    api.cases.delete_cases(1, [5,6], 1)
+    api.cases.delete_cases(1, [5, 6], 1)
 
 
-def test_delete_cases_suite_id_soft(api, mock, host):
+def test_delete_cases_suite_id_soft(api, mock, url):
     mock.add_callback(
         responses.POST,
-        '{}index.php?/api/v2/delete_cases/1'.format(host),
-        partial(delete_cases, project_id=1, suite_id=1, soft=1, case_ids=[5,6]),
+        url('delete_cases/1'),
+        partial(delete_cases, project_id=1, suite_id=1, soft=1, case_ids=[5, 6]),
     )
-    api.cases.delete_cases(1, [5,6], 1, 1)
+    api.cases.delete_cases(1, [5, 6], 1, 1)

@@ -1,4 +1,3 @@
-from functools import partial
 import json
 import time
 
@@ -16,7 +15,7 @@ class RateLimit:
         self.last = 0
         self.count = 0
 
-    def rate(self, r):
+    def __call__(self, r):
         self.count += 1
         now = time.time()
         if self.last == 0 or now - self.last < 3:
@@ -37,10 +36,9 @@ class CustomExceptionRetry:
         self.exception = exception
         self.fail = fail
 
-    def raises(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs):
         self.count += 1
         if self.count < 3:
-            print(self.count)
             raise self.exception("fail")
         elif self.fail:
             raise self.exception("fail")
@@ -48,92 +46,91 @@ class CustomExceptionRetry:
             return 200, {}, json.dumps({'count': self.count})
 
 
-def test_rate_limit(api, mock, host):
-    limit = RateLimit()
+def test_rate_limit(api, mock, url):
     mock.add_callback(
         responses.GET,
-        '{}index.php?/api/v2/get_case/1'.format(host),
-        limit.rate,
+        url('get_case/1'),
+        RateLimit(),
     )
     resp = api.cases.get_case(1)
     assert resp['count'] == 2
 
 
-def test_raise_rate_limit(api, mock, host):
+def test_raise_rate_limit(api, mock, url):
     mock.add_callback(
         responses.GET,
-        '{}index.php?/api/v2/get_case/1'.format(host),
+        url('get_case/1'),
         lambda x: (429, {}, ''),
     )
     with pytest.raises(StatusCodeError):
         api.cases.get_case(1)
 
 
-def test_exc_raise_rate_limit(auth_data, mock, host):
+def test_exc_raise_rate_limit(auth_data, mock, url):
     api = TRApi(*auth_data, exc=True)
     mock.add_callback(
         responses.GET,
-        '{}index.php?/api/v2/get_case/1'.format(host),
+        url('get_case/1'),
         lambda x: (429, {}, ''),
     )
     resp = api.cases.get_case(1)
     assert resp is None
 
 
-def test_exc_raise(auth_data, mock, host):
+def test_exc_raise(auth_data, mock, url):
     api = TRApi(*auth_data, exc=True)
     mock.add_callback(
         responses.GET,
-        '{}index.php?/api/v2/get_case/1'.format(host),
+        url('get_case/1'),
         lambda x: (400, {}, ''),
     )
     resp = api.cases.get_case(1)
     assert resp is None
 
 
-def test_raise(auth_data, mock, host):
+def test_raise(auth_data, mock, url):
     api = TRApi(*auth_data, exc=False)
     mock.add_callback(
         responses.GET,
-        '{}index.php?/api/v2/get_case/1'.format(host),
+        url('get_case/1'),
         lambda x: (400, {}, ''),
     )
     with pytest.raises(StatusCodeError):
         api.cases.get_case(1)
 
 
-def test_custom_exception_fails(auth_data, mock, host):
-    retry = CustomExceptionRetry(fail=True)
+def test_custom_exception_fails(auth_data, mock, url):
     api = TRApi(*auth_data, exc=True, retry_exceptions=(CustomException,))
     mock.add_callback(
         responses.GET,
-        '{}index.php?/api/v2/get_case/1'.format(host),
-        retry.raises,
+        url('get_case/1'),
+        CustomExceptionRetry(fail=True)
     )
     with pytest.raises(CustomException):
         api.cases.get_case(1)
 
-def test_custom_exception_succeeds(auth_data, mock, host):
-    retry = CustomExceptionRetry(fail=False)
+
+def test_custom_exception_succeeds(auth_data, mock, url):
     api = TRApi(*auth_data, exc=True, retry_exceptions=(CustomException,))
     mock.add_callback(
         responses.GET,
-        '{}index.php?/api/v2/get_case/1'.format(host),
-        retry.raises,
+        url('get_case/1'),
+        CustomExceptionRetry(fail=False)
     )
     response = api.cases.get_case(1)
     assert response.get('count') is 3
 
-def test_custom_exception_fails_different_exception(auth_data, mock, host):
-    retry = CustomExceptionRetry(fail=True)
+
+def test_custom_exception_fails_different_exception(auth_data, mock, url):
     api = TRApi(*auth_data, exc=True, retry_exceptions=(KeyboardInterrupt,))
     mock.add_callback(
         responses.GET,
-        '{}index.php?/api/v2/get_case/1'.format(host),
-        retry.raises,
+        url('get_case/1'),
+        CustomExceptionRetry(fail=True)
     )
     with pytest.raises(CustomException):
         api.cases.get_case(1)
+
 
 def test_no_response_raise():
     api = TRApi('https://asdadadsa.cd', 'asd@asd.com', 'asdasda', exc=False)
@@ -149,17 +146,18 @@ def test_get_email():
 
 @pytest.mark.parametrize('field', ('url', 'email', 'password'))
 def test_raise_no_arg(field):
-    data = {'url': 'https://asdadadsa.cd', 'email': 'asd@asd.com', 'password': 'asdasda'}
+    data = {'url': 'https://asdadadsa.cd', 'email': 'asd@asd.com',
+            'password': 'asdasda'}
     del data[field]
     with pytest.raises(TRError):
         TRApi(**data)
 
 
-def test_environment_variables(environ, mock, host):
+def test_environment_variables(environ, mock, url):
     api = TRApi()
     mock.add_callback(
         responses.GET,
-        '{}index.php?/api/v2/get_case/1'.format(host),
+        url('get_case/1'),
         lambda x: (200, {}, json.dumps({'id': 1})),
     )
     resp = api.cases.get_case(1)

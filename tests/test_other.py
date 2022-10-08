@@ -172,3 +172,17 @@ def test_http_warn():
 @pytest.mark.filterwarnings("error")
 def test_http_no_warn():
     TRApi('http://asdadadsa.cd', 'asd@asd.com', 'asdasda', warn_ignore=True)
+
+
+def test_response_handler(auth_data, mock, url):
+    def hook(x):
+        return 'my hook response'
+
+    api = TRApi(*auth_data, response_handler=hook)
+    mock.add_callback(
+        responses.GET,
+        url('get_case/1'),
+        lambda x: (200, {}, json.dumps({'a': 1, 'b': 2}))
+    )
+    response = api.cases.get_case(1)
+    assert response == 'my hook response'

@@ -7,7 +7,7 @@ import warnings
 from datetime import datetime
 from json.decoder import JSONDecodeError
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple, Type, Union
+from typing import Any, Callable, Dict, Final, Optional, Tuple, Type, Union
 
 import requests
 
@@ -18,7 +18,7 @@ from ._exception import StatusCodeError, TestRailError
 
 logger = logging.getLogger(__package__)
 
-RATE_LIMIT_STATUS_CODE = 429
+RATE_LIMIT_STATUS_CODE: Final[int] = 429
 
 
 class Session:
@@ -34,7 +34,8 @@ class Session:
         exc: bool = False,
         rate_limit: bool = True,
         warn_ignore: bool = False,
-        retry_exceptions: Optional[Tuple[Type[BaseException], ...]] = None,
+        retry_exceptions: Tuple[Type[BaseException], ...] = (),
+        response_handler: Callable[[requests.Response], Any] = None,
         **kwargs
     ) -> None:
         """
@@ -52,6 +53,8 @@ class Session:
             Ignore warning when not using HTTPS
         :param retry_exceptions:
             Set of exceptions to retry the request
+        :param response_hook:
+            Override default response handling
         :param kwargs:
             :key timeout: int (default: 30)
                 How many seconds to wait for the server to send data
@@ -84,10 +87,9 @@ class Session:
         self.__user_email = _email
         self.__session.auth = (self.__user_email, _password)
         self.__exc = exc
-        self.__retry_exceptions = (
-            retry_exceptions + (KeyError,) if retry_exceptions else (KeyError,)
-        )
+        self.__retry_exceptions = (KeyError, *retry_exceptions)
         self.__exc_iterations = kwargs.get("exc_iterations", 3)
+        self.__response_handler = response_handler or self.__default_response_handler
         self._rate_limit = rate_limit
         logger.info(
             "Create Session{url: %s, user: %s, timeout: %s, headers: %s, verify: "
@@ -107,7 +109,7 @@ class Session:
         """Get user email"""
         return self.__user_email
 
-    def __response(self, response: requests.Response):
+    def __default_response_handler(self, response: requests.Response):
         if not response.ok:
             logger.error(
                 "Code: %s, reason: %s url: %s, content: %s",
@@ -123,7 +125,6 @@ class Session:
                     response.url,
                     response.content,
                 )
-
         logger.debug("Response body: %s", response.text)
         try:
             return response.json()
@@ -210,7 +211,7 @@ class Session:
                 time.sleep(int(response.headers.get("retry-after", self.__retry)))
                 continue
             logger.debug("Response header: %s", response.headers)
-            return response if raw else self.__response(response)
+            return response if raw else self.__response_handler(response)
 
     @staticmethod
     def _path(path: Union[Path, str]) -> Path:
@@ -234,4 +235,4 @@ class Session:
             with file.open("wb") as attachment:
                 attachment.write(response.content)
             return file
-        return self.__response(response)
+        return self.__default_response_handler(response)

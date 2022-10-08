@@ -62,3 +62,14 @@ def test_delete_section(api, mock, url):
     )
     resp = api.sections.delete_section(2)
     assert resp is None
+
+
+def test_move_section(api, mock, url):
+    mock.add_callback(
+        responses.POST,
+        url('move_section/2'),
+        lambda x: (200, {}, x.body)
+    )
+    resp = api.sections.move_section(2, parent_id=3, after_id=5)
+    assert resp['parent_id'] == 3
+    assert resp['after_id'] == 5

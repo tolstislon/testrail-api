@@ -44,6 +44,12 @@ def delete_cases(r, project_id=None, case_ids=None, suite_id=None, soft=0):
     return 200, {}, ''
 
 
+# def copy_cases_to_section(r):
+#     body = json.loads(r.body.decode())
+#     assert body['case_ids'] == '1,2,3'
+#     return 200, {}, ''
+
+
 def test_get_case(api, mock, url):
     mock.add_callback(
         responses.GET,
@@ -157,3 +163,23 @@ def test_delete_cases_suite_id_soft(api, mock, url):
         partial(delete_cases, project_id=1, suite_id=1, soft=1, case_ids=[5, 6]),
     )
     api.cases.delete_cases(1, [5, 6], 1, 1)
+
+
+def test_copy_cases_to_section(api, mock, url):
+    mock.add_callback(
+        responses.POST,
+        url('copy_cases_to_section/2'),
+        lambda x: (200, {}, x.body)
+    )
+    resp = api.cases.copy_cases_to_section(section_id=2, case_ids=[1, 2, 3])
+    assert resp['case_ids'] == '1,2,3'
+
+
+def test_move_cases_to_section(api, mock, url):
+    mock.add_callback(
+        responses.POST,
+        url('move_cases_to_section/5'),
+        lambda x: (200, {}, x.body)
+    )
+    resp = api.cases.move_cases_to_section(section_or_suite_id=5, case_ids=[1, 2, 3])
+    assert resp['case_ids'] == '1,2,3'

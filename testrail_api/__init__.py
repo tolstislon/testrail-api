@@ -53,6 +53,7 @@ import logging
 from ._exception import StatusCodeError
 from ._testrail_api import TestRailAPI
 
+
 logging.getLogger(__package__).addHandler(logging.NullHandler())
 
 __all__ = ["TestRailAPI", "StatusCodeError", "__version__"]

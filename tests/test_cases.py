@@ -27,10 +27,10 @@ def update_case(r):
     return 200, {}, json.dumps({'id': 1, 'title': data['title']})
 
 
-def update_cases_suite(r, suite_id=None):
-    if suite_id:
-        assert int(r.params['suite_id']) == suite_id
-    return 200, {}, r.body.decode()
+def update_cases(r):
+    suite_id = r.url.split('/')[-1]
+    data = json.loads(r.body.decode())
+    return 200, {}, json.dumps([{'id': _, 'title': data['title']} for _ in data['case_ids']])
 
 
 def delete_cases(r, project_id=None, case_ids=None, suite_id=None, soft=0):
@@ -116,26 +116,16 @@ def test_get_history_for_case(api, mock, url):
     api.cases.get_history_for_case(7)
 
 
-def test_update_cases_no_suite(api, mock, url):
+def test_update_cases(api, mock, url):
     mock.add_callback(
         responses.POST,
         url('update_case/1'),
-        update_cases_suite,
+        partial(update_cases, title="New title"),
     )
-    body = {'priority_id': 1, 'estimate': '5m'}
-    resp = api.cases.update_cases(1, **body)
-    assert resp == body
-
-
-def test_update_cases_suite(api, mock, url):
-    mock.add_callback(
-        responses.POST,
-        url('update_case/1'),
-        partial(update_cases_suite, suite_id=2),
-    )
-    body = {'priority_id': 1, 'estimate': '5m'}
+    body = {'title': "Old Title", 'estimate': '5m'}
     resp = api.cases.update_cases(1, 2, **body)
-    assert resp == body
+    assert resp != body
+    assert resp[0]['title'] == "New title"
 
 
 def test_delete_cases_no_suite_id(api, mock, url):

@@ -402,19 +402,19 @@ class Cases(_MetaCategory):
         """
         return self.s.post(endpoint=f"update_case/{case_id}", json=kwargs)
 
-    def update_cases(
-        self, project_id: int, suite_id: Optional[int] = None, **kwargs
-    ) -> dict:
+    def update_cases(self, suite_id: int, case_ids: List[int], **kwargs) -> dict:
         """
         Updates multiple test cases with the same values, such as setting a set
         of test cases to High priority. This does not support updating multiple
         test cases with different values per test case.
 
-        :param project_id: int
-            The ID of the project
+        Note: The online documentation is wrong. The suite_id is required in
+        single suite mode as well.
+
         :param suite_id:
             The ID of the suite
-                (Only required if the project is in multi-suite mode)
+        :case_ids: List[int]
+            The IDs of the test cases to update with the kwargs
         :param kwargs:
             :key title: str
                 The title of the test case
@@ -433,11 +433,8 @@ class Cases(_MetaCategory):
             :key refs: str
                 A comma-separated list of references/requirements
         """
-        return self.s.post(
-            endpoint=f"update_case/{project_id}",
-            params={"suite_id": suite_id} if suite_id else {},
-            json=kwargs,
-        )
+        kwargs.update({"case_ids": case_ids})
+        return self.s.post(endpoint=f"update_cases/{suite_id}", json=kwargs)
 
     def delete_case(self, case_id: int, soft: int = 0) -> Optional[dict]:
         """

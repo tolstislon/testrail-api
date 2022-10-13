@@ -977,8 +977,6 @@ class Plans(_MetaCategory):
         Updates a run inside a plan entry which uses configurations
         Requires TestRail 6.4 or later
 
-        :param plan_id:
-            The ID of the test plan
         :param run_id:
             The ID of the test run
         :param kwargs:

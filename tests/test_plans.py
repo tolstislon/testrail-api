@@ -153,10 +153,10 @@ def test_add_run_to_plan_entry(api, mock, url):
 def test_update_run_in_plan_entry(api, mock, url):
     mock.add_callback(
         responses.POST,
-        url('update_run_in_plan_entry/12/2'),
+        url('update_run_in_plan_entry/2'),
         update_run_in_plan_entry
     )
-    api.plans.update_run_in_plan_entry(12, 2, description='Test')
+    api.plans.update_run_in_plan_entry(2, description='Test')
 
 
 def test_delete_run_from_plan_entry(api, mock, url):

@@ -972,7 +972,7 @@ class Plans(_MetaCategory):
             endpoint=f"update_plan_entry/{plan_id}/{entry_id}", json=kwargs
         )
 
-    def update_run_in_plan_entry(self, plan_id: int, run_id: int, **kwargs):
+    def update_run_in_plan_entry(self, run_id: int, **kwargs):
         """
         Updates a run inside a plan entry which uses configurations
         Requires TestRail 6.4 or later
@@ -997,7 +997,7 @@ class Plans(_MetaCategory):
         :return: response
         """
         return self.s.post(
-            endpoint=f"update_run_in_plan_entry/{plan_id}/{run_id}", json=kwargs
+            endpoint=f"update_run_in_plan_entry/{run_id}", json=kwargs
         )
 
     def close_plan(self, plan_id: int) -> dict:

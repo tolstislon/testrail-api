@@ -994,9 +994,7 @@ class Plans(_MetaCategory):
                 A comma-separated list of references/requirements
         :return: response
         """
-        return self.s.post(
-            endpoint=f"update_run_in_plan_entry/{run_id}", json=kwargs
-        )
+        return self.s.post(endpoint=f"update_run_in_plan_entry/{run_id}", json=kwargs)
 
     def close_plan(self, plan_id: int) -> dict:
         """

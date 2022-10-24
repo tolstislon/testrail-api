@@ -9,10 +9,9 @@ from testrail_api import TestRailAPI
 
 BASE_HOST = 'https://example.testrail.com/index.php?/api/v2/'
 
-
 class CallbackResponse(responses.CallbackResponse):
 
-    def _url_matches(self, url: str, other, match_querystring=False):
+    def _url_matches(self, url: str, other, match_querystring=responses.FalseBool()):
         base_url = url.replace(BASE_HOST, '')
         other = other.replace(BASE_HOST, '')
         base_other = other.split('&', 1)[0]
@@ -22,7 +21,7 @@ class CallbackResponse(responses.CallbackResponse):
 
 class RequestsMock(responses.RequestsMock):
 
-    def add_callback(self, method, url, callback, match_querystring=False,
+    def add_callback(self, method, url, callback, match_querystring=responses.FalseBool(),
                      content_type="text/plain", match=()):
         self._registry.add(
             CallbackResponse(

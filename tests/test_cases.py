@@ -30,7 +30,7 @@ def update_case(r):
 def update_cases(r):
     suite_id = r.url.split('/')[-1]
     data = json.loads(r.body.decode())
-    return 200, {}, json.dumps([{'id': _, 'title': data['title']} for _ in data['case_ids']])
+    return 200, {}, json.dumps([{'id': _, 'suite_id': int(suite_id), 'title': data['title']} for _ in data['case_ids']])
 
 
 def delete_cases(r, project_id=None, case_ids=None, suite_id=None, soft=0):
@@ -119,13 +119,14 @@ def test_get_history_for_case(api, mock, url):
 def test_update_cases(api, mock, url):
     mock.add_callback(
         responses.POST,
-        url('update_case/1'),
-        partial(update_cases, title="New title"),
+        url('update_cases/1'),
+        update_cases,
     )
-    body = {'title': "Old Title", 'estimate': '5m'}
-    resp = api.cases.update_cases(1, 2, **body)
+    body = {'title': "New title", 'estimate': '5m'}
+    resp = api.cases.update_cases([1,2,3], 1, **body)
     assert resp != body
     assert resp[0]['title'] == "New title"
+    assert resp[0]['suite_id'] == 1
 
 
 def test_delete_cases_no_suite_id(api, mock, url):

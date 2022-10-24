@@ -402,7 +402,7 @@ class Cases(_MetaCategory):
         """
         return self.s.post(endpoint=f"update_case/{case_id}", json=kwargs)
 
-    def update_cases(self, suite_id: int, case_ids: List[int], **kwargs) -> dict:
+    def update_cases(self, case_ids: List[int], suite_id: int, **kwargs) -> dict:
         """
         Updates multiple test cases with the same values, such as setting a set
         of test cases to High priority. This does not support updating multiple

@@ -1,5 +1,6 @@
 import json
 import time
+from unittest import mock
 
 import pytest
 import responses
@@ -7,6 +8,7 @@ from requests.exceptions import ConnectionError
 
 from testrail_api import StatusCodeError, TestRailAPI as TRApi
 from testrail_api._exception import TestRailError as TRError  # noqa
+from testrail_api._category import _bulk_api_method
 
 
 class RateLimit:
@@ -186,3 +188,13 @@ def test_response_handler(auth_data, mock, url):
     )
     response = api.cases.get_case(1)
     assert response == 'my hook response'
+
+def test_bulk_endpoint_helper():
+    mock_func = mock.Mock()
+    mock_func.side_effect = [
+        {"offset": 0, "limit": 250, "size": 250, "data": [{"id": _} for _ in range(250)]},
+        {"offset": 250, "limit": 250, "size": 1, "data": [{"id": 101}]}
+    ]
+    resp = _bulk_api_method(mock_func, 'data')
+    assert len(resp) == 251
+    assert all('id' in _ for _ in resp)

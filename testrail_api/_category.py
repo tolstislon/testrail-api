@@ -2,11 +2,30 @@
 TestRail API categories
 """
 
+import itertools
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import Callable, List, Optional, Union
 
 from ._enums import METHODS
 from ._session import Session
+
+OFFSET_MAX = 250
+LIMIT_MAX = 250
+
+
+def _bulk_api_method(func: Callable, resp_key: str, *args, **kwargs) -> List:
+    """Get the objects handling the pagination via offset.
+
+    If the size returned from the API is less than the offset value.
+    """
+    _response_objects = []
+    for offset in itertools.count(0, OFFSET_MAX):
+        kwargs.update({"offset": offset, "limit": LIMIT_MAX})
+        _resp = func(*args, **kwargs)
+        _response_objects.extend(_resp.get(resp_key))
+        if _resp.get("size") < LIMIT_MAX:
+            break
+    return _response_objects
 
 
 class _MetaCategory:
@@ -156,7 +175,9 @@ class Attachments(_MetaCategory):
             params={"limit": limit, "offset": offset},
         )
 
-    def get_attachments_for_plan_entry(self, plan_id: int, entry_id: int) -> List[dict]:
+    def get_attachments_for_plan_entry(
+        self, plan_id: int, entry_id: int, **kwargs
+    ) -> List[dict]:
         """
         Returns a list of attachments for a test plan entry.
         Requires TestRail 6.3 or later
@@ -165,10 +186,14 @@ class Attachments(_MetaCategory):
             The ID of the test plan containing the entry
         :param entry_id:
             The ID of the test plan entry to retrieve attachments from
+        :param kwargs:
+            :key limit/offset: int
+                The number of attachments the response should return
         :return: response
         """
         return self.s.get(
-            endpoint=f"get_attachments_for_plan_entry/{plan_id}/{entry_id}"
+            endpoint=f"get_attachments_for_plan_entry/{plan_id}/{entry_id}",
+            params=kwargs,
         )
 
     def get_attachments_for_run(
@@ -193,16 +218,19 @@ class Attachments(_MetaCategory):
             params={"limit": limit, "offset": offset},
         )
 
-    def get_attachments_for_test(self, test_id: int) -> List[dict]:
+    def get_attachments_for_test(self, test_id: int, **kwargs) -> List[dict]:
         """
         Returns a list of attachments for test results.
         Requires TestRail 5.7 or later
 
         :param test_id:
             The ID of the test
+        :param kwargs:
+            :key limit/offset: int
+                The number of attachments the response should return
         :return: response
         """
-        return self.s.get(endpoint=f"get_attachments_for_test/{test_id}")
+        return self.s.get(endpoint=f"get_attachments_for_test/{test_id}", params=kwargs)
 
     def get_attachment(self, attachment_id: int, path: Union[str, Path]) -> Path:
         """
@@ -228,6 +256,77 @@ class Attachments(_MetaCategory):
         :return: None
         """
         return self.s.post(endpoint=f"delete_attachment/{attachment_id}")
+
+    def get_attachments_for_case_bulk(self, case_id: int) -> List[dict]:
+        """
+        Return the list of attachments from the case handling pagination.
+
+        Requires TestRail 5.7 or later
+
+        :param case_id:
+            The ID of the test case to retrieve attachments from
+        :return: List of attachments
+        :returns: List[dict]
+        """
+        return _bulk_api_method(self.get_attachments_for_case, "attachments", case_id)
+
+    def get_attachments_for_plan_bulk(self, plan_id: int) -> List[dict]:
+        """
+        Return the list of attachments from the plan handling pagination.
+
+        Requires TestRail 6.3 or later
+
+        :param plan_id:
+            The ID of the test plan to retrieve attachments from
+        :return: List of attachments
+        :returns: List[dict]
+        """
+        return _bulk_api_method(self.get_attachments_for_plan, "attachments", plan_id)
+
+    def get_attachments_for_run_bulk(self, run_id: int) -> List[dict]:
+        """
+        Return the list of attachments from the run handling pagination.
+
+        Requires TestRail 6.3 or later
+
+        :param run_id:
+            The ID of the test run to retrieve attachments from
+        :return: List of attachments
+        :returns: List[dict]
+        """
+        return _bulk_api_method(self.get_attachments_for_run, "attachments", run_id)
+
+    def get_attachments_for_plan_entry_bulk(
+        self, plan_id: int, entry_id: int
+    ) -> List[dict]:
+        """
+        Returns the list of attachments for the plan entry handling pagination.
+
+        Requires TestRail 6.3 or later
+
+        :param plan_id:
+            The ID of the test plan containing the entry
+        :param entry_id:
+            The ID of the test plan entry to retrieve attachments from
+        :return: List of attachments
+        :returns: List[dict]
+        """
+        return _bulk_api_method(
+            self.get_attachments_for_plan_entry, "attachments", plan_id, entry_id
+        )
+
+    def get_attachments_for_test_bulk(self, test_id: int) -> List[dict]:
+        """
+        Return the list of attachments from the test handling pagination.
+
+        Requires TestRail 6.3 or later
+
+        :param test_id:
+            The ID of the test to retrieve attachments from
+        :return: List of attachments
+        :returns: List[dict]
+        """
+        return _bulk_api_method(self.get_attachments_for_test, "attachments", test_id)
 
 
 class Cases(_MetaCategory):
@@ -505,6 +604,57 @@ class Cases(_MetaCategory):
             endpoint=f"move_cases_to_section/{section_or_suite_id}",
             json={"case_ids": ",".join(map(str, case_ids))},
         )
+
+    def get_cases_bulk(self, project_id: int, **kwargs) -> List[dict]:
+        """
+        Return a list of test cases for a project or specific test suite
+        (if the project has multiple suites enabled) with pagination.
+
+        :param project_id:
+            The ID of the project
+        :param kwargs:
+            :key suite_id: int
+                The ID of the test suite (optional if the project is operating in
+                single suite mode)
+            :key created_after: int/datetime
+                Only return test cases created after this date (as UNIX timestamp).
+            :key created_before: int/datetime
+                Only return test cases created before this date (as UNIX timestamp).
+            :key created_by: List[int] or comma-separated string
+                A comma-separated list of creators (user IDs) to filter by.
+            :key filter: str
+                Only return cases with matching filter string in the case title
+            :key limit: int
+                The number of test cases the response should return
+                (The response size is 250 by default) (requires TestRail 6.7 or later)
+            :key milestone_id: List[int] or comma-separated string
+                A comma-separated list of milestone IDs to filter by (not available
+                if the milestone field is disabled for the project).
+            :key offset: int
+                Where to start counting the tests cases from (the offset)
+                (requires TestRail 6.7 or later)
+            :key priority_id: List[int] or comma-separated string
+                A comma-separated list of priority IDs to filter by.
+            :key refs: str
+                A single Reference ID (e.g. TR-1, 4291, etc.)
+                (requires TestRail 6.5.2 or later)
+            :key section_id: int
+                The ID of a test case section
+            :key template_id: List[int] or comma-separated string
+                A comma-separated list of template IDs to filter by
+                (requires TestRail 5.2 or later)
+            :key type_id: List[int] or comma-separated string
+                A comma-separated list of case type IDs to filter by.
+            :key updated_after: int/datetime
+                Only return test cases updated after this date (as UNIX timestamp).
+            :key updated_before: int/datetime
+                Only return test cases updated before this date (as UNIX timestamp).
+            :key updated_by: List[int] or comma-separated string
+                A comma-separated list of user IDs who updated test cases to filter by.
+        :return: List of test cases
+        :returns: List[dict]
+        """
+        return _bulk_api_method(self.get_cases, "cases", project_id, **kwargs)
 
 
 class CaseFields(_MetaCategory):
@@ -785,6 +935,25 @@ class Milestones(_MetaCategory):
         """
         return self.s.post(endpoint=f"delete_milestone/{milestone_id}")
 
+    def get_milestones_bulk(self, project_id: int, **kwargs) -> List[dict]:
+        """
+        Return a list of milestones for a project handling pagination.
+
+        :param project_id:
+            The ID of the project
+        :param kwargs:
+            :key is_completed: int/bool
+                1/True to return completed milestones only.
+                0/False to return open (active/upcoming) milestones only
+                (available since TestRail 4.0).
+            :key is_started: int/bool
+                1/True to return started milestones only.
+                0/False to return upcoming milestones only
+                            (available since TestRail 5.3).
+        :return: response
+        """
+        return _bulk_api_method(self.get_milestones, "milestones", project_id, **kwargs)
+
 
 class Plans(_MetaCategory):
     """https://www.gurock.com/testrail/docs/api/reference/plans"""
@@ -1034,6 +1203,20 @@ class Plans(_MetaCategory):
         :return: response
         """
         return self.s.post(endpoint=f"delete_run_from_plan_entry/{run_id}")
+
+    def get_plans_bulk(self, project_id: int, **kwargs) -> List[dict]:
+        """
+        Return a list of test plans for a project handling pagination.
+
+        :param project_id:
+            The ID of the project
+        :param kwargs:
+            :key is_completed: int
+                True for returning completed test plans and false for uncompleted
+                test plans
+        :return: response
+        """
+        return _bulk_api_method(self.get_plans, "plans", project_id, **kwargs)
 
 
 class Priorities(_MetaCategory):
@@ -1408,6 +1591,69 @@ class Results(_MetaCategory):
             json={"results": results},
         )
 
+    def get_results_bulk(self, test_id: int, **kwargs) -> List[dict]:
+        """
+        Return a list of test results for a test run handling pagination.
+
+        :param run_id:
+            The ID of the test run
+        :param kwargs: filters
+            :key defects_filter: str
+                A single Defect ID (e.g. TR-1, 4291, etc.)
+            :key status_id: List[int] or comma-separated string
+                A comma-separated list of status IDs to filter by.
+        :return: List of results
+        :returns: List[dict]
+        """
+        return _bulk_api_method(self.get_results, "results", test_id, **kwargs)
+
+    def get_results_for_case_bulk(
+        self, run_id: int, case_id: int, **kwargs
+    ) -> List[dict]:
+        """
+        Return a list of test results for a case in a test run handling pagination.
+
+        For the difference between get_results vs get_results_for_case, please see
+        the documentation for get_results_for_case
+
+        :param run_id:
+            The ID of the test run
+        :param case_id:
+            The ID of the test case
+        :param kwargs: filters
+            :key defects_filter: str
+                A single Defect ID (e.g. TR-1, 4291, etc.)
+            :key status_id: List[int] or comma-separated string
+                A comma-separated list of status IDs to filter by.
+        :return: response
+        :returns: List[dict]
+        """
+        return _bulk_api_method(
+            self.get_results_for_case, "results", run_id, case_id, **kwargs
+        )
+
+    def get_results_for_run_bulk(self, run_id: int, **kwargs) -> List[dict]:
+        """
+        Returns a list of test results for a test run handling pagination.
+
+        :param run_id:
+            The ID of the test run
+        :param kwargs: filters
+            :key created_after: int/datetime
+                Only return test results created after this date.
+            :key created_before: int/datetime
+                Only return test results created before this date.
+            :key created_by: List[int] or comma-separated string
+                A comma-separated list of creators (user IDs) to filter by.
+            :key defects_filter: str
+                A single Defect ID (e.g. TR-1, 4291, etc.)
+            :key status_id: List[int] or comma-separated string
+                A comma-separated list of status IDs to filter by.
+        :return: response
+        :returns: List[dict]
+        """
+        return _bulk_api_method(self.get_results_for_run, "results", run_id, **kwargs)
+
 
 class ResultFields(_MetaCategory):
     """https://www.gurock.com/testrail/docs/api/reference/result-fields"""
@@ -1548,6 +1794,34 @@ class Runs(_MetaCategory):
         """
         return self.s.post(endpoint=f"delete_run/{run_id}", params={"soft": soft})
 
+    def get_runs_bulk(self, project_id: int, **kwargs) -> List[dict]:
+        """
+        Returns a list of test runs for a project. Only returns those test runs that
+        are not part of a test plan (please see get_plans/get_plan for this).
+
+        :param project_id: int
+            The ID of the project
+        :param kwargs: filters
+            :key created_after: int/datetime
+                Only return test runs created after this date (as UNIX timestamp).
+            :key created_before: int/datetime
+                Only return test runs created before this date (as UNIX timestamp).
+            :key created_by: List[int] or comma-separated string
+                A comma-separated list of creators (user IDs) to filter by.
+            :key is_completed: int/bool
+                1/True to return completed test runs only.
+                0/False to return active test runs only.
+            :key milestone_id: List[int] or comma-separated string
+                A comma-separated list of milestone IDs to filter by.
+            :key refs_filter: str
+                A single Reference ID (e.g. TR-a, 4291, etc.)
+            :key suite_id: List[int] or comma-separated string
+                A comma-separated list of test suite IDs to filter by.
+        :return: List of runs
+        :returns: List[dict]
+        """
+        return _bulk_api_method(self.get_runs, "runs", project_id, **kwargs)
+
 
 class Sections(_MetaCategory):
     """https://www.gurock.com/testrail/docs/api/reference/sections"""
@@ -1663,6 +1937,21 @@ class Sections(_MetaCategory):
         return self.s.post(
             endpoint=f"delete_section/{section_id}", params={"soft": soft}
         )
+
+    def get_sections_bulk(self, project_id: int, **kwargs) -> List[dict]:
+        """
+        Returns a list of sections for a project and/or test suite handling pagination.
+
+        :param project_id:
+            The ID of the project
+        :param kwargs:
+            :key suite_id:
+                The ID of the test suite (optional if the project is operating in
+                single suite mode)
+        :return: List of sections
+        :returns: List[dict]
+        """
+        return _bulk_api_method(self.get_sections, "sections", project_id, **kwargs)
 
 
 class Statuses(_MetaCategory):
@@ -1807,6 +2096,20 @@ class Tests(_MetaCategory):
             params=dict(limit=limit, offset=offset, **kwargs),
         )
 
+    def get_tests_bulk(self, run_id: int, **kwargs) -> List[dict]:
+        """
+        Returns a list of tests for a test run handling pagination.
+
+        :param run_id:
+            The ID of the test run
+        :param kwargs:
+            :key status_id: List[str] or comma-separated string
+                A comma-separated list of status IDs to filter by.
+        :return: List of tests
+        :returns: List[dict]
+        """
+        return _bulk_api_method(self.get_tests, "tests", run_id, **kwargs)
+
 
 class Users(_MetaCategory):
     """https://www.gurock.com/testrail/docs/api/reference/users"""
@@ -1949,4 +2252,30 @@ class SharedSteps(_MetaCategory):
         return self.s.post(
             endpoint=f"delete_shared_step/{shared_update_id}",
             json={"keep_in_cases": keep_in_cases},
+        )
+
+    def get_shared_steps_bulk(self, project_id: int, **kwargs) -> List[dict]:
+        """
+        Returns a list of shared steps for a project.
+
+        :param project_id: int
+            The ID of the project.
+        :param kwargs:
+            :key created_after: int or datetime
+                Only return shared steps created after this date
+            :key created_before: int or datetime
+                Only return shared steps created before this date
+            :key created_by: List[int] or A comma-separated str
+                A comma-separated list of creators (user IDs) to filter by.
+            :key updated_after: int or datetime
+                Only return shared steps updated after this date
+            :key updated_before: int or datetime
+                Only return shared steps updated before this date
+            :key refs: str
+                A single Reference ID (e.g. TR-a, 4291, etc.)
+        :return: List of shared steps
+        :returns: List[dict]
+        """
+        return _bulk_api_method(
+            self.get_shared_steps, "shared_steps", project_id, **kwargs
         )

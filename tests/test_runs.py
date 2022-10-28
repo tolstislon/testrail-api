@@ -11,8 +11,13 @@ def get_runs(r):
     for key in 'created_after', 'created_before':
         assert re.match(r'^\d+$', r.params[key])
     return 200, {}, json.dumps(
-        [{'id': 1, 'name': 'My run', 'is_completed': r.params['is_completed']}])
-
+        {
+            "offset": 0,
+            "limit": 250,
+            "size": 1,
+            "runs":[{'id': 1, 'name': 'My run', 'is_completed': r.params['is_completed']}]
+        }
+    )
 
 def add_run(r):
     data = json.loads(r.body.decode())
@@ -42,7 +47,7 @@ def test_get_runs(api, mock, url, is_completed):
     resp = api.runs.get_runs(
         12, is_completed=is_completed, created_after=datetime.now(),
         created_before=datetime.now()
-    )
+    ).get('runs')
     assert resp[0]['is_completed'] == '1'
 
 
@@ -88,3 +93,16 @@ def test_delete_run(api, mock, url):
     )
     resp = api.runs.delete_run(2)
     assert resp is None
+
+@pytest.mark.parametrize('is_completed', (1, True))
+def test_get_runs_bulk(api, mock, url, is_completed):
+    mock.add_callback(
+        responses.GET,
+        url('get_runs/12'),
+        get_runs
+    )
+    resp = api.runs.get_runs_bulk(
+        12, is_completed=is_completed, created_after=datetime.now(),
+        created_before=datetime.now()
+    )
+    assert resp[0]['is_completed'] == '1'

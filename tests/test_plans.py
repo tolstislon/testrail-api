@@ -10,7 +10,7 @@ def get_plans(r):
     assert r.params['is_completed'] == '1'
     for key in 'created_after', 'created_before':
         assert re.match(r'^\d+$', r.params[key])
-    return 200, {}, json.dumps([{'id': 5, 'name': 'System test'}])
+    return 200, {}, json.dumps({"offset": 0, "limit": 250, "size": 1, "plans": [{"id": 5, "name": "System test"}]})
 
 
 def add_plan(r):
@@ -65,7 +65,7 @@ def test_get_plans(api, mock, url, is_completed):
     resp = api.plans.get_plans(
         7, is_completed=is_completed, created_after=datetime.now(),
         created_before=datetime.now()
-    )
+    ).get('plans')
     assert resp[0]['id'] == 5
 
 
@@ -166,3 +166,16 @@ def test_delete_run_from_plan_entry(api, mock, url):
         lambda x: (200, {}, '')
     )
     api.plans.delete_run_from_plan_entry(2)
+
+def test_get_plans_bulk(api, mock, url):
+    mock.add_callback(
+        responses.GET,
+        url('get_plans/1'),
+        get_plans,
+    )
+    resp = api.plans.get_plans_bulk(1,
+                is_completed=True,
+                created_after=datetime.now(),
+                created_before=datetime.now(),
+                )
+    assert resp[0]['id'] == 5

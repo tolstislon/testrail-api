@@ -193,5 +193,6 @@ def test_move_cases_to_section(api, mock, url):
     mock.add_callback(
         responses.POST, url("move_cases_to_section/5"), lambda x: (200, {}, x.body)
     )
-    resp = api.cases.move_cases_to_section(section_or_suite_id=5, case_ids=[1, 2, 3])
+    resp = api.cases.move_cases_to_section(5, 6, case_ids=[1, 2, 3])
     assert resp["case_ids"] == "1,2,3"
+    assert resp["suite_id"] == 6

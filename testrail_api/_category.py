@@ -591,18 +591,25 @@ class Cases(_MetaCategory):
             json={"case_ids": ",".join(map(str, case_ids))},
         )
 
-    def move_cases_to_section(self, section_or_suite_id: int, case_ids: List[str]):
+    def move_cases_to_section(
+        self, section_id: int, suite_id: int, case_ids: List[str]
+    ):
         """
         Moves cases to another suite or section.
 
-        :param section_or_suite_id: int
-            The ID of the section or suite the case will be moved to.
+        :param section_id: int
+            The ID of the section the cases will be moved to.
+        :param suite_id: int
+            The ID of the suite for the section the cases will be moved to.
         :param case_ids:
             List of case IDs.
         """
         return self.s.post(
-            endpoint=f"move_cases_to_section/{section_or_suite_id}",
-            json={"case_ids": ",".join(map(str, case_ids))},
+            endpoint=f"move_cases_to_section/{section_id}",
+            json={
+                "case_ids": ",".join(map(str, case_ids)),
+                "suite_id": suite_id,
+            },
         )
 
     def get_cases_bulk(self, project_id: int, **kwargs) -> List[dict]:

@@ -13,7 +13,7 @@ def get_cases(r):
     assert r.params["offset"]
     for key in "created_after", "created_before", "updated_after", "updated_before":
         assert re.match(r"^\d+$", r.params[key])
-    return 200, {}, json.dumps([{"id": 1, "type_id": 1, "title": "My case"}])
+    return 200, {}, json.dumps({"limit": 250, "offset": 250, "size": 1, "cases":[{"id": 1, "type_id": 1, "title": "My case"}]})
 
 
 def add_case(r):
@@ -95,7 +95,7 @@ def test_get_cases(api, mock, url):
         updated_after=now,
         updated_before=now,
     )
-    assert resp[0]["id"] == 1
+    assert resp.get('cases')[0]["id"] == 1
 
 
 def test_add_case(api, mock, url):
@@ -196,3 +196,24 @@ def test_move_cases_to_section(api, mock, url):
     resp = api.cases.move_cases_to_section(5, 6, case_ids=[1, 2, 3])
     assert resp["case_ids"] == "1,2,3"
     assert resp["suite_id"] == 6
+
+def test_get_cases_bulk(api, mock, url):
+    mock.add_callback(
+        responses.GET,
+        url("get_cases/1"),
+        get_cases,
+    )
+    now = datetime.now()
+
+    resp = api.cases.get_cases_bulk(
+        1,
+        suite_id=2,
+        section_id=3,
+        limit=5,
+        offset=10,
+        created_after=now,
+        created_before=round(now.timestamp()),
+        updated_after=now,
+        updated_before=now,
+    )
+    assert resp[0]["id"] == 1

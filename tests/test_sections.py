@@ -24,9 +24,17 @@ def test_get_sections(api, mock, url):
     mock.add_callback(
         responses.GET,
         url('get_sections/5'),
-        lambda x: (200, {}, json.dumps([{'depth': 1, 'description': 'My section'}]))
+        lambda x: (200, {}, json.dumps(
+                {
+                    'offset': 0,
+                    'limit': 250,
+                    'size': 1,
+                    'sections':[{'depth': 1, 'description': 'My section'}],
+                }
+            )
+        )
     )
-    resp = api.sections.get_sections(5, suite_id=2)
+    resp = api.sections.get_sections(5, suite_id=2).get('sections')
     assert resp[0]['depth'] == 1
 
 
@@ -73,3 +81,20 @@ def test_move_section(api, mock, url):
     resp = api.sections.move_section(2, parent_id=3, after_id=5)
     assert resp['parent_id'] == 3
     assert resp['after_id'] == 5
+
+def test_get_sections_bulk(api, mock, url):
+    mock.add_callback(
+        responses.GET,
+        url('get_sections/5'),
+        lambda x: (200, {}, json.dumps(
+                {
+                    'offset': 0,
+                    'limit': 250,
+                    'size': 1,
+                    'sections':[{'depth': 1, 'description': 'My section'}],
+                }
+            )
+        )
+    )
+    resp = api.sections.get_sections_bulk(5, suite_id=2)
+    assert resp[0]['depth'] == 1

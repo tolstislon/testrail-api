@@ -102,50 +102,50 @@ def test_get_attachments_for_case(api, mock, url):
     mock.add_callback(
         responses.GET,
         url('get_attachments_for_case/2'),
-        lambda x: (200, {}, json.dumps([{'id': 1, 'filename': '444.jpg'}]))
+        lambda x: (200, {}, json.dumps({"limit": 250, "offset": 250, "size": 1, "attachments": [{'id': 1, 'filename': '444.jpg'}]}))
     )
     resp = api.attachments.get_attachments_for_case(2)
-    assert resp[0]['filename'] == '444.jpg'
+    assert resp.get('attachments')[0]['filename'] == '444.jpg'
 
 
 def test_get_attachments_for_plan(api, mock, url):
     mock.add_callback(
         responses.GET,
         url('get_attachments_for_plan/2'),
-        lambda x: (200, {}, json.dumps([{'id': 1, 'filename': '444.jpg'}]))
+        lambda x: (200, {}, json.dumps({"limit": 250, "offset": 250, "size": 1, "attachments": [{'id': 1, 'filename': '444.jpg'}]}))
     )
     resp = api.attachments.get_attachments_for_plan(2)
-    assert resp[0]['filename'] == '444.jpg'
+    assert resp.get('attachments')[0]['filename'] == '444.jpg'
 
 
 def test_get_attachments_for_plan_entry(api, mock, url):
     mock.add_callback(
         responses.GET,
         url('get_attachments_for_plan_entry/2/1'),
-        lambda x: (200, {}, json.dumps([{'id': 1, 'filename': '444.jpg'}]))
+        lambda x: (200, {}, json.dumps({"limit": 250, "offset": 250, "size": 1, "attachments": [{'id': 1, 'filename': '444.jpg'}]}))
     )
     resp = api.attachments.get_attachments_for_plan_entry(2, 1)
-    assert resp[0]['filename'] == '444.jpg'
+    assert resp.get('attachments')[0]['filename'] == '444.jpg'
 
 
 def test_get_attachments_for_run(api, mock, url):
     mock.add_callback(
         responses.GET,
         url('get_attachments_for_run/2'),
-        lambda x: (200, {}, json.dumps([{'id': 1, 'filename': '444.jpg'}]))
+        lambda x: (200, {}, json.dumps({"limit": 250, "offset": 250, "size": 1, "attachments": [{'id': 1, 'filename': '444.jpg'}]}))
     )
     resp = api.attachments.get_attachments_for_run(2)
-    assert resp[0]['filename'] == '444.jpg'
+    assert resp.get('attachments')[0]['filename'] == '444.jpg'
 
 
 def test_get_attachments_for_test(api, mock, url):
     mock.add_callback(
         responses.GET,
         url('get_attachments_for_test/12'),
-        lambda x: (200, {}, json.dumps([{'id': 1, 'filename': '444.jpg'}]))
+        lambda x: (200, {}, json.dumps({"limit": 250, "offset": 250, "size": 1, "attachments": [{'id': 1, 'filename': '444.jpg'}]}))
     )
     resp = api.attachments.get_attachments_for_test(12)
-    assert resp[0]['filename'] == '444.jpg'
+    assert resp.get('attachments')[0]['filename'] == '444.jpg'
 
 
 def test_get_attachment(api, mock, url, base_path):
@@ -192,3 +192,48 @@ def test_delete_attachment(api, mock, url):
     )
     resp = api.attachments.delete_attachment(433)
     assert resp is None
+
+def test_get_attachments_for_case_bulk(api, mock, url):
+    mock.add_callback(
+        responses.GET,
+        url('get_attachments_for_case/2'),
+        lambda x: (200, {}, json.dumps({"limit": 250, "offset": 250, "size": 1, "attachments": [{'id': 1, 'filename': '444.jpg'}]}))
+    )
+    resp = api.attachments.get_attachments_for_case_bulk(2)
+    assert resp[0]['filename'] == '444.jpg'
+
+def test_get_attachments_for_plan_bulk(api, mock, url):
+    mock.add_callback(
+        responses.GET,
+        url('get_attachments_for_plan/2'),
+        lambda x: (200, {}, json.dumps({"limit": 250, "offset": 250, "size": 1, "attachments": [{'id': 1, 'filename': '444.jpg'}]}))
+    )
+    resp = api.attachments.get_attachments_for_plan_bulk(2)
+    assert resp[0]['filename'] == '444.jpg'
+
+def test_get_attachments_for_run_bulk(api, mock, url):
+    mock.add_callback(
+        responses.GET,
+        url('get_attachments_for_run/2'),
+        lambda x: (200, {}, json.dumps({"limit": 250, "offset": 250, "size": 1, "attachments": [{'id': 1, 'filename': '444.jpg'}]}))
+    )
+    resp = api.attachments.get_attachments_for_run_bulk(2)
+    assert resp[0]['filename'] == '444.jpg'
+
+def test_get_attachments_for_plan_entry_bulk(api, mock, url):
+    mock.add_callback(
+        responses.GET,
+        url('get_attachments_for_plan_entry/2/1'),
+        lambda x: (200, {}, json.dumps({"limit": 250, "offset": 250, "size": 1, "attachments": [{'id': 1, 'filename': '444.jpg'}]}))
+    )
+    resp = api.attachments.get_attachments_for_plan_entry_bulk(2, 1)
+    assert resp[0]['filename'] == '444.jpg'
+
+def test_get_attachments_for_test_bulk(api, mock, url):
+    mock.add_callback(
+        responses.GET,
+        url('get_attachments_for_test/2'),
+        lambda x: (200, {}, json.dumps({"limit": 250, "offset": 250, "size": 1, "attachments": [{'id': 1, 'filename': '444.jpg'}]}))
+    )
+    resp = api.attachments.get_attachments_for_test_bulk(2)
+    assert resp[0]['filename'] == '444.jpg'

@@ -17,7 +17,7 @@ def get_milestones(r):
     req = r.params
     assert req['is_started'] == '1'
     return 200, {}, json.dumps(
-        [{'id': 1, 'name': 'Milestone 1', 'description': 'My new milestone'}]
+        {"offset": 250, "limit": 250, "size": 1, "milestones": [{'id': 1, 'name': 'Milestone 1', 'description': 'My new milestone'}]}
     )
 
 
@@ -49,7 +49,7 @@ def test_get_milestones(api, mock, url, is_started):
         get_milestones,
         content_type='application/json'
     )
-    response = api.milestones.get_milestones(project_id=1, is_started=is_started)
+    response = api.milestones.get_milestones(project_id=1, is_started=is_started).get('milestones')
     assert response[0]['name'] == 'Milestone 1'
     assert response[0]['description'] == 'My new milestone'
 
@@ -94,3 +94,15 @@ def test_delete_milestone(api, mock, url):
     )
     response = api.milestones.delete_milestone(1)
     assert response is None
+
+
+def test_get_milestones_bulk(api, mock, url):
+    mock.add_callback(
+        responses.GET,
+        url('get_milestones/1'),
+        get_milestones,
+        content_type='application/json'
+    )
+    response = api.milestones.get_milestones_bulk(1, is_started=1)
+    assert response[0]['name'] == 'Milestone 1'
+    assert response[0]['description'] == 'My new milestone'

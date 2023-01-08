@@ -24,11 +24,19 @@ def test_get_shared_steps(api, mock, url):
     mock.add_callback(
         responses.GET,
         url('get_shared_steps/1'),
-        lambda x: (200, {}, json.dumps({'id': 1, 'title': 'My step'}))
+        lambda x: (200, {}, json.dumps(
+                {
+                    'offset': 0,
+                    'limit': 250,
+                    'size': 1,
+                    'shared_steps': [{'id': 1, 'title': 'My step'}],
+                }
+            )
+        )
     )
-    resp = api.shared_steps.get_shared_steps(project_id=1)
-    assert resp['id'] == 1
-    assert resp['title'] == 'My step'
+    resp = api.shared_steps.get_shared_steps(project_id=1).get('shared_steps')
+    assert resp[0]['id'] == 1
+    assert resp[0]['title'] == 'My step'
 
 
 def test_add_shared_step(api, mock, url):
@@ -64,3 +72,22 @@ def test_delete_shared_step(api, mock, url):
         lambda x: (200, {}, '')
     )
     api.shared_steps.delete_shared_step(shared_update_id=34)
+
+
+def test_get_shared_steps_bulk(api, mock, url):
+    mock.add_callback(
+        responses.GET,
+        url('get_shared_steps/1'),
+        lambda x: (200, {}, json.dumps(
+                {
+                    'offset': 0,
+                    'limit': 250,
+                    'size': 1,
+                    'shared_steps': [{'id': 1, 'title': 'My step'}],
+                }
+            )
+        )
+    )
+    resp = api.shared_steps.get_shared_steps_bulk(project_id=1)
+    assert resp[0]['id'] == 1
+    assert resp[0]['title'] == 'My step'

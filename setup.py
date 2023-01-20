@@ -18,7 +18,7 @@ setup(
     long_description_content_type="text/markdown",
     version="1.11.1",
     install_requires=["requests>=2.20.1"],
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     include_package_data=True,
     keywords=[
         "testrail",
@@ -36,7 +36,6 @@ setup(
         "Natural Language :: English",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",

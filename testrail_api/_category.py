@@ -2160,7 +2160,9 @@ class Users(_MetaCategory):
             (Required for non-administrators. Requires TestRail 6.6 or later.)
         :return: response
         """
-        return self.s.get(endpoint=f"get_users/{project_id}" if project_id else "get_users")
+        return self.s.get(
+            endpoint=f"get_users/{project_id}" if project_id else "get_users"
+        )
 
 
 class SharedSteps(_MetaCategory):

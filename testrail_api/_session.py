@@ -31,7 +31,7 @@ class Session:
         url: Optional[str] = None,
         email: Optional[str] = None,
         password: Optional[str] = None,
-        session: Optional[requests.Session] = None
+        session: Optional[requests.Session] = None,
         exc: bool = False,
         rate_limit: bool = True,
         warn_ignore: bool = False,

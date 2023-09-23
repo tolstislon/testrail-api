@@ -17,7 +17,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     use_scm_version={"write_to": "testrail_api/__version__.py"},
-    setup_requires=["setuptools_scm"],
+    setup_requires=["setuptools_scm==7.1.0"],
     install_requires=["requests>=2.20.1"],
     python_requires=">=3.7",
     include_package_data=True,

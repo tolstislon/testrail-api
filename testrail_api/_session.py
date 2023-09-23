@@ -24,7 +24,7 @@ RATE_LIMIT_STATUS_CODE = 429
 class Session:
     """Base Session"""
 
-    _user_agent = "Python TestRail API v: {}".format(__version__)
+    _user_agent = f"Python TestRail API v: {__version__}"
 
     def __init__(
         self,

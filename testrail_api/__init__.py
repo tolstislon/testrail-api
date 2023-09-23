@@ -10,7 +10,7 @@ from testrail_api import TestRailAPI
 
 api = TestRailAPI("https://example.testrail.com/", "example@mail.com", "password")
 
-# if use environment variables
+# If you use environment variables.
 # api = TestRailAPI()
 
 

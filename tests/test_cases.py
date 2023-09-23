@@ -13,7 +13,14 @@ def get_cases(r):
     assert r.params["offset"]
     for key in "created_after", "created_before", "updated_after", "updated_before":
         assert re.match(r"^\d+$", r.params[key])
-    return 200, {}, json.dumps({"limit": 250, "offset": 250, "size": 1, "cases":[{"id": 1, "type_id": 1, "title": "My case"}]})
+    return 200, {}, json.dumps(
+        {
+            "limit": 250,
+            "offset": 250,
+            "size": 1,
+            "cases": [{"id": 1, "type_id": 1, "title": "My case"}]
+        }
+    )
 
 
 def add_case(r):
@@ -53,7 +60,7 @@ def delete_cases(r, project_id=None, case_ids=None, suite_id=None, soft=0):
     assert int(r.params["soft"]) == soft
     assert int(r.params["project_id"]) == project_id
     if suite_id:
-        assert "delete_cases/{}&".format(suite_id) in r.url
+        assert f"delete_cases/{suite_id}&" in r.url
     else:
         assert "delete_cases&" in r.url
     assert json.loads(r.body.decode()) == {"case_ids": case_ids}
@@ -196,6 +203,7 @@ def test_move_cases_to_section(api, mock, url):
     resp = api.cases.move_cases_to_section(5, 6, case_ids=[1, 2, 3])
     assert resp["case_ids"] == "1,2,3"
     assert resp["suite_id"] == 6
+
 
 def test_get_cases_bulk(api, mock, url):
     mock.add_callback(

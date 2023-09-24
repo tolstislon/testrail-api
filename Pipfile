@@ -14,10 +14,15 @@ twine = "==4.0.2"
 
 [packages]
 requests = "==2.31.0"
-testrail-api = {editable = true, path = "."}
+testrail-api = { editable = true, path = "." }
 
 [requires]
 python_version = "3.11"
 
 [pipenv]
 allow_prereleases = true
+
+[scripts]
+tests = "pytest tests"
+black = "black --line-length=120 ./testrail_api"
+flake8 = "flake8 ./testrail_api"

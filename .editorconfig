@@ -10,7 +10,7 @@ indent_size = 4
 
 # Python files
 [*.py]
-max_line_length = 88
+max_line_length = 120
 ij_python_optimize_imports_always_split_from_imports = false
 ij_python_optimize_imports_case_insensitive_order = false
 ij_python_optimize_imports_join_from_imports_with_same_source = true

@@ -2297,3 +2297,54 @@ class Roles(_MetaCategory):
     def get_roles(self) -> Dict[str, Any]:
         """Returns a list of available roles"""
         return self.s.get(endpoint="get_roles")
+
+
+class Groups(_MetaCategory):
+    """https://support.testrail.com/hc/en-us/articles/7077338821012-Groups"""
+
+    def get_group(self, group_id: int) -> dict:
+        """
+        Returns an existing group.
+
+        :param group_id: int
+            The ID of the group
+        """
+        return self.s.get(f"get_group/{group_id}")
+
+    def get_groups(self) -> Dict[str, Any]:
+        """Returns the list of available groups."""
+        return self.s.get("get_groups")
+
+    def add_group(self, name: str, user_ids: List[int]) -> dict:
+        """
+        Creates a new group.
+
+        :param name: str
+            The name of the group
+        :param user_ids: list[int]
+            An array of user IDs. Each ID is a user belonging to this group
+        """
+        return self.s.post("add_group", json={"name": name, "user_ids": user_ids})
+
+    def update_group(self, group_id: int, **kwargs) -> dict:
+        """
+        Updates an existing group.
+
+        :param group_id: int
+            The ID of the group
+        :param kwargs:
+            :key name: str
+                The name of the group
+            :key user_ids: list[int]
+                An array of user IDs. Each ID is a user belonging to this group
+        """
+        return self.s.post(f"update_group/{group_id}", json=kwargs)
+
+    def delete_group(self, group_id: int) -> None:
+        """
+        Deletes an existing group.
+
+        :param group_id: int
+            The ID of the group
+        """
+        return self.s.post(f"delete_group/{group_id}")

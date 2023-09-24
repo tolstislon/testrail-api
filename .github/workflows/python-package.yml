@@ -30,7 +30,7 @@ jobs:
                     flake8 testrail_api
             -   name: Black
                 run: |
-                    black --check testrail_api
+                    black --line-length=120 --check testrail_api
             -   name: Test with pytest
                 run: |
                     pytest tests

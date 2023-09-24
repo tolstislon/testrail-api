@@ -4,11 +4,12 @@ from unittest import mock
 
 import pytest
 import responses
+from requests import Session
 from requests.exceptions import ConnectionError
 
 from testrail_api import StatusCodeError, TestRailAPI as TRApi
-from testrail_api._exception import TestRailError as TRError  # noqa
 from testrail_api._category import _bulk_api_method
+from testrail_api._exception import TestRailError as TRError  # noqa
 
 
 class RateLimit:
@@ -46,6 +47,12 @@ class CustomExceptionRetry:
             raise self.exception("fail")
         else:
             return 200, {}, json.dumps({'count': self.count})
+
+
+class CustomSession(Session):
+
+    def request(*args, **kwargs) -> None:
+        raise ValueError("CustomSession")
 
 
 def test_rate_limit(api, mock, url):
@@ -189,6 +196,7 @@ def test_response_handler(auth_data, mock, url):
     response = api.cases.get_case(1)
     assert response == 'my hook response'
 
+
 def test_bulk_endpoint_helper():
     mock_func = mock.Mock()
     mock_func.side_effect = [
@@ -198,3 +206,9 @@ def test_bulk_endpoint_helper():
     resp = _bulk_api_method(mock_func, 'data')
     assert len(resp) == 251
     assert all('id' in _ for _ in resp)
+
+
+def test_add_custom_session(auth_data):
+    api = TRApi(*auth_data, session=CustomSession())
+    with pytest.raises(ValueError, match="CustomSession"):
+        api.users.get_users()

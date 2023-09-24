@@ -55,13 +55,9 @@ class Attachments(_MetaCategory):
         :return: dict
                 ex: {"attachment_id": 443}
         """
-        return self.s.attachment_request(
-            METHODS.POST, f"add_attachment_to_plan/{plan_id}", path
-        )
+        return self.s.attachment_request(METHODS.POST, f"add_attachment_to_plan/{plan_id}", path)
 
-    def add_attachment_to_plan_entry(
-        self, plan_id: int, entry_id: int, path: Union[str, Path]
-    ) -> dict:
+    def add_attachment_to_plan_entry(self, plan_id: int, entry_id: int, path: Union[str, Path]) -> dict:
         """
         Adds an attachment to a test plan entry. The maximum allowable upload size is
         set to 256mb.
@@ -94,9 +90,7 @@ class Attachments(_MetaCategory):
         :return: dict
                 ex: {"attachment_id": 443}
         """
-        return self.s.attachment_request(
-            METHODS.POST, f"add_attachment_to_result/{result_id}", path
-        )
+        return self.s.attachment_request(METHODS.POST, f"add_attachment_to_result/{result_id}", path)
 
     def add_attachment_to_run(self, run_id: int, path: Union[str, Path]) -> dict:
         """
@@ -111,9 +105,7 @@ class Attachments(_MetaCategory):
         :return: dict
                 ex: {"attachment_id": 443}
         """
-        return self.s.attachment_request(
-            METHODS.POST, f"add_attachment_to_run/{run_id}", path
-        )
+        return self.s.attachment_request(METHODS.POST, f"add_attachment_to_run/{run_id}", path)
 
     def add_attachment_to_case(self, case_id: int, path: Union[str, Path]) -> dict:
         """
@@ -128,13 +120,9 @@ class Attachments(_MetaCategory):
         :return: dict
                 ex: {"attachment_id": 443}
         """
-        return self.s.attachment_request(
-            METHODS.POST, f"add_attachment_to_case/{case_id}", path
-        )
+        return self.s.attachment_request(METHODS.POST, f"add_attachment_to_case/{case_id}", path)
 
-    def get_attachments_for_case(
-        self, case_id: int, limit: int = 250, offset: int = 0
-    ) -> dict:
+    def get_attachments_for_case(self, case_id: int, limit: int = 250, offset: int = 0) -> dict:
         """
         Returns a list of attachments for a test case.
         Requires TestRail 5.7 or later
@@ -154,9 +142,7 @@ class Attachments(_MetaCategory):
             params={"limit": limit, "offset": offset},
         )
 
-    def get_attachments_for_plan(
-        self, plan_id: int, limit: int = 250, offset: int = 0
-    ) -> List[dict]:
+    def get_attachments_for_plan(self, plan_id: int, limit: int = 250, offset: int = 0) -> List[dict]:
         """
         Returns a list of attachments for a test plan.
         Requires TestRail 6.3 or later
@@ -176,9 +162,7 @@ class Attachments(_MetaCategory):
             params={"limit": limit, "offset": offset},
         )
 
-    def get_attachments_for_plan_entry(
-        self, plan_id: int, entry_id: int, **kwargs
-    ) -> List[dict]:
+    def get_attachments_for_plan_entry(self, plan_id: int, entry_id: int, **kwargs) -> List[dict]:
         """
         Returns a list of attachments for a test plan entry.
         Requires TestRail 6.3 or later
@@ -197,9 +181,7 @@ class Attachments(_MetaCategory):
             params=kwargs,
         )
 
-    def get_attachments_for_run(
-        self, run_id: int, limit: int = 250, offset: int = 0
-    ) -> List[dict]:
+    def get_attachments_for_run(self, run_id: int, limit: int = 250, offset: int = 0) -> List[dict]:
         """
         Returns a list of attachments for a test run.
         Requires TestRail 6.3 or later
@@ -243,9 +225,7 @@ class Attachments(_MetaCategory):
         :param path: Path
         :return: Path
         """
-        return self._session.get_attachment(
-            METHODS.GET, f"get_attachment/{attachment_id}", path
-        )
+        return self._session.get_attachment(METHODS.GET, f"get_attachment/{attachment_id}", path)
 
     def delete_attachment(self, attachment_id: int) -> None:
         """
@@ -297,9 +277,7 @@ class Attachments(_MetaCategory):
         """
         return _bulk_api_method(self.get_attachments_for_run, "attachments", run_id)
 
-    def get_attachments_for_plan_entry_bulk(
-        self, plan_id: int, entry_id: int
-    ) -> List[dict]:
+    def get_attachments_for_plan_entry_bulk(self, plan_id: int, entry_id: int) -> List[dict]:
         """
         Returns the list of attachments for the plan entry handling pagination.
 
@@ -312,9 +290,7 @@ class Attachments(_MetaCategory):
         :return: List of attachments
         :returns: List[dict]
         """
-        return _bulk_api_method(
-            self.get_attachments_for_plan_entry, "attachments", plan_id, entry_id
-        )
+        return _bulk_api_method(self.get_attachments_for_plan_entry, "attachments", plan_id, entry_id)
 
     def get_attachments_for_test_bulk(self, test_id: int) -> List[dict]:
         """
@@ -393,9 +369,7 @@ class Cases(_MetaCategory):
         """
         return self.s.get(endpoint=f"get_cases/{project_id}", params=kwargs)
 
-    def get_history_for_case(
-        self, case_id: int, limit: int = 250, offset: int = 0
-    ) -> List[dict]:
+    def get_history_for_case(self, case_id: int, limit: int = 250, offset: int = 0) -> List[dict]:
         """
         Returns the edit history for a test case_id.
         Requires TestRail 6.5.4 or later.
@@ -470,9 +444,7 @@ class Cases(_MetaCategory):
 
         :return: response
         """
-        return self.s.post(
-            endpoint=f"add_case/{section_id}", json=dict(title=title, **kwargs)
-        )
+        return self.s.post(endpoint=f"add_case/{section_id}", json=dict(title=title, **kwargs))
 
     def update_case(self, case_id: int, **kwargs) -> dict:
         """
@@ -592,9 +564,7 @@ class Cases(_MetaCategory):
             json={"case_ids": ",".join(map(str, case_ids))},
         )
 
-    def move_cases_to_section(
-        self, section_id: int, suite_id: int, case_ids: List[str]
-    ):
+    def move_cases_to_section(self, section_id: int, suite_id: int, case_ids: List[str]):
         """
         Moves cases to another suite or section.
 
@@ -694,9 +664,7 @@ class CaseFields(_MetaCategory):
         """
         return self.s.get(endpoint="get_case_fields")
 
-    def add_case_field(
-        self, type: str, name: str, label: str, configs: List[dict], **kwargs  # noqa
-    ) -> dict:
+    def add_case_field(self, type: str, name: str, label: str, configs: List[dict], **kwargs) -> dict:  # noqa
         """
         Creates a new test case custom field.
 
@@ -773,9 +741,7 @@ class Configurations(_MetaCategory):
             The name of the configuration group (required)
         :return: response
         """
-        return self.s.post(
-            endpoint=f"add_config_group/{project_id}", json={"name": name}
-        )
+        return self.s.post(endpoint=f"add_config_group/{project_id}", json={"name": name})
 
     def add_config(self, config_group_id: int, name: str) -> dict:
         """
@@ -787,9 +753,7 @@ class Configurations(_MetaCategory):
             The name of the configuration (required)
         :return: response
         """
-        return self.s.post(
-            endpoint=f"add_config/{config_group_id}", json={"name": name}
-        )
+        return self.s.post(endpoint=f"add_config/{config_group_id}", json={"name": name})
 
     def update_config_group(self, config_group_id: int, name: str) -> dict:
         """
@@ -853,9 +817,7 @@ class Milestones(_MetaCategory):
         """
         return self.s.get(endpoint=f"get_milestone/{milestone_id}")
 
-    def get_milestones(
-        self, project_id: int, limit: int = 250, offset: int = 0, **kwargs
-    ) -> dict:
+    def get_milestones(self, project_id: int, limit: int = 250, offset: int = 0, **kwargs) -> dict:
         """
         Returns the list of milestones for a project.
 
@@ -907,9 +869,7 @@ class Milestones(_MetaCategory):
                 (available since TestRail 5.3)
         :return: response
         """
-        return self.s.post(
-            endpoint=f"add_milestone/{project_id}", json=dict(name=name, **kwargs)
-        )
+        return self.s.post(endpoint=f"add_milestone/{project_id}", json=dict(name=name, **kwargs))
 
     def update_milestone(self, milestone_id: int, **kwargs) -> dict:
         """
@@ -1022,9 +982,7 @@ class Plans(_MetaCategory):
                 see the example below and add_plan_entry
         :return: response
         """
-        return self.s.post(
-            endpoint=f"add_plan/{project_id}", json=dict(name=name, **kwargs)
-        )
+        return self.s.post(endpoint=f"add_plan/{project_id}", json=dict(name=name, **kwargs))
 
     def add_plan_entry(self, plan_id: int, suite_id: int, **kwargs) -> dict:
         """
@@ -1057,13 +1015,9 @@ class Plans(_MetaCategory):
                 please see the example below for details
         :return: response
         """
-        return self.s.post(
-            endpoint=f"add_plan_entry/{plan_id}", json=dict(suite_id=suite_id, **kwargs)
-        )
+        return self.s.post(endpoint=f"add_plan_entry/{plan_id}", json=dict(suite_id=suite_id, **kwargs))
 
-    def add_run_to_plan_entry(
-        self, plan_id: int, entry_id: int, config_ids: List[int], **kwargs
-    ):
+    def add_run_to_plan_entry(self, plan_id: int, entry_id: int, config_ids: List[int], **kwargs):
         """
         Adds a new test run to a test plan entry (using configurations).
         Requires TestRail 6.4 or later
@@ -1142,9 +1096,7 @@ class Plans(_MetaCategory):
                 (requires TestRail 6.3 or later)
         :return: response
         """
-        return self.s.post(
-            endpoint=f"update_plan_entry/{plan_id}/{entry_id}", json=kwargs
-        )
+        return self.s.post(endpoint=f"update_plan_entry/{plan_id}/{entry_id}", json=kwargs)
 
     def update_run_in_plan_entry(self, run_id: int, **kwargs):
         """
@@ -1267,9 +1219,7 @@ class Projects(_MetaCategory):
                 0/False to return active projects only.
         :return: response
         """
-        return self.s.get(
-            endpoint="get_projects", params=dict(limit=limit, offset=offset, **kwargs)
-        )
+        return self.s.get(endpoint="get_projects", params=dict(limit=limit, offset=offset, **kwargs))
 
     def add_project(self, name: str, **kwargs) -> dict:
         """
@@ -1355,9 +1305,7 @@ class Reports(_MetaCategory):
 class Results(_MetaCategory):
     """https://www.gurock.com/testrail/docs/api/reference/results"""
 
-    def get_results(
-        self, test_id: int, limit: int = 250, offset: int = 0, **kwargs
-    ) -> dict:
+    def get_results(self, test_id: int, limit: int = 250, offset: int = 0, **kwargs) -> dict:
         """
         Returns a list of test results for a test.
 
@@ -1382,9 +1330,7 @@ class Results(_MetaCategory):
             params=dict(limit=limit, offset=offset, **kwargs),
         )
 
-    def get_results_for_case(
-        self, run_id: int, case_id: int, limit: int = 250, offset: int = 0, **kwargs
-    ) -> dict:
+    def get_results_for_case(self, run_id: int, case_id: int, limit: int = 250, offset: int = 0, **kwargs) -> dict:
         """
         Returns a list of test results for a test run and case combination.
 
@@ -1419,9 +1365,7 @@ class Results(_MetaCategory):
             params=dict(limit=limit, offset=offset, **kwargs),
         )
 
-    def get_results_for_run(
-        self, run_id: int, limit: int = 250, offset: int = 0, **kwargs
-    ) -> dict:
+    def get_results_for_run(self, run_id: int, limit: int = 250, offset: int = 0, **kwargs) -> dict:
         """
         Returns a list of test results for a test run.
 
@@ -1615,9 +1559,7 @@ class Results(_MetaCategory):
         """
         return _bulk_api_method(self.get_results, "results", test_id, **kwargs)
 
-    def get_results_for_case_bulk(
-        self, run_id: int, case_id: int, **kwargs
-    ) -> List[dict]:
+    def get_results_for_case_bulk(self, run_id: int, case_id: int, **kwargs) -> List[dict]:
         """
         Return a list of test results for a case in a test run handling pagination.
 
@@ -1636,9 +1578,7 @@ class Results(_MetaCategory):
         :return: response
         :returns: List[dict]
         """
-        return _bulk_api_method(
-            self.get_results_for_case, "results", run_id, case_id, **kwargs
-        )
+        return _bulk_api_method(self.get_results_for_case, "results", run_id, case_id, **kwargs)
 
     def get_results_for_run_bulk(self, run_id: int, **kwargs) -> List[dict]:
         """
@@ -1844,9 +1784,7 @@ class Sections(_MetaCategory):
         """
         return self.s.get(endpoint=f"get_section/{section_id}")
 
-    def get_sections(
-        self, project_id: int, limit: int = 250, offset: int = 0, **kwargs
-    ) -> dict:
+    def get_sections(self, project_id: int, limit: int = 250, offset: int = 0, **kwargs) -> dict:
         """
         Returns a list of sections for a project and test suite.
 
@@ -1887,13 +1825,9 @@ class Sections(_MetaCategory):
                 The ID of the parent section (to build section hierarchies)
         :return: response
         """
-        return self.s.post(
-            endpoint=f"add_section/{project_id}", json=dict(name=name, **kwargs)
-        )
+        return self.s.post(endpoint=f"add_section/{project_id}", json=dict(name=name, **kwargs))
 
-    def move_section(
-        self, section_id: int, parent_id: int = 0, after_id: Optional[int] = None
-    ):
+    def move_section(self, section_id: int, parent_id: int = 0, after_id: Optional[int] = None):
         """
         Moves a section to another suite or section. (Requires TestRail 6.5.2 or later)
 
@@ -1942,9 +1876,7 @@ class Sections(_MetaCategory):
             section and its test cases
         :return: response
         """
-        return self.s.post(
-            endpoint=f"delete_section/{section_id}", params={"soft": soft}
-        )
+        return self.s.post(endpoint=f"delete_section/{section_id}", params={"soft": soft})
 
     def get_sections_bulk(self, project_id: int, **kwargs) -> List[dict]:
         """
@@ -2010,9 +1942,7 @@ class Suites(_MetaCategory):
                 The description of the test suite
         :return: response
         """
-        return self.s.post(
-            endpoint=f"add_suite/{project_id}", json=dict(name=name, **kwargs)
-        )
+        return self.s.post(endpoint=f"add_suite/{project_id}", json=dict(name=name, **kwargs))
 
     def update_suite(self, suite_id: int, **kwargs) -> dict:
         """
@@ -2079,9 +2009,7 @@ class Tests(_MetaCategory):
         """
         return self.s.get(endpoint=f"get_test/{test_id}", params=kwargs)
 
-    def get_tests(
-        self, run_id: int, limit: int = 250, offset: int = 0, **kwargs
-    ) -> dict:
+    def get_tests(self, run_id: int, limit: int = 250, offset: int = 0, **kwargs) -> dict:
         """
         Returns a list of tests for a test run.
 
@@ -2161,9 +2089,7 @@ class Users(_MetaCategory):
             (Required for non-administrators. Requires TestRail 6.6 or later.)
         :return: response
         """
-        return self.s.get(
-            endpoint=f"get_users/{project_id}" if project_id else "get_users"
-        )
+        return self.s.get(endpoint=f"get_users/{project_id}" if project_id else "get_users")
 
 
 class SharedSteps(_MetaCategory):
@@ -2202,9 +2128,7 @@ class SharedSteps(_MetaCategory):
         """
         return self.s.get(endpoint=f"get_shared_steps/{project_id}", params=kwargs)
 
-    def add_shared_step(
-        self, project_id: int, title: str, custom_steps_separated: List[dict]
-    ) -> dict:
+    def add_shared_step(self, project_id: int, title: str, custom_steps_separated: List[dict]) -> dict:
         """
         Creates a new set of shared steps. Requires permission to add test cases
         withing the project.
@@ -2244,9 +2168,7 @@ class SharedSteps(_MetaCategory):
                 An array of objects. Each object contains the details for
                 an individual step. See the table below for more details.
         """
-        return self.s.post(
-            endpoint=f"update_shared_step/{shared_update_id}", json=kwargs
-        )
+        return self.s.post(endpoint=f"update_shared_step/{shared_update_id}", json=kwargs)
 
     def delete_shared_step(self, shared_update_id: int, keep_in_cases: int = 1):
         """
@@ -2286,9 +2208,7 @@ class SharedSteps(_MetaCategory):
         :return: List of shared steps
         :returns: List[dict]
         """
-        return _bulk_api_method(
-            self.get_shared_steps, "shared_steps", project_id, **kwargs
-        )
+        return _bulk_api_method(self.get_shared_steps, "shared_steps", project_id, **kwargs)
 
 
 class Roles(_MetaCategory):

@@ -4,10 +4,11 @@ TestRail API categories
 
 import itertools
 from pathlib import Path
-from typing import Callable, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from ._enums import METHODS
 from ._session import Session
+
 
 OFFSET_MAX = 250
 LIMIT_MAX = 250
@@ -2288,3 +2289,11 @@ class SharedSteps(_MetaCategory):
         return _bulk_api_method(
             self.get_shared_steps, "shared_steps", project_id, **kwargs
         )
+
+
+class Roles(_MetaCategory):
+    """https://support.testrail.com/hc/en-us/articles/7077853258772-Roles"""
+
+    def get_roles(self) -> Dict[str, Any]:
+        """Returns a list of available roles"""
+        return self.s.get(endpoint="get_roles")

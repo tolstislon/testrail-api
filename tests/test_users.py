@@ -41,6 +41,7 @@ def test_get_users(api, mock, url):
     response = api.users.get_users(15)
     assert response[0]['name'] == 'John Smith'
 
+
 def test_get_users_no_project_id(api, mock, url):
     mock.add_callback(
         responses.GET,

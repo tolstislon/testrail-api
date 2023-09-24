@@ -182,3 +182,11 @@ class TestRailAPI(Session):
         Use the following API methods to request details about users.
         """
         return _category.Users(self)
+
+    @property
+    def roles(self) -> _category.Roles:
+        """
+        https://support.testrail.com/hc/en-us/articles/7077853258772-Roles#getroles
+        Use the following API methods to request details about roles.
+        """
+        return _category.Roles(self)

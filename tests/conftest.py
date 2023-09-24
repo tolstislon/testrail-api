@@ -4,8 +4,11 @@ from pathlib import Path
 import pytest
 import responses
 
+
 try:
     from responses import FalseBool
+
+
     false_bool = FalseBool()
 except ImportError:
     false_bool = False
@@ -14,6 +17,7 @@ from testrail_api import TestRailAPI
 
 
 BASE_HOST = 'https://example.testrail.com/index.php?/api/v2/'
+
 
 class CallbackResponse(responses.CallbackResponse):
 
@@ -43,7 +47,7 @@ class RequestsMock(responses.RequestsMock):
 
 @pytest.fixture(scope='session')
 def host():
-    yield 'https://example.testrail.com/'
+    return 'https://example.testrail.com/'
 
 
 @pytest.fixture(scope='session')
@@ -57,12 +61,12 @@ def url(host):
 @pytest.fixture(scope='session')
 def base_path():
     path = Path(__file__).absolute().parent
-    yield str(path)
+    return str(path)
 
 
 @pytest.fixture(scope='session')
 def auth_data(host):
-    yield host, 'example@mail.com', 'password'
+    return host, 'example@mail.com', 'password'
 
 
 @pytest.fixture
@@ -73,8 +77,7 @@ def mock():
 
 @pytest.fixture
 def api(auth_data):
-    api = TestRailAPI(*auth_data)
-    yield api
+    return TestRailAPI(*auth_data)
 
 
 @pytest.fixture

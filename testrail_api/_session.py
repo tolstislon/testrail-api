@@ -31,6 +31,7 @@ class Session:
         url: Optional[str] = None,
         email: Optional[str] = None,
         password: Optional[str] = None,
+        session: Optional[requests.Session] = None,
         exc: bool = False,
         rate_limit: bool = True,
         warn_ignore: bool = False,
@@ -45,6 +46,8 @@ class Session:
             Email for the account on the TestRail
         :param password:
             Password for the account on the TestRail or token
+        :param session:
+            Given session will be used instead of new one
         :param exc:
             Catching exceptions
         :param rate_limit:
@@ -79,7 +82,10 @@ class Session:
             )
         self.__base_url = f"{_url}/index.php?/api/v2/"
         self.__timeout = kwargs.get("timeout", 30)
-        self.__session = requests.Session()
+        if session:  # use given session
+            self.__session = session
+        else:  # or create a new one as before
+            self.__session = requests.Session()
         self.__session.headers["User-Agent"] = self._user_agent
         self.__session.headers.update(kwargs.get("headers", {}))
         self.__session.verify = kwargs.get("verify", True)

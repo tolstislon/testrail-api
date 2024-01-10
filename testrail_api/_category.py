@@ -2268,3 +2268,45 @@ class Groups(_MetaCategory):
             The ID of the group
         """
         return self.s.post(f"delete_group/{group_id}")
+
+
+class Variables(_MetaCategory):
+    """https://support.testrail.com/hc/en-us/articles/7077979742868-Variables"""
+
+    def get_variables(self, project_id: int) -> dict:
+        """
+        Retrieves the requested variables.
+        :param project_id: int
+            The ID of the project from which to retrieve variables.
+        """
+        return self.s.get(endpoint=f"get_variables/{project_id}")
+
+    def add_variable(self, project_id: int, id: int, name: str) -> dict:
+        """
+        Creates a new variable.
+        :param project_id: int
+            The ID of the project to which the variable should be added.
+        :param id: int
+            The ID of the newly added variable
+        :param name: str
+            Name of the newly added variable
+        """
+        return self.s.post(endpoint=f"add_variable/{project_id}", json={"name": name, "id": id})
+
+    def update_variable(self, variable_id: int, name: str) -> dict:
+        """
+        Updates an existing variable.
+        :param variable_id: int
+            The ID of the variable to update.
+        :param name: str
+            Name of the variable to update
+        """
+        return self.s.post(endpoint=f"update_variable/{variable_id}", json={"name": name})
+
+    def delete_variable(self, variable_id: int) -> None:
+        """
+        Deletes an existing variable.
+        :param variable_id: str
+            The ID of the variable to be deleted.
+        """
+        return self.s.post(endpoint=f"delete_variable/{variable_id}")

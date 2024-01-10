@@ -485,7 +485,7 @@ class Cases(_MetaCategory):
 
         :param suite_id:
             The ID of the suite
-        :case_ids: List[int]
+        :param case_ids: List[int]
             The IDs of the test cases to update with the kwargs
         :param kwargs:
             :key title: str

@@ -17,7 +17,8 @@ def get_milestones(r):
     req = r.params
     assert req['is_started'] == '1'
     return 200, {}, json.dumps(
-        {"offset": 250, "limit": 250, "size": 1, "milestones": [{'id': 1, 'name': 'Milestone 1', 'description': 'My new milestone'}]}
+        {"offset": 250, "limit": 250, "size": 1,
+         "milestones": [{'id': 1, 'name': 'Milestone 1', 'description': 'My new milestone'}]}
     )
 
 

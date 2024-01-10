@@ -15,9 +15,10 @@ def get_runs(r):
             "offset": 0,
             "limit": 250,
             "size": 1,
-            "runs":[{'id': 1, 'name': 'My run', 'is_completed': r.params['is_completed']}]
+            "runs": [{'id': 1, 'name': 'My run', 'is_completed': r.params['is_completed']}]
         }
     )
+
 
 def add_run(r):
     data = json.loads(r.body.decode())
@@ -93,6 +94,7 @@ def test_delete_run(api, mock, url):
     )
     resp = api.runs.delete_run(2)
     assert resp is None
+
 
 @pytest.mark.parametrize('is_completed', (1, True))
 def test_get_runs_bulk(api, mock, url, is_completed):

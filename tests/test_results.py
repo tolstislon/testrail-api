@@ -10,7 +10,8 @@ import responses
 def get_results(r, limit='3'):
     assert r.params['limit'] == limit
     assert r.params['status_id'] == '1,2,3'
-    return 200, {}, json.dumps({"offset": 0, "limit": 250, "size": 1, "results":[{'id': 1, 'status_id': 2, 'test_id': 1}]})
+    return 200, {}, json.dumps(
+        {"offset": 0, "limit": 250, "size": 1, "results": [{'id': 1, 'status_id': 2, 'test_id': 1}]})
 
 
 def get_results_for_run(r, limit='3'):
@@ -18,7 +19,8 @@ def get_results_for_run(r, limit='3'):
     assert r.params['status_id'] == '1,2,3'
     for key in 'created_after', 'created_before':
         assert re.match(r'^\d+$', r.params[key])
-    return 200, {}, json.dumps({"offset": 0, "limit": 250, "size": 1, "results":[{'id': 1, 'status_id': 2, 'test_id': 1}]})
+    return 200, {}, json.dumps(
+        {"offset": 0, "limit": 250, "size": 1, "results": [{'id': 1, 'status_id': 2, 'test_id': 1}]})
 
 
 def add_result(r):
@@ -116,6 +118,7 @@ def test_add_results_for_cases(api, mock, url):
     results = [{'case_id': 1, 'status_id': 5}, {'case_id': 2, 'status_id': 1}]
     resp = api.results.add_results_for_cases(18, results)
     assert resp == results
+
 
 @pytest.mark.parametrize('status_id', ('1,2,3', [1, 2, 3]))
 def test_get_results_bulk(api, mock, url, status_id):

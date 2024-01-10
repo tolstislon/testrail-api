@@ -1,5 +1,4 @@
 import json
-from re import A
 
 import pytest
 import responses
@@ -13,7 +12,7 @@ def get_tests(r):
         "limit": 250,
         "size": len(resp),
         "tests": resp
-        }
+    }
     )
 
 
@@ -37,6 +36,7 @@ def test_get_tests(api, mock, url, status_id):
     resp = api.tests.get_tests(2, status_id=status_id).get('tests')
     assert resp[0]['status_id'] == 1
     assert resp[1]['status_id'] == 5
+
 
 @pytest.mark.parametrize('status_id', ('1,5', [1, 5]))
 def test_get_tests_bulk(api, mock, url, status_id):

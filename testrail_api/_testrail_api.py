@@ -198,3 +198,11 @@ class TestRailAPI(Session):
         Use the following API methods to request details about groups.
         """
         return _category.Groups(self)
+
+    @property
+    def variables(self) -> _category.Variables:
+        """
+        https://support.testrail.com/hc/en-us/articles/7077979742868-Variables
+        Use the following API methods to upload, retrieve, update, and delete variables that exist in datasets.
+        """
+        return _category.Variables(self)

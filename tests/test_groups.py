@@ -1,6 +1,7 @@
-import responses
 import json
+
 import pytest
+import responses
 
 
 def get_group(r):

@@ -24,8 +24,7 @@ class RateLimit:
         if self.last == 0 or now - self.last < 3:
             self.last = now
             return 429, {}, ''
-        else:
-            return 200, {}, json.dumps({'count': self.count})
+        return 200, {}, json.dumps({'count': self.count})
 
 
 class CustomException(Exception):

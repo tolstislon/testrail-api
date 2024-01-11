@@ -2310,3 +2310,58 @@ class Variables(_MetaCategory):
             The ID of the variable to be deleted.
         """
         return self.s.post(endpoint=f"delete_variable/{variable_id}")
+
+
+class Datasets(_MetaCategory):
+    """https://support.testrail.com/hc/en-us/articles/7077300491540-Datasets"""
+
+    def get_dataset(self, dataset_id: int) -> dict:
+        """
+        Retrieves the requested dataset parameter.
+        :param dataset_id: int
+            The ID of the dataset to retrieve
+        """
+        return self.s.get(endpoint=f"get_dataset/{dataset_id}")
+
+    def get_datasets(self, project_id: int) -> dict:
+        """
+        Retrieves the requested list of datasets
+        :param project_id: int
+            The ID of the project from which to retrieve datasets
+        """
+        return self.s.get(endpoint=f"get_datasets/{project_id}")
+
+    def add_dataset(self, project_id: int, id: int, name: str, variables: List[dict]) -> dict:
+        """
+        Creates a new dataset.
+        :param project_id: int
+            The ID of the project to which the dataset should be added
+        :param id: int
+            The database ID of the dataset
+        :param name: str
+            Name of the dataset as provided
+        :param variables: List[dict]
+            Key/Value pairs. Key should be the variable name. Value should be the value to be included in the dataset.
+        """
+        return self.s.post(endpoint=f"add_dataset/{project_id}", json={"name": name, "variables": variables, "id": id})
+
+    def update_dataset(self, dataset_id: int, **kwargs) -> dict:
+        """
+        Updates an existing dataset.
+        :param dataset_id: int
+            The ID of the project to which the dataset should be updated
+        :param kwargs:
+            :key name: str
+                Name of the dataset as provided
+            :key variables: List[dict]
+                Key/Value pairs. Key should be the variable name.
+        """
+        return self.s.post(endpoint=f"update_dataset/{dataset_id}", json=kwargs)
+
+    def delete_dataset(self, dataset_id: int) -> None:
+        """
+        Deletes an existing dataset.Parameter
+        :param dataset_id: int
+            The ID of the dataset to be deleted
+        """
+        return self.s.post(endpoint=f"delete_dataset/{dataset_id}")

@@ -206,3 +206,8 @@ class TestRailAPI(Session):
         Use the following API methods to upload, retrieve, update, and delete variables that exist in datasets.
         """
         return _category.Variables(self)
+
+    @property
+    def datasets(self) -> _category.Datasets:
+        """https://support.testrail.com/hc/en-us/articles/7077300491540-Datasets"""
+        return _category.Datasets(self)

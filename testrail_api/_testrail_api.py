@@ -182,3 +182,32 @@ class TestRailAPI(Session):
         Use the following API methods to request details about users.
         """
         return _category.Users(self)
+
+    @property
+    def roles(self) -> _category.Roles:
+        """
+        https://support.testrail.com/hc/en-us/articles/7077853258772-Roles
+        Use the following API methods to request details about roles.
+        """
+        return _category.Roles(self)
+
+    @property
+    def groups(self) -> _category.Groups:
+        """
+        https://support.testrail.com/hc/en-us/articles/7077338821012-Groups
+        Use the following API methods to request details about groups.
+        """
+        return _category.Groups(self)
+
+    @property
+    def variables(self) -> _category.Variables:
+        """
+        https://support.testrail.com/hc/en-us/articles/7077979742868-Variables
+        Use the following API methods to upload, retrieve, update, and delete variables that exist in datasets.
+        """
+        return _category.Variables(self)
+
+    @property
+    def datasets(self) -> _category.Datasets:
+        """https://support.testrail.com/hc/en-us/articles/7077300491540-Datasets"""
+        return _category.Datasets(self)

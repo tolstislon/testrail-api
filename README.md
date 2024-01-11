@@ -95,3 +95,31 @@ new_milestone = api.milestones.add_milestone(
 Contributing
 ----
 Contributions are very welcome.
+
+###### Getting started
+
+* python 3.11
+* pipenv 2022.12.19+
+
+1. Clone the repository
+    ```bash
+    git clone https://github.com/tolstislon/testrail-api.git
+    cd testrail-api
+   ```
+2. Install dev dependencies
+    ```bash
+    pipenv install --dev
+    pipenv shell
+   ```
+3. Run the black
+    ```bash
+    pipenv run black
+   ```
+4. Run the flake8
+    ```bash
+    pipenv run flake8
+   ```
+5. Run the tests
+    ```bash
+    pipenv run tests
+   ```

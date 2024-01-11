@@ -4,20 +4,25 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-pytest = "==7.4.2"
+pytest = "==7.4.4"
 pytest-cov = "==4.1.0"
 responses = "==0.21.0"
-black = "==23.9.1"
-flake8 = "==6.1.0"
+black = "==23.12.1"
+flake8 = "==7.0.0"
 pep8-naming = "==0.13.3"
 twine = "==4.0.2"
 
 [packages]
 requests = "==2.31.0"
-testrail-api = {editable = true, path = "."}
+testrail-api = { editable = true, path = "." }
 
 [requires]
 python_version = "3.11"
 
 [pipenv]
 allow_prereleases = true
+
+[scripts]
+tests = "pytest tests"
+black = "black --line-length=120 ./testrail_api"
+flake8 = "flake8 ./testrail_api"

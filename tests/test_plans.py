@@ -167,15 +167,17 @@ def test_delete_run_from_plan_entry(api, mock, url):
     )
     api.plans.delete_run_from_plan_entry(2)
 
+
 def test_get_plans_bulk(api, mock, url):
     mock.add_callback(
         responses.GET,
         url('get_plans/1'),
         get_plans,
     )
-    resp = api.plans.get_plans_bulk(1,
-                is_completed=True,
-                created_after=datetime.now(),
-                created_before=datetime.now(),
-                )
+    resp = api.plans.get_plans_bulk(
+        1,
+        is_completed=True,
+        created_after=datetime.now(),
+        created_before=datetime.now(),
+    )
     assert resp[0]['id'] == 5

@@ -119,7 +119,7 @@ class Session:
             raise TestRailError(f"Url is not set. Use argument url or env {Environ.URL}")
         _url = _url.rstrip("/")
         if _url.startswith("http://") and not warn_ignore:
-            warnings.warn("Using HTTP and not HTTPS may cause writeable API " "requests to return 404 errors")
+            warnings.warn("Using HTTP and not HTTPS may cause writeable API requests to return 404 errors")
         return _url
 
     @staticmethod

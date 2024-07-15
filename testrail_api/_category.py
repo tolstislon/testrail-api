@@ -1905,6 +1905,14 @@ class Statuses(_MetaCategory):
         """
         return self.s.get(endpoint="get_statuses")
 
+    def get_case_statuses(self) -> List[dict]:
+        """
+        Returns a list of available test case statuses
+
+        :return: response
+        """
+        return self.s.get(endpoint="get_case_statuses")
+
 
 class Suites(_MetaCategory):
     """https://www.gurock.com/testrail/docs/api/reference/suites"""

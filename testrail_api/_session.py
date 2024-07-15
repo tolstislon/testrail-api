@@ -114,8 +114,7 @@ class Session:
     @staticmethod
     def __get_url(url: str, warn_ignore: bool) -> str:
         """Reading URL"""
-        _url = url or environ.get(Environ.URL)
-        if not _url:
+        if not (_url := url or environ.get(Environ.URL)):
             raise TestRailError(f"Url is not set. Use argument url or env {Environ.URL}")
         _url = _url.rstrip("/")
         if _url.startswith("http://") and not warn_ignore:
@@ -125,16 +124,14 @@ class Session:
     @staticmethod
     def __get_email(email: Optional[str]) -> str:
         """Reading email"""
-        _email = email or environ.get(Environ.EMAIL)
-        if not _email:
+        if not (_email := email or environ.get(Environ.EMAIL)):
             raise TestRailError(f"Email is not set. Use argument email or env {Environ.EMAIL}")
         return _email
 
     @staticmethod
     def __get_password(password: str) -> str:
         """Reading password"""
-        _password = password or environ.get(Environ.PASSWORD)
-        if not _password:
+        if not (_password := password or environ.get(Environ.PASSWORD)):
             raise TestRailError(f"Password is not set. Use argument password or env {Environ.PASSWORD}")
         return _password
 

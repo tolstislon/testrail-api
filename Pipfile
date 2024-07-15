@@ -4,16 +4,15 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-pytest = "==7.4.4"
-pytest-cov = "==4.1.0"
+pytest = "==8.2.2"
+pytest-cov = "==5.0.0"
 responses = "==0.21.0"
-black = "==23.12.1"
-flake8 = "==7.0.0"
-pep8-naming = "==0.13.3"
-twine = "==4.0.2"
+black = "==24.4.2"
+flake8 = "==7.1.0"
+pep8-naming = "==0.14.1"
 
 [packages]
-requests = "==2.31.0"
+requests = "==2.32.3"
 testrail-api = { editable = true, path = "." }
 
 [requires]

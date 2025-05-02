@@ -12,7 +12,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                python-version: [ "3.8", "3.9", "3.10", "3.11", "3.12", "3.13-dev" ]
+                python-version: [ "3.8", "3.9", "3.10", "3.11", "3.12", "3.13" ]
 
         steps:
             -   uses: actions/checkout@v3
@@ -23,14 +23,14 @@ jobs:
             -   name: Install dependencies
                 run: |
                     python -m pip install --upgrade pip
-                    python -m pip install flake8 pep8-naming pytest black pytest-cov responses
+                    python -m pip install pytest pytest-cov pytest-xdist responses==0.21.0 ruff==0.11.8
                     python -m pip install -e .
-            -   name: Flake8
+            -   name: Format check
                 run: |
-                    flake8 testrail_api
-            -   name: Black
+                    ruff format --check
+            -   name: Lints
                 run: |
-                    black --line-length=120 --check testrail_api
+                    ruff check
             -   name: Test with pytest
                 run: |
-                    pytest tests
+                    pytest -n auto ./tests

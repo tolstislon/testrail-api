@@ -1,0 +1,62 @@
+line-length = 120
+target-version = "py38"
+exclude = [".git", ".pytest_cache", ".idea", ".github", "build"]
+
+[lint]
+select = [
+    "A", # flake8-builtins
+    "ANN", # flake8-annotations
+    "B", # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "COM", # flake8-commas
+    "D", # pydocstyle
+    "E", # pycodestyle
+    "F", # Pyflakes
+    "FURB", # refurb
+    "I", # isort
+    "ICN", # flake8-import-conventions
+    "ISC", # flake8-implicit-str-concat
+    "N", # pep8-naming
+    "PERF", # Perflint
+    "PGH", # pygrep-hooks
+    "PTH", # flake8-use-pathlib
+    "RUF", # Ruff-specific rules
+    "S", # flake8-bandit
+    "T20", # flake8-print
+    "UP", # pyupgrade
+    "PIE", # flake8-pie
+    "PT", # flake8-pytest-style
+    "Q", # flake8-quotes
+    "RET", # flake8-return
+    "SIM", # flake8-simplify
+    "ARG", # flake8-unused-arguments
+    "FLY", # flynt
+    "PL", # Pylint
+    "RSE", # flake8-raise
+]
+ignore = [
+    "S311", # Standard pseudo-random generators are not suitable for cryptographic purposesStandard pseudo-random generators are not suitable for cryptographic purposes
+    "D212", # multi-line-summary-first-line (conflicts rules)
+    "D203", # one-blank-line-before-class (conflicts rules)
+    "COM812", # conflicts rules
+    "ISC001", # conflicts rules
+    "N818", # Exception name `{exception}` should be named with an Error suffix
+    "ANN003", # Missing type annotation for `**kwargs`
+    "ANN002", # Missing type annotation for `*args`
+    "D107", # Missing docstring in `__init__`
+    "ANN401", # Dynamically typed expressions (typing.Any) are disallowed`
+]
+
+[lint.per-file-ignores]
+"test_*.py" = ["S101", "D103", "ANN201", "D100", "S605", "S607", "ANN001", "PLR2004", "PT018", "ARG002", "D102", "ANN204", "A004", "PT012"]
+"conftest.py" = ["ANN001", "PLR0913", "D101", "D100"]
+"_category.py" = ["D401", "A002"]
+
+[lint.flake8-pytest-style]
+parametrize-values-row-type = "tuple"
+parametrize-values-type = "tuple"
+fixture-parentheses = false
+mark-parentheses = false
+
+[format]
+line-ending = "lf"

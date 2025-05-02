@@ -7,7 +7,7 @@ from datetime import datetime
 from json.decoder import JSONDecodeError
 from os import environ
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Tuple, Type, Union
+from typing import Any, Callable, Final, Optional, Union
 
 import requests
 
@@ -17,7 +17,7 @@ from ._exception import StatusCodeError, TestRailError
 
 logger = logging.getLogger(__package__)
 
-RATE_LIMIT_STATUS_CODE = 429
+RATE_LIMIT_STATUS_CODE: Final[int] = 429
 
 
 class Environ:
@@ -40,7 +40,7 @@ class Session:
         exc: bool = False,
         rate_limit: bool = True,
         warn_ignore: bool = False,
-        retry_exceptions: Tuple[Type[BaseException], ...] = (),
+        retry_exceptions: tuple[type[BaseException], ...] = (),
         response_handler: Optional[Callable[[requests.Response], Any]] = None,
         session: Optional[requests.Session] = None,
         **kwargs,
@@ -55,7 +55,7 @@ class Session:
         :param password:
             Password for the account on the TestRail or token.
         :param session:
-            Given session will be used instead of new one.
+            A Given session will be used instead of new one.
         :param exc:
             Catching exceptions.
         :param rate_limit:
@@ -183,7 +183,7 @@ class Session:
                 # Converting a datetime value to integer (UNIX timestamp)
                 json[key] = round(value.timestamp())
 
-    def get(self, endpoint: str, params: Optional[Dict[Any, Any]] = None) -> Any:
+    def get(self, endpoint: str, params: Optional[dict[Any, Any]] = None) -> Any:
         """GET method."""
         return self.request(
             method=METHODS.GET,
@@ -194,8 +194,8 @@ class Session:
     def post(
         self,
         endpoint: str,
-        params: Optional[Dict[Any, Any]] = None,
-        json: Optional[Dict[Any, Any]] = None,
+        params: Optional[dict[Any, Any]] = None,
+        json: Optional[dict[Any, Any]] = None,
     ) -> Any:
         """POST method."""
         return self.request(

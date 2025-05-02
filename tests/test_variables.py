@@ -1,19 +1,18 @@
 import json
 import random
 import uuid
-from typing import Tuple
 
 import responses
 from requests import PreparedRequest
 
 
-def _add_variables(r: PreparedRequest) -> Tuple[int, dict, str]:
+def _add_variables(r: PreparedRequest) -> tuple[int, dict, str]:
     req = json.loads(r.body)
     assert "id" in req and "name" in req
     return 200, {}, json.dumps(req)
 
 
-def _update_variable(r: PreparedRequest) -> Tuple[int, dict, str]:
+def _update_variable(r: PreparedRequest) -> tuple[int, dict, str]:
     req = json.loads(r.body)
     v = r.url.split("/")[-1]
     return 200, {}, json.dumps({"id": int(v), "name": req["name"]})

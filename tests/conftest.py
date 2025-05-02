@@ -1,6 +1,7 @@
 import os
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Callable, Iterator, Tuple
+from typing import Callable
 
 import pytest
 import responses
@@ -72,7 +73,7 @@ def base_path() -> str:
 
 
 @pytest.fixture(scope="session")
-def auth_data(host: str) -> Tuple[str, str, str]:
+def auth_data(host: str) -> tuple[str, str, str]:
     """Test data for authorization."""
     return host, "example@mail.com", "password"
 
@@ -85,13 +86,13 @@ def mock() -> Iterator[RequestsMock]:
 
 
 @pytest.fixture
-def api(auth_data: Tuple[str, str, str]) -> TestRailAPI:
+def api(auth_data: tuple[str, str, str]) -> TestRailAPI:
     """TestRailAPI object."""
     return TestRailAPI(*auth_data)
 
 
 @pytest.fixture
-def environ(auth_data: Tuple[str, str, str]) -> Iterator[None]:
+def environ(auth_data: tuple[str, str, str]) -> Iterator[None]:
     """Set envs."""
     os.environ["TESTRAIL_URL"] = auth_data[0]
     os.environ["TESTRAIL_EMAIL"] = auth_data[1]

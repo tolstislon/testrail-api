@@ -21,7 +21,7 @@ setup(
     use_scm_version={"write_to": "testrail_api/__version__.py"},
     setup_requires=["setuptools_scm"],
     install_requires=["requests>=2.32.3"],
-    python_requires=">=3.8",
+    python_requires=">=3.9",
     include_package_data=True,
     keywords=[
         "testrail",
@@ -39,7 +39,6 @@ setup(
         "Natural Language :: English",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",

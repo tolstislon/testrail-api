@@ -1,6 +1,5 @@
 import json
 import time
-from typing import Tuple
 from unittest import mock
 
 import pytest
@@ -21,7 +20,7 @@ class RateLimit:
         self.last = 0
         self.count = 0
 
-    def __call__(self, r) -> Tuple[int, dict, str]:
+    def __call__(self, r) -> tuple[int, dict, str]:
         self.count += 1
         now = time.time()
         if self.last == 0 or now - self.last < 3:
@@ -42,7 +41,7 @@ class CustomExceptionRetry:
         self.exception = exception
         self.fail = fail
 
-    def __call__(self, *args, **kwargs) -> Tuple[int, dict, str]:
+    def __call__(self, *args, **kwargs) -> tuple[int, dict, str]:
         self.count += 1
         if self.count < 3 or self.fail:
             raise self.exception("fail")

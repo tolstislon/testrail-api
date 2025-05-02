@@ -1,7 +1,7 @@
 import json
 import random
 import uuid
-from typing import Optional, Tuple
+from typing import Optional
 
 import responses
 from requests import PreparedRequest
@@ -18,12 +18,12 @@ def _dataset(variables_count: int = 5, dataset_id: Optional[int] = None) -> dict
     }
 
 
-def _get_dataset(r: PreparedRequest) -> Tuple[int, dict, str]:
+def _get_dataset(r: PreparedRequest) -> tuple[int, dict, str]:
     dataset_id = int(r.url.split("/")[-1])
     return 200, {}, json.dumps(_dataset(5, dataset_id))
 
 
-def _get_datasets(_) -> Tuple[int, dict, str]:
+def _get_datasets(_) -> tuple[int, dict, str]:
     datasets = [_dataset(variables_count=random.randint(1, 5)) for _ in range(random.randint(1, 10))]
     return (
         200,
@@ -40,14 +40,14 @@ def _get_datasets(_) -> Tuple[int, dict, str]:
     )
 
 
-def _add_dataset(r: PreparedRequest) -> Tuple[int, dict, str]:
+def _add_dataset(r: PreparedRequest) -> tuple[int, dict, str]:
     req = json.loads(r.body)
     variables = [{"id": i, **v} for i, v in enumerate(req["variables"], 1)]
     req["variables"] = variables
     return 200, {}, json.dumps(req)
 
 
-def _update_dataset(r: PreparedRequest) -> Tuple[int, dict, str]:
+def _update_dataset(r: PreparedRequest) -> tuple[int, dict, str]:
     req = json.loads(r.body)
     dataset_id = int(r.url.split("/")[-1])
     return (

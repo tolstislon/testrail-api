@@ -1,6 +1,4 @@
-"""
-TestRail API categories
-"""
+"""TestRail API categories."""
 
 import itertools
 from pathlib import Path
@@ -9,13 +7,13 @@ from typing import Any, Callable, Dict, List, Optional, Union
 from ._enums import METHODS
 from ._session import Session
 
-
 OFFSET_MAX = 250
 LIMIT_MAX = 250
 
 
 def _bulk_api_method(func: Callable, resp_key: str, *args, **kwargs) -> List:
-    """Get the objects handling the pagination via offset.
+    """
+    Get the objects handling the pagination via offset.
 
     If the size returned from the API is less than the offset value.
     """
@@ -30,9 +28,9 @@ def _bulk_api_method(func: Callable, resp_key: str, *args, **kwargs) -> List:
 
 
 class _MetaCategory:
-    """Meta Category"""
+    """Meta Category."""
 
-    def __init__(self, session) -> None:
+    def __init__(self, session: Session) -> None:
         self._session: Session = session
 
     @property
@@ -41,13 +39,15 @@ class _MetaCategory:
 
 
 class Attachments(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/attachments"""
+    """https://www.gurock.com/testrail/docs/api/reference/attachments."""
 
     def add_attachment_to_plan(self, plan_id: int, path: Union[str, Path]) -> dict:
         """
-        Adds an attachment to a test plan. The maximum allowable upload size is
-        set to 256mb.
-        Requires TestRail 6.3 or later
+        Adds an attachment to a test plan.
+
+        The maximum allowable upload size is set to 256 mb.
+        Requires TestRail 6.3 or later.
+
         :param plan_id:
             The ID of the test plan the attachment should be added to
         :param path:
@@ -59,9 +59,11 @@ class Attachments(_MetaCategory):
 
     def add_attachment_to_plan_entry(self, plan_id: int, entry_id: int, path: Union[str, Path]) -> dict:
         """
-        Adds an attachment to a test plan entry. The maximum allowable upload size is
-        set to 256mb.
-        Requires TestRail 6.3 or later
+        Adds an attachment to a test plan entry.
+
+        The maximum allowable upload size is set to 256 mb.
+        Requires TestRail 6.3 or later.
+
         :param plan_id:
             The ID of the test plan containing the entry
         :param entry_id:
@@ -80,8 +82,9 @@ class Attachments(_MetaCategory):
     def add_attachment_to_result(self, result_id: int, path: Union[str, Path]) -> dict:
         """
         Adds attachment to a result based on the result ID.
-        The maximum allowable upload size is set to 256mb.
-        Requires TestRail 5.7 or later
+
+        The maximum allowable upload size is set to 256 mb.
+        Requires TestRail 5.7 or later.
 
         :param result_id:
             The ID of the result the attachment should be added to
@@ -95,8 +98,9 @@ class Attachments(_MetaCategory):
     def add_attachment_to_run(self, run_id: int, path: Union[str, Path]) -> dict:
         """
         Adds attachment to test run.
-        The maximum allowable upload size is set to 256mb.
-        Requires TestRail 6.3 or later
+
+        The maximum allowable upload size is set to 256 mb.
+        Requires TestRail 6.3 or later.
 
         :param run_id:
             The ID of the test run the attachment should be added to
@@ -110,8 +114,9 @@ class Attachments(_MetaCategory):
     def add_attachment_to_case(self, case_id: int, path: Union[str, Path]) -> dict:
         """
         Adds attachment to a case based on the case ID.
-        The maximum allowable upload size is set to 256mb.
-        Requires TestRail 6.5.2 or later
+
+        The maximum allowable upload size is set to 256 mb.
+        Requires TestRail 6.5.2 or later.
 
         :param case_id:
             The ID of the case the attachment should be added to
@@ -125,6 +130,7 @@ class Attachments(_MetaCategory):
     def get_attachments_for_case(self, case_id: int, limit: int = 250, offset: int = 0) -> dict:
         """
         Returns a list of attachments for a test case.
+
         Requires TestRail 5.7 or later
 
         :param case_id: int
@@ -145,7 +151,8 @@ class Attachments(_MetaCategory):
     def get_attachments_for_plan(self, plan_id: int, limit: int = 250, offset: int = 0) -> List[dict]:
         """
         Returns a list of attachments for a test plan.
-        Requires TestRail 6.3 or later
+
+        Requires TestRail 6.3 or later.
 
         :param plan_id:
             The ID of the test plan to retrieve attachments from
@@ -165,7 +172,8 @@ class Attachments(_MetaCategory):
     def get_attachments_for_plan_entry(self, plan_id: int, entry_id: int, **kwargs) -> List[dict]:
         """
         Returns a list of attachments for a test plan entry.
-        Requires TestRail 6.3 or later
+
+        Requires TestRail 6.3 or later.
 
         :param plan_id:
             The ID of the test plan containing the entry
@@ -184,7 +192,8 @@ class Attachments(_MetaCategory):
     def get_attachments_for_run(self, run_id: int, limit: int = 250, offset: int = 0) -> List[dict]:
         """
         Returns a list of attachments for a test run.
-        Requires TestRail 6.3 or later
+
+        Requires TestRail 6.3 or later.
 
         :param run_id:
             The ID of the test run to retrieve attachments from
@@ -204,7 +213,8 @@ class Attachments(_MetaCategory):
     def get_attachments_for_test(self, test_id: int, **kwargs) -> List[dict]:
         """
         Returns a list of attachments for test results.
-        Requires TestRail 5.7 or later
+
+        Requires TestRail 5.7 or later.
 
         :param test_id:
             The ID of the test
@@ -218,7 +228,8 @@ class Attachments(_MetaCategory):
     def get_attachment(self, attachment_id: int, path: Union[str, Path]) -> Path:
         """
         Returns the requested attachment identified by attachment_id.
-        Requires TestRail 5.7 or later
+
+        Requires TestRail 5.7 or later.
 
         :param attachment_id:
             The ID of the test to retrieve attachments from
@@ -230,7 +241,8 @@ class Attachments(_MetaCategory):
     def delete_attachment(self, attachment_id: int) -> None:
         """
         Deletes the specified attachment identified by attachment_id.
-        Requires TestRail 5.7 or later
+
+        Requires TestRail 5.7 or later.
 
         :param attachment_id:
             The ID of the attachment to to delete
@@ -307,7 +319,7 @@ class Attachments(_MetaCategory):
 
 
 class Cases(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/cases"""
+    """https://www.gurock.com/testrail/docs/api/reference/cases."""
 
     def get_case(self, case_id: int) -> dict:
         """
@@ -321,8 +333,7 @@ class Cases(_MetaCategory):
 
     def get_cases(self, project_id: int, **kwargs) -> dict:
         """
-        Returns a list of test cases for a project or specific test suite
-        (if the project has multiple suites enabled).
+        Returns a list of test cases for a project or specific test suite (if the project has multiple suites enabled).
 
         :param project_id:
             The ID of the project
@@ -372,6 +383,7 @@ class Cases(_MetaCategory):
     def get_history_for_case(self, case_id: int, limit: int = 250, offset: int = 0) -> List[dict]:
         """
         Returns the edit history for a test case_id.
+
         Requires TestRail 6.5.4 or later.
 
         :param case_id int
@@ -448,8 +460,9 @@ class Cases(_MetaCategory):
 
     def update_case(self, case_id: int, **kwargs) -> dict:
         """
-        Updates an existing test case (partial updates are supported, i.e.
-        you can submit and update specific fields only).
+        Updates an existing test case.
+
+        (partial updates are supported, i.e. you can submit and update specific fields only).
 
         :param case_id: T
             he ID of the test case
@@ -476,9 +489,9 @@ class Cases(_MetaCategory):
 
     def update_cases(self, case_ids: List[int], suite_id: int, **kwargs) -> dict:
         """
-        Updates multiple test cases with the same values, such as setting a set
-        of test cases to High priority. This does not support updating multiple
-        test cases with different values per test case.
+        Updates multiple test cases with the same values, such as setting a set of test cases to High priority.
+
+        This does not support updating multiple test cases with different values per test case.
 
         Note: The online documentation is wrong. The suite_id is required in
         single suite mode as well.
@@ -550,7 +563,7 @@ class Cases(_MetaCategory):
             json={"case_ids": case_ids},
         )
 
-    def copy_cases_to_section(self, section_id: int, case_ids: List[int]):
+    def copy_cases_to_section(self, section_id: int, case_ids: List[int]) -> dict:
         """
         Copies the list of cases to another suite/section.
 
@@ -564,7 +577,7 @@ class Cases(_MetaCategory):
             json={"case_ids": ",".join(map(str, case_ids))},
         )
 
-    def move_cases_to_section(self, section_id: int, suite_id: int, case_ids: List[str]):
+    def move_cases_to_section(self, section_id: int, suite_id: int, case_ids: List[str]) -> dict:
         """
         Moves cases to another suite or section.
 
@@ -585,8 +598,7 @@ class Cases(_MetaCategory):
 
     def get_cases_bulk(self, project_id: int, **kwargs) -> List[dict]:
         """
-        Return a list of test cases for a project or specific test suite
-        (if the project has multiple suites enabled) with pagination.
+        Return a list of test cases for a project or specific test suite with pagination.
 
         :param project_id:
             The ID of the project
@@ -636,7 +648,7 @@ class Cases(_MetaCategory):
 
 
 class CaseFields(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/case-fields"""
+    """https://www.gurock.com/testrail/docs/api/reference/case-fields."""
 
     def get_case_fields(self) -> List[dict]:
         """
@@ -664,7 +676,7 @@ class CaseFields(_MetaCategory):
         """
         return self.s.get(endpoint="get_case_fields")
 
-    def add_case_field(self, type: str, name: str, label: str, configs: List[dict], **kwargs) -> dict:  # noqa
+    def add_case_field(self, type: str, name: str, label: str, configs: List[dict], **kwargs) -> dict:
         """
         Creates a new test case custom field.
 
@@ -683,7 +695,7 @@ class CaseFields(_MetaCategory):
             The label for the new custom field (required)
         :param configs:
             An object wrapped in an array with two default keys,
-            ‘context’ and ‘options’ (required)
+            'context' and 'options' (required)
         :param kwargs:
             :key description: str
                 The description for the new custom field
@@ -703,7 +715,7 @@ class CaseFields(_MetaCategory):
 
 
 class CaseTypes(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/case-types"""
+    """https://www.gurock.com/testrail/docs/api/reference/case-types."""
 
     def get_case_types(self) -> List[dict]:
         """
@@ -719,7 +731,7 @@ class CaseTypes(_MetaCategory):
 
 
 class Configurations(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/configurations"""
+    """https://www.gurock.com/testrail/docs/api/reference/configurations."""
 
     def get_configs(self, project_id: int) -> List[dict]:
         """
@@ -784,8 +796,7 @@ class Configurations(_MetaCategory):
 
     def delete_config_group(self, config_group_id: int) -> None:
         """
-        Deletes an existing configuration group and its configurations
-        (requires TestRail 5.2 or later).
+        Deletes an existing configuration group and its configurations (requires TestRail 5.2 or later).
 
         :param config_group_id:
             The ID of the configuration group
@@ -805,7 +816,7 @@ class Configurations(_MetaCategory):
 
 
 class Milestones(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/milestones"""
+    """https://www.gurock.com/testrail/docs/api/reference/milestones."""
 
     def get_milestone(self, milestone_id: int) -> dict:
         """
@@ -873,8 +884,9 @@ class Milestones(_MetaCategory):
 
     def update_milestone(self, milestone_id: int, **kwargs) -> dict:
         """
-        Updates an existing milestone (partial updates are supported, i.e.
-        you can submit and update specific fields only).
+        Updates an existing milestone.
+
+        (partial updates are supported, i.e. you can submit and update specific fields only).
 
         :param milestone_id:
             The ID of the milestone
@@ -924,7 +936,7 @@ class Milestones(_MetaCategory):
 
 
 class Plans(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/plans"""
+    """https://www.gurock.com/testrail/docs/api/reference/plans."""
 
     def get_plan(self, plan_id: int) -> dict:
         """
@@ -1017,10 +1029,11 @@ class Plans(_MetaCategory):
         """
         return self.s.post(endpoint=f"add_plan_entry/{plan_id}", json=dict(suite_id=suite_id, **kwargs))
 
-    def add_run_to_plan_entry(self, plan_id: int, entry_id: int, config_ids: List[int], **kwargs):
+    def add_run_to_plan_entry(self, plan_id: int, entry_id: int, config_ids: List[int], **kwargs) -> dict:
         """
         Adds a new test run to a test plan entry (using configurations).
-        Requires TestRail 6.4 or later
+
+        Requires TestRail 6.4 or later.
 
         :param plan_id:
             The ID of the plan the test runs should be added to
@@ -1051,8 +1064,9 @@ class Plans(_MetaCategory):
 
     def update_plan(self, plan_id: int, **kwargs) -> dict:
         """
-        Updates an existing test plan (partial updates are supported,
-        i.e. you can submit and update specific fields only).
+        Updates an existing test plan.
+
+        (partial updates are supported, i.e. you can submit and update specific fields only).
 
         :param plan_id:
             The ID of the test plan
@@ -1072,8 +1086,9 @@ class Plans(_MetaCategory):
 
     def update_plan_entry(self, plan_id: int, entry_id: int, **kwargs) -> dict:
         """
-        Updates one or more existing test runs in a plan (partial updates are supported,
-        i.e. you can submit and update specific fields only).
+        Updates one or more existing test runs in a plan.
+
+        (partial updates are supported, i.e. you can submit and update specific fields only).
 
         :param plan_id:
             The ID of the test plan
@@ -1098,10 +1113,9 @@ class Plans(_MetaCategory):
         """
         return self.s.post(endpoint=f"update_plan_entry/{plan_id}/{entry_id}", json=kwargs)
 
-    def update_run_in_plan_entry(self, run_id: int, **kwargs):
+    def update_run_in_plan_entry(self, run_id: int, **kwargs) -> dict:
         """
-        Updates a run inside a plan entry which uses configurations
-        Requires TestRail 6.4 or later
+        Updates a run inside a plan entry which uses configurations requires TestRail 6.4 or later.
 
         :param run_id:
             The ID of the test run
@@ -1154,9 +1168,9 @@ class Plans(_MetaCategory):
         """
         return self.s.post(endpoint=f"delete_plan_entry/{plan_id}/{entry_id}")
 
-    def delete_run_from_plan_entry(self, run_id: int):
+    def delete_run_from_plan_entry(self, run_id: int) -> dict:
         """
-        Deletes a test run from a test plan entry
+        Deletes a test run from a test plan entry.
 
         :param run_id:
             The ID of the test run
@@ -1180,7 +1194,7 @@ class Plans(_MetaCategory):
 
 
 class Priorities(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/priorities"""
+    """https://www.gurock.com/testrail/docs/api/reference/priorities."""
 
     def get_priorities(self) -> List[dict]:
         """
@@ -1192,7 +1206,7 @@ class Priorities(_MetaCategory):
 
 
 class Projects(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/projects"""
+    """https://www.gurock.com/testrail/docs/api/reference/projects."""
 
     def get_project(self, project_id: int) -> dict:
         """
@@ -1207,6 +1221,7 @@ class Projects(_MetaCategory):
     def get_projects(self, limit: int = 250, offset: int = 0, **kwargs) -> dict:
         """
         Returns the list of available projects.
+
         :param limit:
             The number of projects the response should return
             (The response size is 250 by default) (requires TestRail 6.7 or later)
@@ -1244,8 +1259,9 @@ class Projects(_MetaCategory):
 
     def update_project(self, project_id: int, **kwargs) -> dict:
         """
-        Updates an existing project (admin status required; partial updates are
-        supported, i.e. you can submit and update specific fields only).
+        Updates an existing project.
+
+        (admin status required; partial updates are supported, i.e. you can submit and update specific fields only).
 
         :param project_id:
             The ID of the project
@@ -1255,7 +1271,7 @@ class Projects(_MetaCategory):
             :key announcement: str
                 The description of the project
             :key show_annoucement: bool
-                True if the annoucnement should be displayed on the project’s
+                True if the annoucnement should be displayed on the project's
                 overview page and false otherwise
             :key is_completed: bool
                 Specifies whether a project is considered completed or not
@@ -1275,7 +1291,7 @@ class Projects(_MetaCategory):
 
 
 class Reports(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/reports"""
+    """https://www.gurock.com/testrail/docs/api/reference/reports."""
 
     def get_reports(self, project_id: int) -> List[dict]:
         """
@@ -1291,8 +1307,7 @@ class Reports(_MetaCategory):
 
     def run_report(self, report_template_id: int) -> dict:
         """
-        Executes the report identified using the :report_id parameter and returns
-        URL's for accessing the report in HTML and PDF format.
+        Executes the report identified using the report_id parameter and returns URL's for accessing the report.
 
         Requires TestRail 5.7 or later.
 
@@ -1303,7 +1318,7 @@ class Reports(_MetaCategory):
 
 
 class Results(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/results"""
+    """https://www.gurock.com/testrail/docs/api/reference/results."""
 
     def get_results(self, test_id: int, limit: int = 250, offset: int = 0, **kwargs) -> dict:
         """
@@ -1403,8 +1418,8 @@ class Results(_MetaCategory):
     def add_result(self, test_id: int, **kwargs) -> List[dict]:
         """
         Adds a new test result, comment or assigns a test.
-        It's recommended to use add_results instead if you plan to add results for
-        multiple tests.
+
+        It's recommended to use add_results instead if you plan to add results for multiple tests.
 
         :param test_id:
             The ID of the test the result should be added to
@@ -1430,7 +1445,7 @@ class Results(_MetaCategory):
                 The ID of a user the test should be assigned to
 
             Custom fields are supported as well and must be submitted with their
-            system name, prefixed with ‘custom_’, e.g.:
+            system name, prefixed with 'custom_', e.g.:
                 {
                     ...
                     "custom_comment": "This is a custom comment"
@@ -1442,8 +1457,9 @@ class Results(_MetaCategory):
 
     def add_result_for_case(self, run_id: int, case_id: int, **kwargs) -> dict:
         """
-        Adds a new test result, comment or assigns a test (for a test run and case
-        combination). It's recommended to use add_results_for_cases instead if you
+        Adds a new test result, comment or assigns a test (for a test run and case combination).
+
+        It's recommended to use add_results_for_cases instead if you
         plan to add results for multiple test cases.
 
         The difference to add_result is that this method expects a test run +
@@ -1482,7 +1498,7 @@ class Results(_MetaCategory):
                 The ID of a user the test should be assigned to
 
             Custom fields are supported as well and must be submitted with their
-            system name, prefixed with ‘custom_’, e.g.:
+            system name, prefixed with 'custom_', e.g.:
                 {
                     ...
                     "custom_comment": "This is a custom comment"
@@ -1497,9 +1513,10 @@ class Results(_MetaCategory):
 
     def add_results(self, run_id: int, results: List[dict]) -> List[dict]:
         """
-        This method expects an array of test results (via the 'results' field,
-        please see below). Each test result must specify the test ID and can pass in
-        the same fields as add_result, namely all test related system and custom fields.
+        Method expects an array of test results (via the 'results' field, please see below).
+
+        Each test result must specify the test ID and can pass in the same fields as add_result,
+        namely all test related system and custom fields.
 
         Please note that all referenced tests must belong to the same test run.
 
@@ -1518,11 +1535,10 @@ class Results(_MetaCategory):
 
     def add_results_for_cases(self, run_id: int, results: List[dict]) -> List[dict]:
         """
-        Adds one or more new test results, comments or assigns one or more tests
-        (using the case IDs).
-        Ideal for test automation to bulk-add multiple test results in one step.
+        Adds one or more new test results, comments or assigns one or more tests (using the case IDs).
 
-        Requires TestRail 3.1 or later
+        Ideal for test automation to bulk-add multiple test results in one step.
+        Requires TestRail 3.1 or later.
 
         :param run_id:
             The ID of the test run the results should be added to
@@ -1547,7 +1563,7 @@ class Results(_MetaCategory):
         """
         Return a list of test results for a test run handling pagination.
 
-        :param run_id:
+        :param test_id:
             The ID of the test run
         :param kwargs: filters
             :key defects_filter: str
@@ -1564,7 +1580,7 @@ class Results(_MetaCategory):
         Return a list of test results for a case in a test run handling pagination.
 
         For the difference between get_results vs get_results_for_case, please see
-        the documentation for get_results_for_case
+        the documentation for get_results_for_case.
 
         :param run_id:
             The ID of the test run
@@ -1604,7 +1620,7 @@ class Results(_MetaCategory):
 
 
 class ResultFields(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/result-fields"""
+    """https://www.gurock.com/testrail/docs/api/reference/result-fields."""
 
     def get_result_fields(self) -> List[dict]:
         """
@@ -1616,12 +1632,11 @@ class ResultFields(_MetaCategory):
 
 
 class Runs(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/runs"""
+    """https://www.gurock.com/testrail/docs/api/reference/runs."""
 
     def get_run(self, run_id: int) -> dict:
         """
-        Returns an existing test run. Please see get_tests for the list of included
-        tests in this run.
+        Returns an existing test run. Please see get_tests for the list of included tests in this run.
 
         :param run_id:
             The ID of the test run
@@ -1631,8 +1646,9 @@ class Runs(_MetaCategory):
 
     def get_runs(self, project_id: int, **kwargs) -> dict:
         """
-        Returns a list of test runs for a project. Only returns those test runs that
-        are not part of a test plan (please see get_plans/get_plan for this).
+        Returns a list of test runs for a project.
+
+        Only returns those test runs that are not part of a test plan (please see get_plans/get_plan for this).
 
         :param project_id: int
             The ID of the project
@@ -1690,8 +1706,9 @@ class Runs(_MetaCategory):
 
     def update_run(self, run_id: int, **kwargs) -> dict:
         """
-        Updates an existing test run (partial updates are supported,
-        i.e. you can submit and update specific fields only).
+        Updates an existing test run.
+
+        (partial updates are supported, i.e. you can submit and update specific fields only).
 
         :param run_id:
             The ID of the test run
@@ -1717,6 +1734,7 @@ class Runs(_MetaCategory):
     def close_run(self, run_id: int) -> Optional[dict]:
         """
         Closes an existing test run and archives its tests & results.
+
         Closing a test run cannot be undone.
 
         :param run_id:
@@ -1728,6 +1746,7 @@ class Runs(_MetaCategory):
     def delete_run(self, run_id: int, soft: int = 0) -> Optional[dict]:
         """
         Deletes an existing test run.
+
         Deleting a test run cannot be undone and also permanently deletes all
         tests & results of the test run.
 
@@ -1744,8 +1763,9 @@ class Runs(_MetaCategory):
 
     def get_runs_bulk(self, project_id: int, **kwargs) -> List[dict]:
         """
-        Returns a list of test runs for a project. Only returns those test runs that
-        are not part of a test plan (please see get_plans/get_plan for this).
+        Returns a list of test runs for a project.
+
+        Only returns those test runs that are not part of a test plan (please see get_plans/get_plan for this).
 
         :param project_id: int
             The ID of the project
@@ -1772,7 +1792,7 @@ class Runs(_MetaCategory):
 
 
 class Sections(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/sections"""
+    """https://www.gurock.com/testrail/docs/api/reference/sections."""
 
     def get_section(self, section_id: int) -> dict:
         """
@@ -1827,9 +1847,9 @@ class Sections(_MetaCategory):
         """
         return self.s.post(endpoint=f"add_section/{project_id}", json=dict(name=name, **kwargs))
 
-    def move_section(self, section_id: int, parent_id: int = 0, after_id: Optional[int] = None):
+    def move_section(self, section_id: int, parent_id: int = 0, after_id: Optional[int] = None) -> dict:
         """
-        Moves a section to another suite or section. (Requires TestRail 6.5.2 or later)
+        Moves a section to another suite or section (Requires TestRail 6.5.2 or later).
 
         :param section_id:
             The ID of the section.
@@ -1848,8 +1868,9 @@ class Sections(_MetaCategory):
 
     def update_section(self, section_id: int, **kwargs) -> dict:
         """
-        Updates an existing section (partial updates are supported,
-        i.e. you can submit and update specific fields only).
+        Updates an existing section.
+
+        (partial updates are supported, i.e. you can submit and update specific fields only).
 
         :param section_id:
             The ID of the section
@@ -1871,7 +1892,7 @@ class Sections(_MetaCategory):
         :param soft:
             Deleting a section cannot be undone and also deletes all related test
             cases as well as active tests & results, i.e. tests & results that
-            weren’t closed (archived) yet.
+            weren't closed (archived) yet.
             Omitting the soft parameter, or submitting soft=0 will delete the
             section and its test cases
         :return: response
@@ -1895,7 +1916,7 @@ class Sections(_MetaCategory):
 
 
 class Statuses(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/statuses"""
+    """https://www.gurock.com/testrail/docs/api/reference/statuses."""
 
     def get_statuses(self) -> List[dict]:
         """
@@ -1907,7 +1928,7 @@ class Statuses(_MetaCategory):
 
     def get_case_statuses(self) -> List[dict]:
         """
-        Returns a list of available test case statuses
+        Returns a list of available test case statuses.
 
         :return: response
         """
@@ -1915,7 +1936,7 @@ class Statuses(_MetaCategory):
 
 
 class Suites(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/suites"""
+    """https://www.gurock.com/testrail/docs/api/reference/suites."""
 
     def get_suite(self, suite_id: int) -> dict:
         """
@@ -1954,8 +1975,9 @@ class Suites(_MetaCategory):
 
     def update_suite(self, suite_id: int, **kwargs) -> dict:
         """
-        Updates an existing test suite (partial updates are supported,
-        i.e. you can submit and update specific fields only).
+        Updates an existing test suite.
+
+        (partial updates are supported, i.e. you can submit and update specific fields only).
 
         :param suite_id:
             The ID of the test suite
@@ -1977,7 +1999,7 @@ class Suites(_MetaCategory):
         :param soft:
             Deleting a test suite cannot be undone and also deletes all active
             test runs & results, i.e. test runs & results that
-            weren’t closed (archived) yet.
+            weren't closed (archived) yet.
             Omitting the soft parameter, or submitting soft=0 will delete the
             test suite and its test cases
         :return: response
@@ -1986,7 +2008,7 @@ class Suites(_MetaCategory):
 
 
 class Template(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/templates"""
+    """https://www.gurock.com/testrail/docs/api/reference/templates."""
 
     def get_templates(self, project_id: int) -> List[dict]:
         """
@@ -2000,11 +2022,12 @@ class Template(_MetaCategory):
 
 
 class Tests(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/tests"""
+    """https://www.gurock.com/testrail/docs/api/reference/tests."""
 
     def get_test(self, test_id: int, **kwargs) -> dict:
         """
         Returns an existing test.
+
         If you interested in the test results rather than the tests, please see
         get_results instead.
 
@@ -2056,7 +2079,7 @@ class Tests(_MetaCategory):
 
 
 class Users(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/users"""
+    """https://www.gurock.com/testrail/docs/api/reference/users."""
 
     def get_user(self, user_id: int) -> dict:
         """
@@ -2070,8 +2093,7 @@ class Users(_MetaCategory):
 
     def get_current_user(self, user_id: int) -> dict:
         """
-        Returns user details for the TestRail user making the API request
-        (Requires TestRail 6.6 or later).
+        Returns user details for the TestRail user making the API request (Requires TestRail 6.6 or later).
 
         :param user_id:
             The ID of the user
@@ -2092,6 +2114,7 @@ class Users(_MetaCategory):
     def get_users(self, project_id: Optional[int] = None) -> List[dict]:
         """
         Returns a list of users.
+
         :param project_id:
             The ID of the project for which you would like to retrieve user information.
             (Required for non-administrators. Requires TestRail 6.6 or later.)
@@ -2101,7 +2124,7 @@ class Users(_MetaCategory):
 
 
 class SharedSteps(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/api-shared-steps"""
+    """https://www.gurock.com/testrail/docs/api/reference/api-shared-steps."""
 
     def get_shared_step(self, shared_step_id: int) -> dict:
         """
@@ -2138,8 +2161,7 @@ class SharedSteps(_MetaCategory):
 
     def add_shared_step(self, project_id: int, title: str, custom_steps_separated: List[dict]) -> dict:
         """
-        Creates a new set of shared steps. Requires permission to add test cases
-        withing the project.
+        Creates a new set of shared steps. Requires permission to add test cases withing the project.
 
         :param project_id: int
             The ID of the project.
@@ -2163,8 +2185,10 @@ class SharedSteps(_MetaCategory):
 
     def update_shared_step(self, shared_update_id: int, **kwargs) -> dict:
         """
-        Updates an existing set of shared steps (partial updates are supported, i.e.
-        you can submit and update specific fields only).
+        Updates an existing set of shared steps.
+
+        (partial updates are supported, i.e. you can submit and update specific fields only).
+
         Requires permission to edit test cases within the project.
 
         :param shared_update_id: int
@@ -2178,10 +2202,11 @@ class SharedSteps(_MetaCategory):
         """
         return self.s.post(endpoint=f"update_shared_step/{shared_update_id}", json=kwargs)
 
-    def delete_shared_step(self, shared_update_id: int, keep_in_cases: int = 1):
+    def delete_shared_step(self, shared_update_id: int, keep_in_cases: int = 1) -> dict:
         """
-        Deletes an existing shared step entity. Requires permission to delete
-        test cases within the project.
+        Deletes an existing shared step entity.
+
+        Requires permission to delete test cases within the project.
 
         :param shared_update_id: int
             The ID of the set of shared steps.
@@ -2220,15 +2245,15 @@ class SharedSteps(_MetaCategory):
 
 
 class Roles(_MetaCategory):
-    """https://support.testrail.com/hc/en-us/articles/7077853258772-Roles"""
+    """https://support.testrail.com/hc/en-us/articles/7077853258772-Roles."""
 
     def get_roles(self) -> Dict[str, Any]:
-        """Returns a list of available roles"""
+        """Returns a list of available roles."""
         return self.s.get(endpoint="get_roles")
 
 
 class Groups(_MetaCategory):
-    """https://support.testrail.com/hc/en-us/articles/7077338821012-Groups"""
+    """https://support.testrail.com/hc/en-us/articles/7077338821012-Groups."""
 
     def get_group(self, group_id: int) -> dict:
         """
@@ -2279,11 +2304,12 @@ class Groups(_MetaCategory):
 
 
 class Variables(_MetaCategory):
-    """https://support.testrail.com/hc/en-us/articles/7077979742868-Variables"""
+    """https://support.testrail.com/hc/en-us/articles/7077979742868-Variables."""
 
     def get_variables(self, project_id: int) -> dict:
         """
         Retrieves the requested variables.
+
         :param project_id: int
             The ID of the project from which to retrieve variables.
         """
@@ -2292,6 +2318,7 @@ class Variables(_MetaCategory):
     def add_variable(self, project_id: int, id: int, name: str) -> dict:
         """
         Creates a new variable.
+
         :param project_id: int
             The ID of the project to which the variable should be added.
         :param id: int
@@ -2304,6 +2331,7 @@ class Variables(_MetaCategory):
     def update_variable(self, variable_id: int, name: str) -> dict:
         """
         Updates an existing variable.
+
         :param variable_id: int
             The ID of the variable to update.
         :param name: str
@@ -2314,6 +2342,7 @@ class Variables(_MetaCategory):
     def delete_variable(self, variable_id: int) -> None:
         """
         Deletes an existing variable.
+
         :param variable_id: str
             The ID of the variable to be deleted.
         """
@@ -2321,11 +2350,12 @@ class Variables(_MetaCategory):
 
 
 class Datasets(_MetaCategory):
-    """https://support.testrail.com/hc/en-us/articles/7077300491540-Datasets"""
+    """https://support.testrail.com/hc/en-us/articles/7077300491540-Datasets."""
 
     def get_dataset(self, dataset_id: int) -> dict:
         """
         Retrieves the requested dataset parameter.
+
         :param dataset_id: int
             The ID of the dataset to retrieve
         """
@@ -2333,7 +2363,8 @@ class Datasets(_MetaCategory):
 
     def get_datasets(self, project_id: int) -> dict:
         """
-        Retrieves the requested list of datasets
+        Retrieves the requested list of datasets.
+
         :param project_id: int
             The ID of the project from which to retrieve datasets
         """
@@ -2342,6 +2373,7 @@ class Datasets(_MetaCategory):
     def add_dataset(self, project_id: int, id: int, name: str, variables: List[dict]) -> dict:
         """
         Creates a new dataset.
+
         :param project_id: int
             The ID of the project to which the dataset should be added
         :param id: int
@@ -2356,6 +2388,7 @@ class Datasets(_MetaCategory):
     def update_dataset(self, dataset_id: int, **kwargs) -> dict:
         """
         Updates an existing dataset.
+
         :param dataset_id: int
             The ID of the project to which the dataset should be updated
         :param kwargs:
@@ -2368,7 +2401,8 @@ class Datasets(_MetaCategory):
 
     def delete_dataset(self, dataset_id: int) -> None:
         """
-        Deletes an existing dataset.Parameter
+        Deletes an existing dataset.Parameter.
+
         :param dataset_id: int
             The ID of the dataset to be deleted
         """

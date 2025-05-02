@@ -1,4 +1,4 @@
-"""Base session"""
+"""Base session."""
 
 import logging
 import time
@@ -15,7 +15,6 @@ from . import __version__
 from ._enums import METHODS
 from ._exception import StatusCodeError, TestRailError
 
-
 logger = logging.getLogger(__package__)
 
 RATE_LIMIT_STATUS_CODE = 429
@@ -24,15 +23,15 @@ RATE_LIMIT_STATUS_CODE = 429
 class Environ:
     URL: str = "TESTRAIL_URL"
     EMAIL: str = "TESTRAIL_EMAIL"
-    PASSWORD: str = "TESTRAIL_PASSWORD"
+    PASSWORD: str = "TESTRAIL_PASSWORD"  # noqa: S105
 
 
 class Session:
-    """Base Session"""
+    """Base Session."""
 
     _user_agent = f"Python TestRail API v: {__version__}"
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         url: Optional[str] = None,
         email: Optional[str] = None,
@@ -42,38 +41,40 @@ class Session:
         rate_limit: bool = True,
         warn_ignore: bool = False,
         retry_exceptions: Tuple[Type[BaseException], ...] = (),
-        response_handler: Callable[[requests.Response], Any] = None,
+        response_handler: Optional[Callable[[requests.Response], Any]] = None,
         session: Optional[requests.Session] = None,
         **kwargs,
     ) -> None:
         """
+        Session constructor.
+
         :param url:
-            TestRail address
+            TestRail address.
         :param email:
-            Email for the account on the TestRail
+            Email for the account on the TestRail.
         :param password:
-            Password for the account on the TestRail or token
+            Password for the account on the TestRail or token.
         :param session:
-            Given session will be used instead of new one
+            Given session will be used instead of new one.
         :param exc:
-            Catching exceptions
+            Catching exceptions.
         :param rate_limit:
-            Check the response header for the rate limit and retry the request
+            Check the response header for the rate limit and retry the request.
         :param warn_ignore:
-            Ignore warning when not using HTTPS
+            Ignore warning when not using HTTPS.
         :param retry_exceptions:
-            Set of exceptions to retry the request
+            Set of exceptions to retry the request.
         :param response_hook:
-            Override default response handling
+            Override default response handling.
         :param kwargs:
             :key timeout: int (default: 30)
-                How many seconds to wait for the server to send data
+                How many seconds to wait for the server to send data.
             :key verify: bool (default: True)
-                Controls whether we verify the server's certificate
+                Controls whether we verify the server's certificate.
             :key headers: dict
-                Dictionary of HTTP Headers to send
+                Dictionary of HTTP Headers to send.
             :key retry: int (default 3)
-                Delay in receiving code 429
+                Delay in receiving code 429.
             :key exc_iterations: int (default 3)
         """
         _url = self.__get_url(url=url, warn_ignore=warn_ignore)
@@ -108,35 +109,37 @@ class Session:
 
     @property
     def user_email(self) -> str:
-        """Get user email"""
+        """Get user email."""
         return self.__user_email
 
     @staticmethod
     def __get_url(url: str, warn_ignore: bool) -> str:
-        """Reading URL"""
+        """Read URL."""
         if not (_url := url or environ.get(Environ.URL)):
             raise TestRailError(f"Url is not set. Use argument url or env {Environ.URL}")
         _url = _url.rstrip("/")
         if _url.startswith("http://") and not warn_ignore:
-            warnings.warn("Using HTTP and not HTTPS may cause writeable API requests to return 404 errors")
+            warnings.warn(
+                "Using HTTP and not HTTPS may cause writeable API requests to return 404 errors", stacklevel=2
+            )
         return _url
 
     @staticmethod
     def __get_email(email: Optional[str]) -> str:
-        """Reading email"""
+        """Read email."""
         if not (_email := email or environ.get(Environ.EMAIL)):
             raise TestRailError(f"Email is not set. Use argument email or env {Environ.EMAIL}")
         return _email
 
     @staticmethod
     def __get_password(password: str) -> str:
-        """Reading password"""
+        """Read password."""
         if not (_password := password or environ.get(Environ.PASSWORD)):
             raise TestRailError(f"Password is not set. Use argument password or env {Environ.PASSWORD}")
         return _password
 
-    def __default_response_handler(self, response: requests.Response):
-        """Default response handler. Deserialization json or return None"""
+    def __default_response_handler(self, response: requests.Response) -> Any:
+        """Deserialization json or return None."""
         if not response.ok:
             logger.error(
                 "Code: %s, reason: %s url: %s, content: %s",
@@ -160,7 +163,7 @@ class Session:
 
     @staticmethod
     def __get_converter(params: dict) -> None:
-        """Converting GET parameters"""
+        """Convert GET parameters."""
         for key, value in params.items():
             if isinstance(value, (list, tuple, set)):
                 # Converting a list to a string '1,2,3'
@@ -174,14 +177,14 @@ class Session:
 
     @staticmethod
     def __post_converter(json: dict) -> None:
-        """Converting POST parameters"""
+        """Convert POST parameters."""
         for key, value in json.items():
             if isinstance(value, datetime):
                 # Converting a datetime value to integer (UNIX timestamp)
                 json[key] = round(value.timestamp())
 
-    def get(self, endpoint: str, params: Optional[Dict[Any, Any]] = None):
-        """GET method"""
+    def get(self, endpoint: str, params: Optional[Dict[Any, Any]] = None) -> Any:
+        """GET method."""
         return self.request(
             method=METHODS.GET,
             endpoint=endpoint,
@@ -193,8 +196,8 @@ class Session:
         endpoint: str,
         params: Optional[Dict[Any, Any]] = None,
         json: Optional[Dict[Any, Any]] = None,
-    ):
-        """POST method"""
+    ) -> Any:
+        """POST method."""
         return self.request(
             method=METHODS.POST,
             endpoint=endpoint,
@@ -202,8 +205,8 @@ class Session:
             json=json or {},
         )
 
-    def request(self, method: METHODS, endpoint: str, raw: bool = False, **kwargs):
-        """Base request method"""
+    def request(self, method: METHODS, endpoint: str, raw: bool = False, **kwargs) -> Any:
+        """Send request method."""
         url = f"{self.__base_url}{endpoint}"
         if not endpoint.startswith("add_attachment"):
             headers = kwargs.setdefault("headers", {})
@@ -212,18 +215,17 @@ class Session:
         self.__get_converter(kwargs.get("params", {}))
         self.__post_converter(kwargs.get("json", {}))
 
-        for count in range(self.__exc_iterations):
+        for count in range(self.__exc_iterations):  # noqa: RET503
             try:
                 response = self.__session.request(method=str(method.value), url=url, timeout=self.__timeout, **kwargs)
             except self.__retry_exceptions as exc:
                 if count < self.__exc_iterations - 1:
                     logger.warning("%s, retrying %s/%s", exc, count + 1, self.__exc_iterations)
                     continue
-                else:
-                    raise
+                raise
             except Exception as err:
                 logger.error("%s", err, exc_info=True)
-                raise
+                raise err
             if (
                 self._rate_limit
                 and response.status_code == RATE_LIMIT_STATUS_CODE
@@ -238,14 +240,14 @@ class Session:
     def _path(path: Union[Path, str]) -> Path:
         return path if isinstance(path, Path) else Path(path)
 
-    def attachment_request(self, method: METHODS, src: str, file: Union[Path, str], **kwargs):
-        """Send attach"""
+    def attachment_request(self, method: METHODS, src: str, file: Union[Path, str], **kwargs) -> dict:
+        """Send attach."""
         file = self._path(file)
         with file.open("rb") as attachment:
             return self.request(method, src, files={"attachment": attachment}, **kwargs)
 
     def get_attachment(self, method: METHODS, src: str, file: Union[Path, str], **kwargs) -> Path:
-        """Downloads attach"""
+        """Download attach."""
         file = self._path(file)
         response = self.request(method, src, raw=True, **kwargs)
         if response.ok:

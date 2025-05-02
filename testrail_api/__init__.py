@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 """
-Python wrapper of the TestRail API
+Python wrapper of the TestRail API.
 
 ------------------
 from datetime import datetime
@@ -53,7 +51,6 @@ import logging
 from ._exception import StatusCodeError
 from ._testrail_api import TestRailAPI
 
-
 logging.getLogger(__package__).addHandler(logging.NullHandler())
 
-__all__ = ["TestRailAPI", "StatusCodeError", "__version__"]
+__all__ = ["StatusCodeError", "TestRailAPI", "__version__"]

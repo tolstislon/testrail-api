@@ -1,13 +1,13 @@
-"""Exceptions"""
+"""Exceptions."""
 
 
 class TestRailError(Exception):
-    """Base Exception"""
+    """Base Exception."""
 
 
 class TestRailAPIError(TestRailError):
-    """Base API Exception"""
+    """Base API Exception."""
 
 
 class StatusCodeError(TestRailAPIError):
-    """Status code Exception"""
+    """Status code Exception."""

@@ -1,10 +1,10 @@
-"""Enums"""
+"""Enums."""
 
 from enum import Enum
 
 
 class METHODS(Enum):
-    """HTTP methods"""
+    """HTTP methods."""
 
     GET = "GET"
     POST = "POST"

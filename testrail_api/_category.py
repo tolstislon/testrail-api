@@ -2,7 +2,7 @@
 
 import itertools
 from pathlib import Path
-from typing import Any, Callable, Optional, Self, Union
+from typing import Any, Callable, Optional, Union
 
 from ._enums import METHODS
 from ._session import Session
@@ -34,11 +34,11 @@ class _MetaCategory:
     def s(self) -> Session:
         return self._session
 
-    def __call__(self, session: Session) -> Self:
+    def __call__(self, session: Session):  # noqa: ANN204 (3.9 and 3.10 no Self)
         self._session = session
         return self
 
-    def __get__(self, instance: Session, owner: type[Session]) -> Self:
+    def __get__(self, instance: Session, owner: type[Session]):  # noqa: ANN204 (3.9 and 3.10 no Self)
         return self(instance)
 
 

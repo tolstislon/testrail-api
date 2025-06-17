@@ -20,7 +20,7 @@ setup(
     long_description_content_type="text/markdown",
     use_scm_version={"write_to": "testrail_api/__version__.py"},
     setup_requires=["setuptools_scm"],
-    install_requires=["requests>=2.32.3"],
+    install_requires=["requests>=2.32.4"],
     python_requires=">=3.9",
     include_package_data=True,
     keywords=[

@@ -2009,7 +2009,18 @@ class Suites(_MetaCategory):
         :return: response
         """
         return self.s.post(endpoint=f"delete_suite/{suite_id}", params={"soft": soft})
+    
+    
+    def get_suites_bulk(self, project_Id: int, **kwargs) -> list[dict]:
+        """
+        Return a list of suites for a project handling pagination.
 
+        :param project_id:
+            The ID of the project
+        :return: response
+        """
+        return _bulk_api_method(self.get_suites, "suites", project_Id, **kwargs)
+    
 
 class Template(_MetaCategory):
     """https://www.gurock.com/testrail/docs/api/reference/templates."""

@@ -45,6 +45,13 @@ def test_get_suites(api, mock, url, offset, limit):
     assert resp["suites"][1]["description"] == "Suite2"
 
 
+def test_get_suites_bulk(api, mock, url):
+    mock.add_callback(responses.GET, url("get_suites/5"), get_suites)
+    resp = api.suites.get_suites_bulk(5)
+    assert resp[0]["id"] == 1
+    assert resp[1]["description"] == "Suite2"
+
+
 def test_add_suite(api, mock, url):
     mock.add_callback(responses.POST, url("add_suite/7"), add_suite)
     resp = api.suites.add_suite(7, "New suite", description="My new suite")

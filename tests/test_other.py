@@ -36,7 +36,7 @@ class CustomException(Exception):
 class CustomExceptionRetry:
     """Exception retry."""
 
-    def __init__(self, exception=CustomException, fail=False) -> None:
+    def __init__(self, exception=CustomException, *, fail=False) -> None:
         self.count = 0
         self.exception = exception
         self.fail = fail

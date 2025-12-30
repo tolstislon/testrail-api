@@ -57,12 +57,6 @@ def delete_cases(r, project_id=None, case_ids=None, suite_id=None, soft=0):
     return 200, {}, ""
 
 
-# def copy_cases_to_section(r):
-#     body = json.loads(r.body.decode())
-#     assert body['case_ids'] == '1,2,3'
-#     return 200, {}, ''
-
-
 def test_get_case(api, mock, url):
     mock.add_callback(
         responses.GET,

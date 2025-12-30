@@ -113,7 +113,7 @@ class Session:
         return self.__user_email
 
     @staticmethod
-    def __get_url(url: str, warn_ignore: bool) -> str:
+    def __get_url(url: str, *, warn_ignore: bool) -> str:
         """Read URL."""
         if not (_url := url or environ.get(Environ.URL)):
             raise TestRailError(f"Url is not set. Use argument url or env {Environ.URL}")
@@ -205,7 +205,7 @@ class Session:
             json=json or {},
         )
 
-    def request(self, method: METHODS, endpoint: str, raw: bool = False, **kwargs) -> Any:
+    def request(self, method: METHODS, endpoint: str, *, raw: bool = False, **kwargs) -> Any:
         """Send request method."""
         url = f"{self.__base_url}{endpoint}"
         if not endpoint.startswith("add_attachment"):
@@ -215,7 +215,7 @@ class Session:
         self.__get_converter(kwargs.get("params", {}))
         self.__post_converter(kwargs.get("json", {}))
 
-        for count in range(self.__exc_iterations):  # noqa: RET503
+        for count in range(self.__exc_iterations):
             try:
                 response = self.__session.request(method=str(method.value), url=url, timeout=self.__timeout, **kwargs)
             except self.__retry_exceptions as exc:
@@ -223,9 +223,9 @@ class Session:
                     logger.warning("%s, retrying %s/%s", exc, count + 1, self.__exc_iterations)
                     continue
                 raise
-            except Exception as err:
-                logger.error("%s", err, exc_info=True)
-                raise err
+            except Exception:
+                logger.exception("Request error")
+                raise
             if (
                 self._rate_limit
                 and response.status_code == RATE_LIMIT_STATUS_CODE
@@ -235,6 +235,7 @@ class Session:
                 continue
             logger.debug("Response header: %s", response.headers)
             return response if raw else self.__response_handler(response)
+        return None
 
     @staticmethod
     def _path(path: Union[Path, str]) -> Path:

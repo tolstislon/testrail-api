@@ -38,6 +38,10 @@ class _MetaCategory:
         self._session = session
         return self
 
+    @staticmethod
+    def _opt(params: dict[Any, Any]) -> dict[Any, Any]:
+        return {k: v for k, v in params.items() if v is not None}
+
     def __get__(self, instance: Session, owner: type[Session]):  # noqa: ANN204 (3.9 and 3.10 no Self)
         return self(instance)
 
@@ -2411,3 +2415,42 @@ class Datasets(_MetaCategory):
             The ID of the dataset to be deleted
         """
         return self.s.post(endpoint=f"delete_dataset/{dataset_id}")
+
+
+class Labels(_MetaCategory):
+    """https://support.testrail.com/hc/en-us/articles/38961149782036-Labels."""
+
+    def get_labels(self, project_id: int, offset: Optional[int] = None, limit: Optional[int] = None) -> dict:
+        """
+        Returns an existing label.
+
+        :param project_id: int
+            The ID of the project.
+        :param offset: int | None
+            Where to start counting the test cases from the offset.
+        :param limit: int | None
+            The number of labels the response should return.
+        """
+        return self.s.get(endpoint=f"get_labels/{project_id}", params=self._opt({"offset": offset, "limit": limit}))
+
+    def get_label(self, label_id: int) -> dict:
+        """
+        Returns an existing label.
+
+        :param label_id: int
+            Returns an existing label.
+        """
+        return self.s.get(endpoint=f"get_label/{label_id}")
+
+    def update_label(self, label_id: int, project_id: int, title: str) -> dict:
+        """
+        Updates an existing label.
+
+        :param label_id: int
+            The ID of the label to update.
+        :param project_id: int
+            The ID of the project where the label is to be updated.
+        :param title: str
+            The title of the label. Maximum 20 characters allowed.
+        """
+        return self.s.post(endpoint=f"update_label/{label_id}", json={"title": title, "project_id": project_id})

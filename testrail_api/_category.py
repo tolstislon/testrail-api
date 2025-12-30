@@ -1956,15 +1956,19 @@ class Suites(_MetaCategory):
         """
         return self.s.get(endpoint=f"get_suite/{suite_id}")
 
-    def get_suites(self, project_id: int) -> list[dict]:
+    def get_suites(self, project_id: int, offset: Optional[int] = None, limit: Optional[int] = None) -> list[dict]:
         """
         Returns a list of test suites for a project.
 
         :param project_id:
             The ID of the project
+        :param offset:
+            Where to start counting the suites from the offset.
+        :param limit:
+            The number of suites the response should return.
         :return: response
         """
-        return self.s.get(endpoint=f"get_suites/{project_id}")
+        return self.s.get(endpoint=f"get_suites/{project_id}", params=self._opt({"offset": offset, "limit": limit}))
 
     def add_suite(self, project_id: int, name: str, **kwargs) -> dict:
         """

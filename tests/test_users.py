@@ -61,6 +61,20 @@ def test_get_users_no_project_id(api, mock, url, offset, limit):
     assert response["users"][0]["name"] == "John Smith"
 
 
+def test_get_users_bulk(api, mock, url):
+    mock.add_callback(responses.GET, url("get_users/15"), get_users)
+    resp = api.users.get_users_bulk(15)
+    assert resp[0]["id"] == 1
+    assert resp[1]["name"] == "Jane Smith"
+
+
+def test_get_users_bulk_no_project_id(api, mock, url):
+    mock.add_callback(responses.GET, url("get_users"), get_users)
+    resp = api.users.get_users_bulk()
+    assert resp[0]["id"] == 1
+    assert resp[1]["name"] == "Jane Smith"
+
+
 def test_get_current_user(api, mock, url):
     mock.add_callback(
         responses.GET,

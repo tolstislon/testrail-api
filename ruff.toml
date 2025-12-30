@@ -33,6 +33,26 @@ select = [
     "FLY", # flynt
     "PL", # Pylint
     "RSE", # flake8-raise
+    "ERA", # eradicate (Закомменченый код)
+    "BLE", # flake8-blind-except
+    "FBT", # flake8-boolean-trap
+    "DTZ", # flake8-datetimez
+    "INT", # flake8-gettext
+    "TC", # flake8-type-checking
+    "W", # pycodestyle (warning)
+    "PLR", # Refactor
+    "PLW", # Warning
+    "TRY", # Warning
+    "ASYNC", # flake8-async
+    "T10", # flake8-debugger
+    "EM", # flake8-errmsg
+    "EXE", # flake8-executable
+    "LOG", # flake8-logging
+    "G", # flake8-logging-format
+    "SLF", # flake8-self
+    "SLOT", # flake8-slots
+    "TID", # flake8-tidy-imports
+    "PLE", # Pylint Error
 ]
 ignore = [
     "S311", # Standard pseudo-random generators are not suitable for cryptographic purposesStandard pseudo-random generators are not suitable for cryptographic purposes
@@ -44,11 +64,14 @@ ignore = [
     "ANN003", # Missing type annotation for `**kwargs`
     "ANN002", # Missing type annotation for `*args`
     "D107", # Missing docstring in `__init__`
-    "ANN401", # Dynamically typed expressions (typing.Any) are disallowed`
+    "ANN401", # Dynamically typed expressions (typing.Any) are disallowed
+    "EM101", # Exception must not use a string literal, assign to variable first
+    "EM102", # Exception must not use an f-string literal, assign to variable first
+    "TRY003", # Avoid specifying long messages outside the exception class
 ]
 
 [lint.per-file-ignores]
-"test_*.py" = ["S101", "D103", "ANN201", "D100", "S605", "S607", "ANN001", "PLR2004", "PT018", "ARG002", "D102", "ANN204", "A004", "PT012"]
+"test_*.py" = ["S101", "D103", "ANN201", "D100", "S605", "S607", "ANN001", "PLR2004", "PT018", "ARG002", "D102", "ANN204", "A004", "PT012", "DTZ005", "PT030"]
 "conftest.py" = ["ANN001", "PLR0913", "D101", "D100"]
 "_category.py" = ["D401", "A002"]
 

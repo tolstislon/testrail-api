@@ -1970,6 +1970,22 @@ class Suites(_MetaCategory):
         """
         return self.s.get(endpoint=f"get_suites/{project_id}", params=self._opt({"offset": offset, "limit": limit}))
 
+    def get_suites_bulk(self, project_id: int, **kwargs) -> list[dict]:
+        """
+        Return a list of test suites for a project with pagination.
+
+        :param project_id:
+            The ID of the project
+        :param kwargs:
+            :key offset: int
+                Where to start counting the suites from (the offset)
+            :key limit: int
+                The number of suites the response should return
+        :return: List of test suites
+        :returns: list[dict]
+        """
+        return _bulk_api_method(self.get_suites, "suites", project_id, **kwargs)
+
     def add_suite(self, project_id: int, name: str, **kwargs) -> dict:
         """
         Creates a new test suite.
@@ -2142,6 +2158,23 @@ class Users(_MetaCategory):
             endpoint=f"get_users/{project_id}" if project_id else "get_users",
             params=self._opt({"offset": offset, "limit": limit}),
         )
+
+    def get_users_bulk(self, project_id: Optional[int] = None, **kwargs) -> list[dict]:
+        """
+        Return a list of users with pagination.
+
+        :param project_id:
+            The ID of the project for which you would like to retrieve user information.
+            (Required for non-administrators. Requires TestRail 6.6 or later.)
+        :param kwargs:
+            :key offset: int
+                Where to start counting the users from (the offset)
+            :key limit: int
+                The number of users the response should return
+        :return: List of users
+        :returns: list[dict]
+        """
+        return _bulk_api_method(self.get_users, "users", project_id, **kwargs)
 
 
 class SharedSteps(_MetaCategory):

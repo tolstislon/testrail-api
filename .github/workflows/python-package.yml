@@ -33,4 +33,4 @@ jobs:
                     ruff check
             -   name: Test with pytest
                 run: |
-                    pytest -n auto ./tests
+                    pytest -n auto ./tests --cov=testrail_api --cov-report=xml

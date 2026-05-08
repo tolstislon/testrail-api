@@ -197,3 +197,13 @@ def test_add_custom_session(auth_data):
     api = TRApi(*auth_data, session=CustomSession())
     with pytest.raises(ValueError, match="CustomSession"):
         api.users.get_users()
+
+
+def test_request_return_none_with_zero_iterations():
+    # Initialize session with 0 iterations so the loop at line 218 never runs
+    api = TRApi("https://testrail.com", "user", "password", exc_iterations=0, exc=False)
+
+    # Call request - it should skip the loop and return None at line 238
+    result = api.request("GET", "get_case/1")
+
+    assert result is None

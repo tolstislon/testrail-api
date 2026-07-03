@@ -782,7 +782,7 @@ class CaseTypes(_MetaCategory):
 
 
 class Configurations(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/configurations."""
+    """https://support.testrail.com/hc/en-us/articles/7077298488340-Configurations."""
 
     def get_configs(self, project_id: int) -> list[dict]:
         """

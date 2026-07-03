@@ -987,7 +987,7 @@ class Milestones(_MetaCategory):
 
 
 class Plans(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/plans."""
+    """https://support.testrail.com/hc/en-us/articles/7077711537684-Plans."""
 
     def get_plan(self, plan_id: int) -> dict:
         """
@@ -1040,6 +1040,10 @@ class Plans(_MetaCategory):
                 The description of the test plan
             :key milestone_id: int
                 The ID of the milestone to link to the test plan
+            :key start_on: int/datetime
+                The scheduled start date of the test plan (as UNIX timestamp)
+            :key due_on: int/datetime
+                The due date of the test plan (as UNIX timestamp)
             :key entries: list
                 An array of objects describing the test runs of the plan,
                 see the example below and add_plan_entry
@@ -1062,6 +1066,10 @@ class Plans(_MetaCategory):
                 The description of the test run(s) (requires TestRail 5.2 or later)
             :key assignedto_id: int
                 The ID of the user the test run(s) should be assigned to
+            :key start_on: int/datetime
+                The scheduled start date of the test run(s) (as UNIX timestamp)
+            :key due_on: int/datetime
+                The due date of the test run(s) (as UNIX timestamp)
             :key include_all: bool
                 True for including all test cases of the test suite and false for a
                 custom case selection (default: true)
@@ -1076,6 +1084,9 @@ class Plans(_MetaCategory):
             :key runs: list
                 An array of test runs with configurations,
                 please see the example below for details
+            :key dynamic_filters: dict
+                A set of dynamic filters used to select the test cases for the
+                test run(s), e.g. {"mode": 1, "filters": {"cases:priority_id": {"values": [2]}}}
         :return: response
         """
         return self.s.post(endpoint=f"add_plan_entry/{plan_id}", json=dict(suite_id=suite_id, **kwargs))
@@ -1098,6 +1109,10 @@ class Plans(_MetaCategory):
                 The description of the test run
             :key assignedto_id: int
                 The ID of the user the test run should be assigned to
+            :key start_on: int/datetime
+                The scheduled start date of the test run (as UNIX timestamp)
+            :key due_on: int/datetime
+                The due date of the test run (as UNIX timestamp)
             :key include_all: bool
                 True for including all test cases of the test suite and false for
                 a custom case selection
@@ -1106,6 +1121,9 @@ class Plans(_MetaCategory):
                 (Required if include_all is false)
             :key refs: str
                 A comma-separated list of references/requirements
+            :key dynamic_filters: dict
+                A set of dynamic filters used to select the test cases for the
+                test run, e.g. {"mode": 1, "filters": {"cases:priority_id": {"values": [2]}}}
         :return: response
         """
         return self.s.post(
@@ -1152,6 +1170,10 @@ class Plans(_MetaCategory):
                 The description of the test run(s) (requires TestRail 5.2 or later)
             :key assignedto_id: int
                 The ID of the user the test run(s) should be assigned to
+            :key start_on: int/datetime
+                The scheduled start date of the test run(s) (as UNIX timestamp)
+            :key due_on: int/datetime
+                The due date of the test run(s) (as UNIX timestamp)
             :key include_all: bool
                 True for including all test cases of the test suite and false for a
                 custom case selection (default: true)
@@ -1160,6 +1182,9 @@ class Plans(_MetaCategory):
             :key refs: str
                 A string of external requirement IDs, separated by commas.
                 (requires TestRail 6.3 or later)
+            :key dynamic_filters: dict
+                A set of dynamic filters used to select the test cases for the
+                test run(s), e.g. {"mode": 1, "filters": {"cases:priority_id": {"values": [2]}}}
         :return: response
         """
         return self.s.post(endpoint=f"update_plan_entry/{plan_id}/{entry_id}", json=kwargs)
@@ -1175,6 +1200,10 @@ class Plans(_MetaCategory):
                 The description of the test run
             :key assignedto_id: int
                 The ID of the user the test run should be assigned to
+            :key start_on: int/datetime
+                The scheduled start date of the test run (as UNIX timestamp)
+            :key due_on: int/datetime
+                The due date of the test run (as UNIX timestamp)
             :key include_all: bool
                 True for including all test cases of the test suite and false for
                 a custom case selection
@@ -1183,6 +1212,9 @@ class Plans(_MetaCategory):
                 (Required if include_all is false)
             :key refs: str
                 A comma-separated list of references/requirements
+            :key dynamic_filters: dict
+                A set of dynamic filters used to select the test cases for the
+                test run, e.g. {"mode": 1, "filters": {"cases:priority_id": {"values": [2]}}}
         :return: response
         """
         return self.s.post(endpoint=f"update_run_in_plan_entry/{run_id}", json=kwargs)

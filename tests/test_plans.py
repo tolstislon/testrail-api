@@ -73,6 +73,19 @@ def test_add_plan_entry(api, mock, url):
     assert resp["id"] == 5
 
 
+def add_plan_entry_dynamic_filters(r):
+    data = json.loads(r.body.decode())
+    assert data["dynamic_filters"] == {"mode": 1, "filters": {"cases:priority_id": {"values": [2]}}}
+    return 200, {}, json.dumps({"id": 5, "name": "System test"})
+
+
+def test_add_plan_entry_dynamic_filters(api, mock, url):
+    mock.add_callback(responses.POST, url("add_plan_entry/7"), add_plan_entry_dynamic_filters)
+    filters = {"mode": 1, "filters": {"cases:priority_id": {"values": [2]}}}
+    resp = api.plans.add_plan_entry(7, 3, dynamic_filters=filters)
+    assert resp["id"] == 5
+
+
 def test_update_plan(api, mock, url):
     mock.add_callback(responses.POST, url("update_plan/12"), add_plan)
     resp = api.plans.update_plan(12, name="update", milestone_id=1)

@@ -48,7 +48,7 @@ class _MetaCategory:
 
 
 class Attachments(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/attachments."""
+    """https://support.testrail.com/hc/en-us/articles/7077196481428-Attachments."""
 
     def add_attachment_to_plan(self, plan_id: int, path: str | Path) -> dict:
         """

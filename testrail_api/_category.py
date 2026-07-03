@@ -1768,7 +1768,7 @@ class Results(_MetaCategory):
 
 
 class ResultFields(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/result-fields."""
+    """https://support.testrail.com/hc/en-us/articles/7077871398036-Result-Fields."""
 
     def get_result_fields(self) -> list[dict]:
         """
@@ -1780,7 +1780,7 @@ class ResultFields(_MetaCategory):
 
 
 class Runs(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/runs."""
+    """https://support.testrail.com/hc/en-us/articles/7077874763156-Runs."""
 
     def get_run(self, run_id: int) -> dict:
         """
@@ -1807,6 +1807,10 @@ class Runs(_MetaCategory):
                 Only return test runs created before this date (as UNIX timestamp).
             :key created_by: list[int] or comma-separated string
                 A comma-separated list of creators (user IDs) to filter by.
+            :key include_plan_runs: int/bool
+                1/True to also return runs that are part of a test plan.
+                Only applied together with the is_completed filter
+                (requires TestRail 6.7 or later).
             :key is_completed: int/bool
                 1/True to return completed test runs only.
                 0/False to return active test runs only.
@@ -1848,6 +1852,15 @@ class Runs(_MetaCategory):
             :key refs: str
                 A comma-separated list of references/requirements
                 (Requires TestRail 6.1 or later)
+            :key start_on: int/datetime
+                The scheduled start date of the test run (as UNIX timestamp)
+            :key due_on: int/datetime
+                The due date of the test run (as UNIX timestamp)
+            :key dynamic_filters: dict
+                A set of dynamic filters used to select the test cases for the run.
+                Only applied when include_all is false/not provided and case_ids is
+                empty/not provided,
+                e.g. {"mode": 1, "filters": {"cases:priority_id": {"values": [2]}}}
         :return: response
         """
         return self.s.post(endpoint=f"add_run/{project_id}", json=kwargs)
@@ -1867,6 +1880,9 @@ class Runs(_MetaCategory):
                 The description of the test run
             :key milestone_id: int
                 The ID of the milestone to link to the test run
+            :key assignedto_id: int
+                The ID of the user the test run should be assigned to
+                (available since TestRail 10.2.x)
             :key include_all: bool
                 True for including all test cases of the test suite and false for a
                 custom case selection (default: true)
@@ -1875,6 +1891,13 @@ class Runs(_MetaCategory):
             :key refs: str
                 A comma-separated list of references/requirements
                 (Requires TestRail 6.1 or later)
+            :key start_on: int/datetime
+                The scheduled start date of the test run (as UNIX timestamp)
+            :key due_on: int/datetime
+                The due date of the test run (as UNIX timestamp)
+            :key dynamic_filters: dict
+                A set of dynamic filters used to select the test cases for the run,
+                e.g. {"mode": 1, "filters": {"cases:priority_id": {"values": [2]}}}
         :return: response
         """
         return self.s.post(endpoint=f"update_run/{run_id}", json=kwargs)
@@ -1924,6 +1947,10 @@ class Runs(_MetaCategory):
                 Only return test runs created before this date (as UNIX timestamp).
             :key created_by: list[int] or comma-separated string
                 A comma-separated list of creators (user IDs) to filter by.
+            :key include_plan_runs: int/bool
+                1/True to also return runs that are part of a test plan.
+                Only applied together with the is_completed filter
+                (requires TestRail 6.7 or later).
             :key is_completed: int/bool
                 1/True to return completed test runs only.
                 0/False to return active test runs only.

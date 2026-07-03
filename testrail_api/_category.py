@@ -1,8 +1,9 @@
 """TestRail API categories."""
 
 import itertools
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable, Optional, Union
+from typing import Any
 
 from ._enums import METHODS
 from ._session import Session
@@ -49,7 +50,7 @@ class _MetaCategory:
 class Attachments(_MetaCategory):
     """https://www.gurock.com/testrail/docs/api/reference/attachments."""
 
-    def add_attachment_to_plan(self, plan_id: int, path: Union[str, Path]) -> dict:
+    def add_attachment_to_plan(self, plan_id: int, path: str | Path) -> dict:
         """
         Adds an attachment to a test plan.
 
@@ -65,7 +66,7 @@ class Attachments(_MetaCategory):
         """
         return self.s.attachment_request(METHODS.POST, f"add_attachment_to_plan/{plan_id}", path)
 
-    def add_attachment_to_plan_entry(self, plan_id: int, entry_id: int, path: Union[str, Path]) -> dict:
+    def add_attachment_to_plan_entry(self, plan_id: int, entry_id: int, path: str | Path) -> dict:
         """
         Adds an attachment to a test plan entry.
 
@@ -87,7 +88,7 @@ class Attachments(_MetaCategory):
             path,
         )
 
-    def add_attachment_to_result(self, result_id: int, path: Union[str, Path]) -> dict:
+    def add_attachment_to_result(self, result_id: int, path: str | Path) -> dict:
         """
         Adds attachment to a result based on the result ID.
 
@@ -103,7 +104,7 @@ class Attachments(_MetaCategory):
         """
         return self.s.attachment_request(METHODS.POST, f"add_attachment_to_result/{result_id}", path)
 
-    def add_attachment_to_run(self, run_id: int, path: Union[str, Path]) -> dict:
+    def add_attachment_to_run(self, run_id: int, path: str | Path) -> dict:
         """
         Adds attachment to test run.
 
@@ -119,7 +120,7 @@ class Attachments(_MetaCategory):
         """
         return self.s.attachment_request(METHODS.POST, f"add_attachment_to_run/{run_id}", path)
 
-    def add_attachment_to_case(self, case_id: int, path: Union[str, Path]) -> dict:
+    def add_attachment_to_case(self, case_id: int, path: str | Path) -> dict:
         """
         Adds attachment to a case based on the case ID.
 
@@ -233,7 +234,7 @@ class Attachments(_MetaCategory):
         """
         return self.s.get(endpoint=f"get_attachments_for_test/{test_id}", params=kwargs)
 
-    def get_attachment(self, attachment_id: int, path: Union[str, Path]) -> Path:
+    def get_attachment(self, attachment_id: int, path: str | Path) -> Path:
         """
         Returns the requested attachment identified by attachment_id.
 
@@ -529,7 +530,7 @@ class Cases(_MetaCategory):
         kwargs.update({"case_ids": case_ids})
         return self.s.post(endpoint=f"update_cases/{suite_id}", json=kwargs)
 
-    def delete_case(self, case_id: int, soft: int = 0) -> Optional[dict]:
+    def delete_case(self, case_id: int, soft: int = 0) -> dict | None:
         """
         Deletes an existing test case.
 
@@ -547,7 +548,7 @@ class Cases(_MetaCategory):
         self,
         project_id: int,
         case_ids: list[int],
-        suite_id: Optional[int] = None,
+        suite_id: int | None = None,
         soft: int = 0,
     ) -> None:
         """
@@ -1739,7 +1740,7 @@ class Runs(_MetaCategory):
         """
         return self.s.post(endpoint=f"update_run/{run_id}", json=kwargs)
 
-    def close_run(self, run_id: int) -> Optional[dict]:
+    def close_run(self, run_id: int) -> dict | None:
         """
         Closes an existing test run and archives its tests & results.
 
@@ -1751,7 +1752,7 @@ class Runs(_MetaCategory):
         """
         return self.s.post(endpoint=f"close_run/{run_id}")
 
-    def delete_run(self, run_id: int, soft: int = 0) -> Optional[dict]:
+    def delete_run(self, run_id: int, soft: int = 0) -> dict | None:
         """
         Deletes an existing test run.
 
@@ -1855,7 +1856,7 @@ class Sections(_MetaCategory):
         """
         return self.s.post(endpoint=f"add_section/{project_id}", json=dict(name=name, **kwargs))
 
-    def move_section(self, section_id: int, parent_id: int = 0, after_id: Optional[int] = None) -> dict:
+    def move_section(self, section_id: int, parent_id: int = 0, after_id: int | None = None) -> dict:
         """
         Moves a section to another suite or section (Requires TestRail 6.5.2 or later).
 
@@ -1956,7 +1957,7 @@ class Suites(_MetaCategory):
         """
         return self.s.get(endpoint=f"get_suite/{suite_id}")
 
-    def get_suites(self, project_id: int, offset: Optional[int] = None, limit: Optional[int] = None) -> dict:
+    def get_suites(self, project_id: int, offset: int | None = None, limit: int | None = None) -> dict:
         """
         Returns a list of test suites for a project.
 
@@ -2139,9 +2140,7 @@ class Users(_MetaCategory):
         """
         return self.s.get(endpoint="get_user_by_email", params={"email": email})
 
-    def get_users(
-        self, project_id: Optional[int] = None, offset: Optional[int] = None, limit: Optional[int] = None
-    ) -> dict:
+    def get_users(self, project_id: int | None = None, offset: int | None = None, limit: int | None = None) -> dict:
         """
         Returns a list of users.
 
@@ -2159,7 +2158,7 @@ class Users(_MetaCategory):
             params=self._opt({"offset": offset, "limit": limit}),
         )
 
-    def get_users_bulk(self, project_id: Optional[int] = None, **kwargs) -> list[dict]:
+    def get_users_bulk(self, project_id: int | None = None, **kwargs) -> list[dict]:
         """
         Return a list of users with pagination.
 
@@ -2466,7 +2465,7 @@ class Datasets(_MetaCategory):
 class Labels(_MetaCategory):
     """https://support.testrail.com/hc/en-us/articles/38961149782036-Labels."""
 
-    def get_labels(self, project_id: int, offset: Optional[int] = None, limit: Optional[int] = None) -> dict:
+    def get_labels(self, project_id: int, offset: int | None = None, limit: int | None = None) -> dict:
         """
         Returns an existing label.
 

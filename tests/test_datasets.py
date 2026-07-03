@@ -1,13 +1,12 @@
 import json
 import random
 import uuid
-from typing import Optional
 
 import responses
 from requests import PreparedRequest
 
 
-def _dataset(variables_count: int = 5, dataset_id: Optional[int] = None) -> dict:
+def _dataset(variables_count: int = 5, dataset_id: int | None = None) -> dict:
     dataset_id = dataset_id or random.randint(1, 1000)
     return {
         "id": dataset_id,

@@ -2217,7 +2217,7 @@ class Template(_MetaCategory):
 
 
 class Tests(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/tests."""
+    """https://support.testrail.com/hc/en-us/articles/7077990441108-Tests."""
 
     def get_test(self, test_id: int, **kwargs) -> dict:
         """
@@ -2251,12 +2251,38 @@ class Tests(_MetaCategory):
         :param kwargs: filters
             :key status_id: list[str] or comma-separated string
                 A comma-separated list of status IDs to filter by.
+            :key label_id: list[int] or comma-separated string
+                A comma-separated list of label IDs to filter by.
         :return: response
         """
         return self.s.get(
             endpoint=f"get_tests/{run_id}",
             params=dict(limit=limit, offset=offset, **kwargs),
         )
+
+    def update_test(self, test_id: int, labels: list) -> dict:
+        """
+        Updates the labels assigned to an existing test.
+
+        :param test_id: int
+            The ID of the test
+        :param labels: list[int | str]
+            An array of label IDs and titles to assign to the test
+        :return: response
+        """
+        return self.s.post(endpoint=f"update_test/{test_id}", json={"labels": labels})
+
+    def update_tests(self, test_ids: list, labels: list) -> dict:
+        """
+        Updates the labels assigned to multiple tests with the same values.
+
+        :param test_ids: list[int]
+            An array of test IDs to update
+        :param labels: list[int | str]
+            An array of label IDs and titles to assign to the tests
+        :return: response
+        """
+        return self.s.post(endpoint="update_tests", json={"test_ids": test_ids, "labels": labels})
 
     def get_tests_bulk(self, run_id: int, **kwargs) -> list[dict]:
         """
@@ -2267,6 +2293,8 @@ class Tests(_MetaCategory):
         :param kwargs:
             :key status_id: list[str] or comma-separated string
                 A comma-separated list of status IDs to filter by.
+            :key label_id: list[int] or comma-separated string
+                A comma-separated list of label IDs to filter by.
         :return: List of tests
         :returns: list[dict]
         """

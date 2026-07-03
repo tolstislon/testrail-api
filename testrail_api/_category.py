@@ -327,6 +327,35 @@ class Attachments(_MetaCategory):
         return _bulk_api_method(self.get_attachments_for_test, "attachments", test_id)
 
 
+class Bdds(_MetaCategory):
+    """https://support.testrail.com/hc/en-us/articles/7832161593620-BDDs."""
+
+    def get_bdd(self, case_id: int, path: str | Path) -> Path:
+        """
+        Exports a BDD scenario from a test case as a .feature file.
+
+        :param case_id:
+            The ID of the test case to export the BDD scenario from
+        :param path:
+            The path to the file where the .feature content should be saved
+        :return: Path
+        """
+        return self.s.get_attachment(METHODS.GET, f"get_bdd/{case_id}", path)
+
+    def add_bdd(self, section_id: int, path: str | Path) -> dict:
+        """
+        Imports a BDD scenario from a .feature file into a new test case.
+
+        :param section_id:
+            The ID of the section the test case should be added to
+        :param path:
+            The path to the .feature file
+        :return: dict
+                the new test case
+        """
+        return self.s.attachment_request(METHODS.POST, f"add_bdd/{section_id}", path)
+
+
 class Cases(_MetaCategory):
     """https://www.gurock.com/testrail/docs/api/reference/cases."""
 

@@ -8,6 +8,7 @@ class TestRailAPI(Session):
     """API Categories."""
 
     attachments: _category.Attachments = _category.Attachments()
+    bdds: _category.Bdds = _category.Bdds()
     cases: _category.Cases = _category.Cases()
     case_fields: _category.CaseFields = _category.CaseFields()
     case_types: _category.CaseTypes = _category.CaseTypes()

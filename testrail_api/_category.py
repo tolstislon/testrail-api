@@ -1967,7 +1967,7 @@ class Runs(_MetaCategory):
 
 
 class Sections(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/sections."""
+    """https://support.testrail.com/hc/en-us/articles/7077918603412-Sections."""
 
     def get_section(self, section_id: int) -> dict:
         """

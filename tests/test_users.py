@@ -83,3 +83,28 @@ def test_get_current_user(api, mock, url):
     )
     response = api.users.get_current_user(1)
     assert response["name"] == "John Smith"
+
+
+def add_user(r):
+    data = json.loads(r.body.decode())
+    return 200, {}, json.dumps({"id": 5, "name": data["name"], "email": data["email"], "is_admin": data["is_admin"]})
+
+
+def test_add_user(api, mock, url):
+    mock.add_callback(responses.POST, url("add_user"), add_user)
+    response = api.users.add_user("John Smith", "testrail@ff.com", is_admin=True)
+    assert response["id"] == 5
+    assert response["name"] == "John Smith"
+    assert response["email"] == "testrail@ff.com"
+    assert response["is_admin"] is True
+
+
+def update_user(r):
+    data = json.loads(r.body.decode())
+    return 200, {}, json.dumps({"id": 5, "name": data["name"]})
+
+
+def test_update_user(api, mock, url):
+    mock.add_callback(responses.POST, url("update_user/5"), update_user)
+    response = api.users.update_user(5, name="Jane Smith")
+    assert response["name"] == "Jane Smith"

@@ -2302,7 +2302,7 @@ class Tests(_MetaCategory):
 
 
 class Users(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/users."""
+    """https://support.testrail.com/hc/en-us/articles/7077978310292-Users."""
 
     def get_user(self, user_id: int) -> dict:
         """
@@ -2351,6 +2351,68 @@ class Users(_MetaCategory):
             endpoint=f"get_users/{project_id}" if project_id else "get_users",
             params=self._opt({"offset": offset, "limit": limit}),
         )
+
+    def add_user(self, name: str, email: str, **kwargs) -> dict:
+        """
+        Creates a new user (requires TestRail 7.3 or later; admin status required).
+
+        :param name: str
+            The full name of the user (required)
+        :param email: str
+            The email address of the user (required)
+        :param kwargs:
+            :key email_notifications: bool
+                True if the user should receive email notifications
+            :key is_active: bool
+                True if the user is active and false otherwise
+            :key is_admin: bool
+                True if the user is an administrator
+            :key group_ids: list[int]
+                An array of group IDs the user belongs to
+            :key mfa_required: bool
+                True if multi-factor authentication is required for the user
+            :key role_id: int
+                The ID of the global role assigned to the user
+            :key sso_enabled: bool
+                True if single sign-on is enabled for the user (TestRail Enterprise)
+            :key assigned_projects: list[int]
+                An array of project IDs the user is assigned to (TestRail Enterprise)
+        :return: response
+        """
+        return self.s.post(endpoint="add_user", json=dict(name=name, email=email, **kwargs))
+
+    def update_user(self, user_id: int, **kwargs) -> dict:
+        """
+        Updates an existing user (admin status required).
+
+        (partial updates are supported, i.e. you can submit and update specific fields only).
+
+        :param user_id: int
+            The ID of the user
+        :param kwargs:
+            :key name: str
+                The full name of the user
+            :key email: str
+                The email address of the user
+            :key email_notifications: bool
+                True if the user should receive email notifications
+            :key is_active: bool
+                True if the user is active and false otherwise
+            :key is_admin: bool
+                True if the user is an administrator
+            :key group_ids: list[int]
+                An array of group IDs the user belongs to
+            :key mfa_required: bool
+                True if multi-factor authentication is required for the user
+            :key role_id: int
+                The ID of the global role assigned to the user
+            :key sso_enabled: bool
+                True if single sign-on is enabled for the user (TestRail Enterprise)
+            :key assigned_projects: list[int]
+                An array of project IDs the user is assigned to (TestRail Enterprise)
+        :return: response
+        """
+        return self.s.post(endpoint=f"update_user/{user_id}", json=kwargs)
 
     def get_users_bulk(self, project_id: int | None = None, **kwargs) -> list[dict]:
         """

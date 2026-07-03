@@ -2465,20 +2465,18 @@ class Datasets(_MetaCategory):
         """
         return self.s.get(endpoint=f"get_datasets/{project_id}")
 
-    def add_dataset(self, project_id: int, id: int, name: str, variables: list[dict]) -> dict:
+    def add_dataset(self, project_id: int, name: str, variables: list[dict]) -> dict:
         """
         Creates a new dataset.
 
         :param project_id: int
             The ID of the project to which the dataset should be added
-        :param id: int
-            The database ID of the dataset
         :param name: str
             Name of the dataset as provided
         :param variables: list[dict]
             Key/Value pairs. Key should be the variable name. Value should be the value to be included in the dataset.
         """
-        return self.s.post(endpoint=f"add_dataset/{project_id}", json={"name": name, "variables": variables, "id": id})
+        return self.s.post(endpoint=f"add_dataset/{project_id}", json={"name": name, "variables": variables})
 
     def update_dataset(self, dataset_id: int, **kwargs) -> dict:
         """

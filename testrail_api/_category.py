@@ -2091,7 +2091,7 @@ class Sections(_MetaCategory):
 
 
 class Statuses(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/statuses."""
+    """https://support.testrail.com/hc/en-us/articles/7077935129364-Statuses."""
 
     def get_statuses(self) -> list[dict]:
         """
@@ -2111,7 +2111,7 @@ class Statuses(_MetaCategory):
 
 
 class Suites(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/suites."""
+    """https://support.testrail.com/hc/en-us/articles/7077936624276-Suites."""
 
     def get_suite(self, suite_id: int) -> dict:
         """
@@ -2203,7 +2203,7 @@ class Suites(_MetaCategory):
 
 
 class Template(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/templates."""
+    """https://support.testrail.com/hc/en-us/articles/7077938165780-Templates."""
 
     def get_templates(self, project_id: int) -> list[dict]:
         """

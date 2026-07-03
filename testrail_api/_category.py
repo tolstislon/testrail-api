@@ -766,7 +766,7 @@ class CaseFields(_MetaCategory):
 
 
 class CaseTypes(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/case-types."""
+    """https://support.testrail.com/hc/en-us/articles/7077295487252-Case-Types."""
 
     def get_case_types(self) -> list[dict]:
         """

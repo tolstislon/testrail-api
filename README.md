@@ -98,7 +98,7 @@ Contributions are very welcome.
 
 ###### Getting started
 
-* python 3.9+
+* python 3.10+
 * [uv](https://docs.astral.sh/uv/)
 
 1. Clone the repository

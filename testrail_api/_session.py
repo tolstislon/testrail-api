@@ -3,11 +3,12 @@
 import logging
 import time
 import warnings
+from collections.abc import Callable
 from datetime import datetime
 from json.decoder import JSONDecodeError
 from os import environ
 from pathlib import Path
-from typing import Any, Callable, Final, Optional, Union
+from typing import Any, Final
 
 import requests
 
@@ -33,16 +34,16 @@ class Session:
 
     def __init__(  # noqa: PLR0913
         self,
-        url: Optional[str] = None,
-        email: Optional[str] = None,
-        password: Optional[str] = None,
+        url: str | None = None,
+        email: str | None = None,
+        password: str | None = None,
         *,
         exc: bool = False,
         rate_limit: bool = True,
         warn_ignore: bool = False,
         retry_exceptions: tuple[type[BaseException], ...] = (),
-        response_handler: Optional[Callable[[requests.Response], Any]] = None,
-        session: Optional[requests.Session] = None,
+        response_handler: Callable[[requests.Response], Any] | None = None,
+        session: requests.Session | None = None,
         **kwargs,
     ) -> None:
         """
@@ -125,7 +126,7 @@ class Session:
         return _url
 
     @staticmethod
-    def __get_email(email: Optional[str]) -> str:
+    def __get_email(email: str | None) -> str:
         """Read email."""
         if not (_email := email or environ.get(Environ.EMAIL)):
             raise TestRailError(f"Email is not set. Use argument email or env {Environ.EMAIL}")
@@ -183,7 +184,7 @@ class Session:
                 # Converting a datetime value to integer (UNIX timestamp)
                 json[key] = round(value.timestamp())
 
-    def get(self, endpoint: str, params: Optional[dict[Any, Any]] = None) -> Any:
+    def get(self, endpoint: str, params: dict[Any, Any] | None = None) -> Any:
         """GET method."""
         return self.request(
             method=METHODS.GET,
@@ -194,8 +195,8 @@ class Session:
     def post(
         self,
         endpoint: str,
-        params: Optional[dict[Any, Any]] = None,
-        json: Optional[dict[Any, Any]] = None,
+        params: dict[Any, Any] | None = None,
+        json: dict[Any, Any] | None = None,
     ) -> Any:
         """POST method."""
         return self.request(
@@ -238,16 +239,16 @@ class Session:
         return None
 
     @staticmethod
-    def _path(path: Union[Path, str]) -> Path:
+    def _path(path: Path | str) -> Path:
         return path if isinstance(path, Path) else Path(path)
 
-    def attachment_request(self, method: METHODS, src: str, file: Union[Path, str], **kwargs) -> dict:
+    def attachment_request(self, method: METHODS, src: str, file: Path | str, **kwargs) -> dict:
         """Send attach."""
         file = self._path(file)
         with file.open("rb") as attachment:
             return self.request(method, src, files={"attachment": attachment}, **kwargs)
 
-    def get_attachment(self, method: METHODS, src: str, file: Union[Path, str], **kwargs) -> Path:
+    def get_attachment(self, method: METHODS, src: str, file: Path | str, **kwargs) -> Path:
         """Download attach."""
         file = self._path(file)
         response = self.request(method, src, raw=True, **kwargs)

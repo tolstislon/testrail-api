@@ -32,4 +32,5 @@ class TestRailAPI(Session):
     groups: _category.Groups = _category.Groups()
     variables: _category.Variables = _category.Variables()
     datasets: _category.Datasets = _category.Datasets()
+    dynamic_filter_fields: _category.DynamicFilterFields = _category.DynamicFilterFields()
     labels: _category.Labels = _category.Labels()

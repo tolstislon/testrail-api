@@ -2502,6 +2502,20 @@ class Datasets(_MetaCategory):
         return self.s.post(endpoint=f"delete_dataset/{dataset_id}")
 
 
+class DynamicFilterFields(_MetaCategory):
+    """https://support.testrail.com/hc/en-us/articles/49616364363924-Dynamic-Filter-Fields."""
+
+    def get_dynamic_filter_fields(self, project_id: int) -> list[dict]:
+        """
+        Returns the list of fields available for dynamic filtering for a specific project.
+
+        :param project_id: int
+            The ID of the project
+        :return: response
+        """
+        return self.s.get(endpoint=f"get_dynamic_filter_fields/{project_id}")
+
+
 class Labels(_MetaCategory):
     """https://support.testrail.com/hc/en-us/articles/38961149782036-Labels."""
 

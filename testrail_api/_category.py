@@ -1385,7 +1385,7 @@ class Projects(_MetaCategory):
 
 
 class Reports(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/reports."""
+    """https://support.testrail.com/hc/en-us/articles/7077825062036-Reports-and-Cross-Project-Reports."""
 
     def get_reports(self, project_id: int) -> list[dict]:
         """
@@ -1409,6 +1409,24 @@ class Reports(_MetaCategory):
         :return: response
         """
         return self.s.get(endpoint=f"run_report/{report_template_id}")
+
+    def get_cross_project_reports(self) -> list[dict]:
+        """
+        Returns a list of API available cross-project reports (TestRail Enterprise only).
+
+        :return: response
+        """
+        return self.s.get(endpoint="get_cross_project_reports")
+
+    def run_cross_project_report(self, report_template_id: int) -> dict:
+        """
+        Executes a cross-project report and returns URL's for accessing it (TestRail Enterprise only).
+
+        :param report_template_id:
+            The ID of the report template
+        :return: response
+        """
+        return self.s.get(endpoint=f"run_cross_project_report/{report_template_id}")
 
 
 class Results(_MetaCategory):

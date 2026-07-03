@@ -357,7 +357,7 @@ class Bdds(_MetaCategory):
 
 
 class Cases(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/cases."""
+    """https://support.testrail.com/hc/en-us/articles/7077292642580-Cases."""
 
     def get_case(self, case_id: int) -> dict:
         """
@@ -414,6 +414,8 @@ class Cases(_MetaCategory):
                 Only return test cases updated before this date (as UNIX timestamp).
             :key updated_by: list[int] or comma-separated string
                 A comma-separated list of user IDs who updated test cases to filter by.
+            :key label_id: list[int] or comma-separated string
+                A comma-separated list of label IDs to filter by.
         :return: response
         """
         return self.s.get(endpoint=f"get_cases/{project_id}", params=kwargs)
@@ -459,6 +461,9 @@ class Cases(_MetaCategory):
                 The ID of the milestone to link to the test case
             :key refs: str
                 A comma-separated list of references/requirements
+            :key labels: list[int | str]
+                An array of label IDs and titles to attach to the test case
+                (requires TestRail 7.7 or later)
 
         Custom fields are supported as well and must be submitted with their
         system name, prefixed with 'custom_', e.g.:
@@ -521,6 +526,9 @@ class Cases(_MetaCategory):
                 The ID of the milestone to link to the test case
             :key refs: str
                 A comma-separated list of references/requirements
+            :key labels: list[int | str]
+                An array of label IDs and titles to attach to the test case
+                (requires TestRail 7.7 or later)
         :return: response
         """
         return self.s.post(endpoint=f"update_case/{case_id}", json=kwargs)
@@ -555,6 +563,9 @@ class Cases(_MetaCategory):
                 The ID of the milestone to link to the test case
             :key refs: str
                 A comma-separated list of references/requirements
+            :key labels: list[int | str]
+                An array of label IDs and titles to attach to the test cases
+                (requires TestRail 7.7 or later)
         """
         kwargs.update({"case_ids": case_ids})
         return self.s.post(endpoint=f"update_cases/{suite_id}", json=kwargs)
@@ -679,6 +690,8 @@ class Cases(_MetaCategory):
                 Only return test cases updated before this date (as UNIX timestamp).
             :key updated_by: list[int] or comma-separated string
                 A comma-separated list of user IDs who updated test cases to filter by.
+            :key label_id: list[int] or comma-separated string
+                A comma-separated list of label IDs to filter by.
         :return: List of test cases
         :returns: list[dict]
         """

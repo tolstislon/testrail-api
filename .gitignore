@@ -106,9 +106,35 @@ venv.bak/
 # Pycharm
 .idea/
 
+# AI assistants / agents
+# Local settings, session logs, caches and shared instruction files
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+AGENTS.md
+GEMINI.md
+QWEN.md
+.codex/
+.cursor/
+.cursorrules
+.cursorindexingignore
+.windsurf/
+.windsurfrules
+.continue/
+.aider*
+.gemini/
+.qwen/
+.roo/
+.cline/
+.clinerules/
+.kilocode/
+.opencode/
+.crush/
+.codeium/
+.github/copilot/
+.github/copilot-instructions.md
+
 # Other
-Pipfile.lock
 TODO.txt
-pyproject.toml
 build.sh
 testrail_api/__version__.py

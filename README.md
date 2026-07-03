@@ -98,8 +98,8 @@ Contributions are very welcome.
 
 ###### Getting started
 
-* python 3.11
-* pipenv 2022.12.19+
+* python 3.9+
+* [uv](https://docs.astral.sh/uv/)
 
 1. Clone the repository
     ```bash
@@ -108,18 +108,17 @@ Contributions are very welcome.
    ```
 2. Install dev dependencies
     ```bash
-    pipenv install --dev
-    pipenv shell
+    uv sync
    ```
-3. Run the black
+3. Format the code
     ```bash
-    pipenv run black
+    uv run ruff format
    ```
-4. Run the flake8
+4. Run the linter
     ```bash
-    pipenv run flake8
+    uv run ruff check --fix
    ```
 5. Run the tests
     ```bash
-    pipenv run tests
+    uv run pytest -n auto ./tests
    ```

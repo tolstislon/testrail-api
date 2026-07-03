@@ -1,8 +1,72 @@
+[build-system]
+requires = ["setuptools>=77", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "testrail_api"
+dynamic = ["version"]
+description = "Python wrapper of the TestRail API"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "tolstislon", email = "tolstislon@gmail.com" }]
+requires-python = ">=3.9"
+dependencies = ["requests>=2.32.4"]
+keywords = [
+    "testrail",
+    "api",
+    "client",
+    "api-client",
+    "library",
+    "testrail_api",
+    "testrail-api",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+Homepage = "https://github.com/tolstislon/testrail-api"
+Repository = "https://github.com/tolstislon/testrail-api"
+
+[dependency-groups]
+dev = [
+    "pytest==9.0.2; python_version >= '3.10'",
+    "pytest>=8,<9; python_version < '3.10'",
+    "pytest-cov==7.0.0",
+    "responses==0.21.0",
+    "ruff==0.14.10",
+    "pytest-xdist==3.8.0",
+]
+
+[tool.setuptools.packages.find]
+exclude = ["tests", "dev_tools"]
+
+[tool.setuptools_scm]
+version_file = "testrail_api/__version__.py"
+
+[tool.coverage.run]
+omit = ["testrail_api/__version__.py"]
+
+[tool.ruff]
 line-length = 120
 target-version = "py39"
 exclude = [".git", ".pytest_cache", ".idea", ".github", "build"]
 
-[lint]
+[tool.ruff.lint]
 select = [
     "A", # flake8-builtins
     "ANN", # flake8-annotations
@@ -70,16 +134,16 @@ ignore = [
     "TRY003", # Avoid specifying long messages outside the exception class
 ]
 
-[lint.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "test_*.py" = ["S101", "D103", "ANN201", "D100", "S605", "S607", "ANN001", "PLR2004", "PT018", "ARG002", "D102", "ANN204", "A004", "PT012", "DTZ005", "PT030"]
 "conftest.py" = ["ANN001", "PLR0913", "D101", "D100"]
 "_category.py" = ["D401", "A002"]
 
-[lint.flake8-pytest-style]
+[tool.ruff.lint.flake8-pytest-style]
 parametrize-values-row-type = "tuple"
 parametrize-values-type = "tuple"
 fixture-parentheses = false
 mark-parentheses = false
 
-[format]
+[tool.ruff.format]
 line-ending = "lf"

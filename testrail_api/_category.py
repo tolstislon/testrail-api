@@ -1430,7 +1430,7 @@ class Reports(_MetaCategory):
 
 
 class Results(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/results."""
+    """https://support.testrail.com/hc/en-us/articles/7077819312404-Results."""
 
     def get_results(self, test_id: int, limit: int = 250, offset: int = 0, **kwargs) -> dict:
         """
@@ -1670,6 +1670,42 @@ class Results(_MetaCategory):
             endpoint=f"add_results_for_cases/{run_id}",
             json={"results": results},
         )
+
+    def edit_result(self, result_id: int, **kwargs) -> dict:
+        """
+        Updates an existing test result.
+
+        (partial updates are supported, i.e. you can submit and update specific fields only).
+
+        :param result_id:
+            The ID of the test result
+        :param kwargs:
+            :key status_id: int
+                The ID of the test status. The built-in system
+                statuses have the following IDs:
+                    1 - Passed
+                    2 - Blocked
+                    3 - Untested (not allowed when adding a result)
+                    4 - Retest
+                    5 - Failed
+                You can get a full list of system and custom statuses via get_statuses.
+            :key comment: str
+                The comment / description for the test result
+            :key version: str
+                The version or build you tested against
+            :key elapsed: str
+                The time it took to execute the test, e.g. "30s" or "1m 45s"
+            :key defects: str
+                A comma-separated list of defects to link to the test result
+            :key assignedto_id: int
+                The ID of a user the test should be assigned to
+
+            Custom fields are supported as well and must be submitted with their
+            system name, prefixed with 'custom_'. Note that custom_step_results
+            replaces the full steps array.
+        :return: response
+        """
+        return self.s.post(endpoint=f"edit_result/{result_id}", json=kwargs)
 
     def get_results_bulk(self, test_id: int, **kwargs) -> list[dict]:
         """

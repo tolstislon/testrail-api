@@ -867,7 +867,7 @@ class Configurations(_MetaCategory):
 
 
 class Milestones(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/milestones."""
+    """https://support.testrail.com/hc/en-us/articles/7077723976084-Milestones."""
 
     def get_milestone(self, milestone_id: int) -> dict:
         """

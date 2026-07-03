@@ -2343,7 +2343,7 @@ class Users(_MetaCategory):
 
 
 class SharedSteps(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/api-shared-steps."""
+    """https://support.testrail.com/hc/en-us/articles/7077919815572-Shared-Steps."""
 
     def get_shared_step(self, shared_step_id: int) -> dict:
         """
@@ -2353,6 +2353,15 @@ class SharedSteps(_MetaCategory):
             The ID of the set of shared steps.
         """
         return self.s.get(endpoint=f"get_shared_step/{shared_step_id}")
+
+    def get_shared_step_history(self, shared_step_id: int) -> dict:
+        """
+        Returns the edit history for a set of shared steps (requires TestRail 7.3 or later).
+
+        :param shared_step_id: int
+            The ID of the set of shared steps.
+        """
+        return self.s.get(endpoint=f"get_shared_step_history/{shared_step_id}")
 
     def get_shared_steps(self, project_id: int, **kwargs) -> dict:
         """

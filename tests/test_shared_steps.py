@@ -18,6 +18,16 @@ def test_get_shared_step(api, mock, url):
     assert resp["title"] == "My step"
 
 
+def test_get_shared_step_history(api, mock, url):
+    mock.add_callback(
+        responses.GET,
+        url("get_shared_step_history/3"),
+        lambda _: (200, {}, json.dumps({"size": 1, "step_history": [{"id": 1, "title": "My step"}]})),
+    )
+    resp = api.shared_steps.get_shared_step_history(3)
+    assert resp["step_history"][0]["id"] == 1
+
+
 def test_get_shared_steps(api, mock, url):
     mock.add_callback(
         responses.GET,

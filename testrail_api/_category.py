@@ -1289,7 +1289,7 @@ class Priorities(_MetaCategory):
 
 
 class Projects(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/projects."""
+    """https://support.testrail.com/hc/en-us/articles/7077792415124-Projects."""
 
     def get_project(self, project_id: int) -> dict:
         """
@@ -1353,9 +1353,20 @@ class Projects(_MetaCategory):
                 The name of the project
             :key announcement: str
                 The description of the project
-            :key show_annoucement: bool
-                True if the annoucnement should be displayed on the project's
+            :key show_announcement: bool
+                True if the announcement should be displayed on the project's
                 overview page and false otherwise
+            :key suite_mode: int
+                The suite mode of the project
+                    1 for single suite mode,
+                    2 for single suite + baselines,
+                    3 for multiple suite
+            :key default_role_id: int
+                The ID of the default role assigned to users on this project
+            :key users: list[dict]
+                An array of user permission overrides for this project
+            :key groups: list[dict]
+                An array of group permission overrides for this project
             :key is_completed: bool
                 Specifies whether a project is considered completed or not
         :return: response

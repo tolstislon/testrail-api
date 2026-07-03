@@ -699,7 +699,7 @@ class Cases(_MetaCategory):
 
 
 class CaseFields(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/case-fields."""
+    """https://support.testrail.com/hc/en-us/articles/7077281158164-Case-Fields."""
 
     def get_case_fields(self) -> list[dict]:
         """

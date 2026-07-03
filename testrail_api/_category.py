@@ -1277,7 +1277,7 @@ class Plans(_MetaCategory):
 
 
 class Priorities(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/priorities."""
+    """https://support.testrail.com/hc/en-us/articles/7077746564244-Priorities."""
 
     def get_priorities(self) -> list[dict]:
         """

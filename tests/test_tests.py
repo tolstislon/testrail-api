@@ -31,3 +31,29 @@ def test_get_tests_bulk(api, mock, url, status_id):
     resp = api.tests.get_tests_bulk(2, status_id=status_id)
     assert resp[0]["status_id"] == 1
     assert resp[1]["status_id"] == 5
+
+
+def update_test(r):
+    data = json.loads(r.body.decode())
+    assert data["labels"] == [1, "smoke"]
+    return 200, {}, json.dumps({"id": 2, "labels": data["labels"]})
+
+
+def update_tests(r):
+    data = json.loads(r.body.decode())
+    assert data["test_ids"] == [2, 3]
+    assert data["labels"] == [1, "smoke"]
+    return 200, {}, json.dumps({"tests": data["test_ids"], "labels": data["labels"]})
+
+
+def test_update_test(api, mock, url):
+    mock.add_callback(responses.POST, url("update_test/2"), update_test)
+    resp = api.tests.update_test(2, labels=[1, "smoke"])
+    assert resp["id"] == 2
+    assert resp["labels"] == [1, "smoke"]
+
+
+def test_update_tests(api, mock, url):
+    mock.add_callback(responses.POST, url("update_tests"), update_tests)
+    resp = api.tests.update_tests([2, 3], labels=[1, "smoke"])
+    assert resp["labels"] == [1, "smoke"]

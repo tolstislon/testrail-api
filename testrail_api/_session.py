@@ -209,7 +209,7 @@ class Session:
     def request(self, method: METHODS, endpoint: str, *, raw: bool = False, **kwargs) -> Any:
         """Send request method."""
         url = f"{self.__base_url}{endpoint}"
-        if not endpoint.startswith("add_attachment"):
+        if not endpoint.startswith(("add_attachment", "add_bdd")):
             headers = kwargs.setdefault("headers", {})
             headers.update({"Content-Type": "application/json"})
 

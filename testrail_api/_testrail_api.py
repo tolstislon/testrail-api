@@ -8,6 +8,7 @@ class TestRailAPI(Session):
     """API Categories."""
 
     attachments: _category.Attachments = _category.Attachments()
+    bdds: _category.Bdds = _category.Bdds()
     cases: _category.Cases = _category.Cases()
     case_fields: _category.CaseFields = _category.CaseFields()
     case_types: _category.CaseTypes = _category.CaseTypes()
@@ -31,4 +32,5 @@ class TestRailAPI(Session):
     groups: _category.Groups = _category.Groups()
     variables: _category.Variables = _category.Variables()
     datasets: _category.Datasets = _category.Datasets()
+    dynamic_filter_fields: _category.DynamicFilterFields = _category.DynamicFilterFields()
     labels: _category.Labels = _category.Labels()

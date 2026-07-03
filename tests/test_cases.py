@@ -183,6 +183,28 @@ def test_move_cases_to_section(api, mock, url):
     assert resp["suite_id"] == 6
 
 
+def get_cases_label_id(r):
+    assert r.params["label_id"] == "1,2,3"
+    return 200, {}, json.dumps({"size": 0, "cases": []})
+
+
+def add_case_labels(r):
+    data = json.loads(r.body.decode())
+    assert data["labels"] == [1, "smoke"]
+    return 200, {}, json.dumps({"id": 1, "title": data["title"], "labels": data["labels"]})
+
+
+def test_get_cases_label_id(api, mock, url):
+    mock.add_callback(responses.GET, url("get_cases/1"), get_cases_label_id)
+    api.cases.get_cases(1, label_id=[1, 2, 3])
+
+
+def test_add_case_labels(api, mock, url):
+    mock.add_callback(responses.POST, url("add_case/2"), add_case_labels)
+    resp = api.cases.add_case(2, "New case", labels=[1, "smoke"])
+    assert resp["labels"] == [1, "smoke"]
+
+
 def test_get_cases_bulk(api, mock, url):
     mock.add_callback(
         responses.GET,

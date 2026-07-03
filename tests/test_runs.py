@@ -58,6 +58,19 @@ def test_add_run(api, mock, url):
     assert resp["milestone_id"] == 1
 
 
+def add_run_dynamic_filters(r):
+    data = json.loads(r.body.decode())
+    assert data["dynamic_filters"] == {"mode": 1, "filters": {"cases:priority_id": {"values": [2]}}}
+    return 200, {}, json.dumps({"id": 25, "name": data["name"]})
+
+
+def test_add_run_dynamic_filters(api, mock, url):
+    mock.add_callback(responses.POST, url("add_run/12"), add_run_dynamic_filters)
+    filters = {"mode": 1, "filters": {"cases:priority_id": {"values": [2]}}}
+    resp = api.runs.add_run(12, name="New Run", include_all=False, dynamic_filters=filters)
+    assert resp["id"] == 25
+
+
 def test_update_run(api, mock, url):
     mock.add_callback(responses.POST, url("update_run/15"), add_run)
     resp = api.runs.update_run(15, suite_id=1, name="New Run", milestone_id=1)

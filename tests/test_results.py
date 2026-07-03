@@ -104,6 +104,19 @@ def test_add_results_for_cases(api, mock, url):
     assert resp == results
 
 
+def edit_result(r):
+    data = json.loads(r.body.decode())
+    return 200, {}, json.dumps({"id": 9, "status_id": data["status_id"], "comment": data["comment"]})
+
+
+def test_edit_result(api, mock, url):
+    mock.add_callback(responses.POST, url("edit_result/9"), edit_result)
+    resp = api.results.edit_result(9, status_id=1, comment="Updated")
+    assert resp["id"] == 9
+    assert resp["status_id"] == 1
+    assert resp["comment"] == "Updated"
+
+
 @pytest.mark.parametrize("status_id", ("1,2,3", [1, 2, 3]))
 def test_get_results_bulk(api, mock, url, status_id):
     get_results_bulk = functools.partial(get_results, limit="250")

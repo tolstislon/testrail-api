@@ -48,7 +48,7 @@ class _MetaCategory:
 
 
 class Attachments(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/attachments."""
+    """https://support.testrail.com/hc/en-us/articles/7077196481428-Attachments."""
 
     def add_attachment_to_plan(self, plan_id: int, path: str | Path) -> dict:
         """
@@ -327,8 +327,37 @@ class Attachments(_MetaCategory):
         return _bulk_api_method(self.get_attachments_for_test, "attachments", test_id)
 
 
+class Bdds(_MetaCategory):
+    """https://support.testrail.com/hc/en-us/articles/7832161593620-BDDs."""
+
+    def get_bdd(self, case_id: int, path: str | Path) -> Path:
+        """
+        Exports a BDD scenario from a test case as a .feature file.
+
+        :param case_id:
+            The ID of the test case to export the BDD scenario from
+        :param path:
+            The path to the file where the .feature content should be saved
+        :return: Path
+        """
+        return self.s.get_attachment(METHODS.GET, f"get_bdd/{case_id}", path)
+
+    def add_bdd(self, section_id: int, path: str | Path) -> dict:
+        """
+        Imports a BDD scenario from a .feature file into a new test case.
+
+        :param section_id:
+            The ID of the section the test case should be added to
+        :param path:
+            The path to the .feature file
+        :return: dict
+                the new test case
+        """
+        return self.s.attachment_request(METHODS.POST, f"add_bdd/{section_id}", path)
+
+
 class Cases(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/cases."""
+    """https://support.testrail.com/hc/en-us/articles/7077292642580-Cases."""
 
     def get_case(self, case_id: int) -> dict:
         """
@@ -385,6 +414,8 @@ class Cases(_MetaCategory):
                 Only return test cases updated before this date (as UNIX timestamp).
             :key updated_by: list[int] or comma-separated string
                 A comma-separated list of user IDs who updated test cases to filter by.
+            :key label_id: list[int] or comma-separated string
+                A comma-separated list of label IDs to filter by.
         :return: response
         """
         return self.s.get(endpoint=f"get_cases/{project_id}", params=kwargs)
@@ -430,6 +461,9 @@ class Cases(_MetaCategory):
                 The ID of the milestone to link to the test case
             :key refs: str
                 A comma-separated list of references/requirements
+            :key labels: list[int | str]
+                An array of label IDs and titles to attach to the test case
+                (requires TestRail 7.7 or later)
 
         Custom fields are supported as well and must be submitted with their
         system name, prefixed with 'custom_', e.g.:
@@ -492,6 +526,9 @@ class Cases(_MetaCategory):
                 The ID of the milestone to link to the test case
             :key refs: str
                 A comma-separated list of references/requirements
+            :key labels: list[int | str]
+                An array of label IDs and titles to attach to the test case
+                (requires TestRail 7.7 or later)
         :return: response
         """
         return self.s.post(endpoint=f"update_case/{case_id}", json=kwargs)
@@ -526,6 +563,9 @@ class Cases(_MetaCategory):
                 The ID of the milestone to link to the test case
             :key refs: str
                 A comma-separated list of references/requirements
+            :key labels: list[int | str]
+                An array of label IDs and titles to attach to the test cases
+                (requires TestRail 7.7 or later)
         """
         kwargs.update({"case_ids": case_ids})
         return self.s.post(endpoint=f"update_cases/{suite_id}", json=kwargs)
@@ -650,6 +690,8 @@ class Cases(_MetaCategory):
                 Only return test cases updated before this date (as UNIX timestamp).
             :key updated_by: list[int] or comma-separated string
                 A comma-separated list of user IDs who updated test cases to filter by.
+            :key label_id: list[int] or comma-separated string
+                A comma-separated list of label IDs to filter by.
         :return: List of test cases
         :returns: list[dict]
         """
@@ -657,7 +699,7 @@ class Cases(_MetaCategory):
 
 
 class CaseFields(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/case-fields."""
+    """https://support.testrail.com/hc/en-us/articles/7077281158164-Case-Fields."""
 
     def get_case_fields(self) -> list[dict]:
         """
@@ -724,7 +766,7 @@ class CaseFields(_MetaCategory):
 
 
 class CaseTypes(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/case-types."""
+    """https://support.testrail.com/hc/en-us/articles/7077295487252-Case-Types."""
 
     def get_case_types(self) -> list[dict]:
         """
@@ -740,7 +782,7 @@ class CaseTypes(_MetaCategory):
 
 
 class Configurations(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/configurations."""
+    """https://support.testrail.com/hc/en-us/articles/7077298488340-Configurations."""
 
     def get_configs(self, project_id: int) -> list[dict]:
         """
@@ -825,7 +867,7 @@ class Configurations(_MetaCategory):
 
 
 class Milestones(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/milestones."""
+    """https://support.testrail.com/hc/en-us/articles/7077723976084-Milestones."""
 
     def get_milestone(self, milestone_id: int) -> dict:
         """
@@ -945,7 +987,7 @@ class Milestones(_MetaCategory):
 
 
 class Plans(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/plans."""
+    """https://support.testrail.com/hc/en-us/articles/7077711537684-Plans."""
 
     def get_plan(self, plan_id: int) -> dict:
         """
@@ -998,6 +1040,10 @@ class Plans(_MetaCategory):
                 The description of the test plan
             :key milestone_id: int
                 The ID of the milestone to link to the test plan
+            :key start_on: int/datetime
+                The scheduled start date of the test plan (as UNIX timestamp)
+            :key due_on: int/datetime
+                The due date of the test plan (as UNIX timestamp)
             :key entries: list
                 An array of objects describing the test runs of the plan,
                 see the example below and add_plan_entry
@@ -1020,6 +1066,10 @@ class Plans(_MetaCategory):
                 The description of the test run(s) (requires TestRail 5.2 or later)
             :key assignedto_id: int
                 The ID of the user the test run(s) should be assigned to
+            :key start_on: int/datetime
+                The scheduled start date of the test run(s) (as UNIX timestamp)
+            :key due_on: int/datetime
+                The due date of the test run(s) (as UNIX timestamp)
             :key include_all: bool
                 True for including all test cases of the test suite and false for a
                 custom case selection (default: true)
@@ -1034,6 +1084,9 @@ class Plans(_MetaCategory):
             :key runs: list
                 An array of test runs with configurations,
                 please see the example below for details
+            :key dynamic_filters: dict
+                A set of dynamic filters used to select the test cases for the
+                test run(s), e.g. {"mode": 1, "filters": {"cases:priority_id": {"values": [2]}}}
         :return: response
         """
         return self.s.post(endpoint=f"add_plan_entry/{plan_id}", json=dict(suite_id=suite_id, **kwargs))
@@ -1056,6 +1109,10 @@ class Plans(_MetaCategory):
                 The description of the test run
             :key assignedto_id: int
                 The ID of the user the test run should be assigned to
+            :key start_on: int/datetime
+                The scheduled start date of the test run (as UNIX timestamp)
+            :key due_on: int/datetime
+                The due date of the test run (as UNIX timestamp)
             :key include_all: bool
                 True for including all test cases of the test suite and false for
                 a custom case selection
@@ -1064,6 +1121,9 @@ class Plans(_MetaCategory):
                 (Required if include_all is false)
             :key refs: str
                 A comma-separated list of references/requirements
+            :key dynamic_filters: dict
+                A set of dynamic filters used to select the test cases for the
+                test run, e.g. {"mode": 1, "filters": {"cases:priority_id": {"values": [2]}}}
         :return: response
         """
         return self.s.post(
@@ -1110,6 +1170,10 @@ class Plans(_MetaCategory):
                 The description of the test run(s) (requires TestRail 5.2 or later)
             :key assignedto_id: int
                 The ID of the user the test run(s) should be assigned to
+            :key start_on: int/datetime
+                The scheduled start date of the test run(s) (as UNIX timestamp)
+            :key due_on: int/datetime
+                The due date of the test run(s) (as UNIX timestamp)
             :key include_all: bool
                 True for including all test cases of the test suite and false for a
                 custom case selection (default: true)
@@ -1118,6 +1182,9 @@ class Plans(_MetaCategory):
             :key refs: str
                 A string of external requirement IDs, separated by commas.
                 (requires TestRail 6.3 or later)
+            :key dynamic_filters: dict
+                A set of dynamic filters used to select the test cases for the
+                test run(s), e.g. {"mode": 1, "filters": {"cases:priority_id": {"values": [2]}}}
         :return: response
         """
         return self.s.post(endpoint=f"update_plan_entry/{plan_id}/{entry_id}", json=kwargs)
@@ -1133,6 +1200,10 @@ class Plans(_MetaCategory):
                 The description of the test run
             :key assignedto_id: int
                 The ID of the user the test run should be assigned to
+            :key start_on: int/datetime
+                The scheduled start date of the test run (as UNIX timestamp)
+            :key due_on: int/datetime
+                The due date of the test run (as UNIX timestamp)
             :key include_all: bool
                 True for including all test cases of the test suite and false for
                 a custom case selection
@@ -1141,6 +1212,9 @@ class Plans(_MetaCategory):
                 (Required if include_all is false)
             :key refs: str
                 A comma-separated list of references/requirements
+            :key dynamic_filters: dict
+                A set of dynamic filters used to select the test cases for the
+                test run, e.g. {"mode": 1, "filters": {"cases:priority_id": {"values": [2]}}}
         :return: response
         """
         return self.s.post(endpoint=f"update_run_in_plan_entry/{run_id}", json=kwargs)
@@ -1203,7 +1277,7 @@ class Plans(_MetaCategory):
 
 
 class Priorities(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/priorities."""
+    """https://support.testrail.com/hc/en-us/articles/7077746564244-Priorities."""
 
     def get_priorities(self) -> list[dict]:
         """
@@ -1215,7 +1289,7 @@ class Priorities(_MetaCategory):
 
 
 class Projects(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/projects."""
+    """https://support.testrail.com/hc/en-us/articles/7077792415124-Projects."""
 
     def get_project(self, project_id: int) -> dict:
         """
@@ -1279,9 +1353,20 @@ class Projects(_MetaCategory):
                 The name of the project
             :key announcement: str
                 The description of the project
-            :key show_annoucement: bool
-                True if the annoucnement should be displayed on the project's
+            :key show_announcement: bool
+                True if the announcement should be displayed on the project's
                 overview page and false otherwise
+            :key suite_mode: int
+                The suite mode of the project
+                    1 for single suite mode,
+                    2 for single suite + baselines,
+                    3 for multiple suite
+            :key default_role_id: int
+                The ID of the default role assigned to users on this project
+            :key users: list[dict]
+                An array of user permission overrides for this project
+            :key groups: list[dict]
+                An array of group permission overrides for this project
             :key is_completed: bool
                 Specifies whether a project is considered completed or not
         :return: response
@@ -1300,7 +1385,7 @@ class Projects(_MetaCategory):
 
 
 class Reports(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/reports."""
+    """https://support.testrail.com/hc/en-us/articles/7077825062036-Reports-and-Cross-Project-Reports."""
 
     def get_reports(self, project_id: int) -> list[dict]:
         """
@@ -1325,9 +1410,27 @@ class Reports(_MetaCategory):
         """
         return self.s.get(endpoint=f"run_report/{report_template_id}")
 
+    def get_cross_project_reports(self) -> list[dict]:
+        """
+        Returns a list of API available cross-project reports (TestRail Enterprise only).
+
+        :return: response
+        """
+        return self.s.get(endpoint="get_cross_project_reports")
+
+    def run_cross_project_report(self, report_template_id: int) -> dict:
+        """
+        Executes a cross-project report and returns URL's for accessing it (TestRail Enterprise only).
+
+        :param report_template_id:
+            The ID of the report template
+        :return: response
+        """
+        return self.s.get(endpoint=f"run_cross_project_report/{report_template_id}")
+
 
 class Results(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/results."""
+    """https://support.testrail.com/hc/en-us/articles/7077819312404-Results."""
 
     def get_results(self, test_id: int, limit: int = 250, offset: int = 0, **kwargs) -> dict:
         """
@@ -1568,6 +1671,42 @@ class Results(_MetaCategory):
             json={"results": results},
         )
 
+    def edit_result(self, result_id: int, **kwargs) -> dict:
+        """
+        Updates an existing test result.
+
+        (partial updates are supported, i.e. you can submit and update specific fields only).
+
+        :param result_id:
+            The ID of the test result
+        :param kwargs:
+            :key status_id: int
+                The ID of the test status. The built-in system
+                statuses have the following IDs:
+                    1 - Passed
+                    2 - Blocked
+                    3 - Untested (not allowed when adding a result)
+                    4 - Retest
+                    5 - Failed
+                You can get a full list of system and custom statuses via get_statuses.
+            :key comment: str
+                The comment / description for the test result
+            :key version: str
+                The version or build you tested against
+            :key elapsed: str
+                The time it took to execute the test, e.g. "30s" or "1m 45s"
+            :key defects: str
+                A comma-separated list of defects to link to the test result
+            :key assignedto_id: int
+                The ID of a user the test should be assigned to
+
+            Custom fields are supported as well and must be submitted with their
+            system name, prefixed with 'custom_'. Note that custom_step_results
+            replaces the full steps array.
+        :return: response
+        """
+        return self.s.post(endpoint=f"edit_result/{result_id}", json=kwargs)
+
     def get_results_bulk(self, test_id: int, **kwargs) -> list[dict]:
         """
         Return a list of test results for a test run handling pagination.
@@ -1629,7 +1768,7 @@ class Results(_MetaCategory):
 
 
 class ResultFields(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/result-fields."""
+    """https://support.testrail.com/hc/en-us/articles/7077871398036-Result-Fields."""
 
     def get_result_fields(self) -> list[dict]:
         """
@@ -1641,7 +1780,7 @@ class ResultFields(_MetaCategory):
 
 
 class Runs(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/runs."""
+    """https://support.testrail.com/hc/en-us/articles/7077874763156-Runs."""
 
     def get_run(self, run_id: int) -> dict:
         """
@@ -1668,6 +1807,10 @@ class Runs(_MetaCategory):
                 Only return test runs created before this date (as UNIX timestamp).
             :key created_by: list[int] or comma-separated string
                 A comma-separated list of creators (user IDs) to filter by.
+            :key include_plan_runs: int/bool
+                1/True to also return runs that are part of a test plan.
+                Only applied together with the is_completed filter
+                (requires TestRail 6.7 or later).
             :key is_completed: int/bool
                 1/True to return completed test runs only.
                 0/False to return active test runs only.
@@ -1709,6 +1852,15 @@ class Runs(_MetaCategory):
             :key refs: str
                 A comma-separated list of references/requirements
                 (Requires TestRail 6.1 or later)
+            :key start_on: int/datetime
+                The scheduled start date of the test run (as UNIX timestamp)
+            :key due_on: int/datetime
+                The due date of the test run (as UNIX timestamp)
+            :key dynamic_filters: dict
+                A set of dynamic filters used to select the test cases for the run.
+                Only applied when include_all is false/not provided and case_ids is
+                empty/not provided,
+                e.g. {"mode": 1, "filters": {"cases:priority_id": {"values": [2]}}}
         :return: response
         """
         return self.s.post(endpoint=f"add_run/{project_id}", json=kwargs)
@@ -1728,6 +1880,9 @@ class Runs(_MetaCategory):
                 The description of the test run
             :key milestone_id: int
                 The ID of the milestone to link to the test run
+            :key assignedto_id: int
+                The ID of the user the test run should be assigned to
+                (available since TestRail 10.2.x)
             :key include_all: bool
                 True for including all test cases of the test suite and false for a
                 custom case selection (default: true)
@@ -1736,6 +1891,13 @@ class Runs(_MetaCategory):
             :key refs: str
                 A comma-separated list of references/requirements
                 (Requires TestRail 6.1 or later)
+            :key start_on: int/datetime
+                The scheduled start date of the test run (as UNIX timestamp)
+            :key due_on: int/datetime
+                The due date of the test run (as UNIX timestamp)
+            :key dynamic_filters: dict
+                A set of dynamic filters used to select the test cases for the run,
+                e.g. {"mode": 1, "filters": {"cases:priority_id": {"values": [2]}}}
         :return: response
         """
         return self.s.post(endpoint=f"update_run/{run_id}", json=kwargs)
@@ -1785,6 +1947,10 @@ class Runs(_MetaCategory):
                 Only return test runs created before this date (as UNIX timestamp).
             :key created_by: list[int] or comma-separated string
                 A comma-separated list of creators (user IDs) to filter by.
+            :key include_plan_runs: int/bool
+                1/True to also return runs that are part of a test plan.
+                Only applied together with the is_completed filter
+                (requires TestRail 6.7 or later).
             :key is_completed: int/bool
                 1/True to return completed test runs only.
                 0/False to return active test runs only.
@@ -1801,7 +1967,7 @@ class Runs(_MetaCategory):
 
 
 class Sections(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/sections."""
+    """https://support.testrail.com/hc/en-us/articles/7077918603412-Sections."""
 
     def get_section(self, section_id: int) -> dict:
         """
@@ -1925,7 +2091,7 @@ class Sections(_MetaCategory):
 
 
 class Statuses(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/statuses."""
+    """https://support.testrail.com/hc/en-us/articles/7077935129364-Statuses."""
 
     def get_statuses(self) -> list[dict]:
         """
@@ -1945,7 +2111,7 @@ class Statuses(_MetaCategory):
 
 
 class Suites(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/suites."""
+    """https://support.testrail.com/hc/en-us/articles/7077936624276-Suites."""
 
     def get_suite(self, suite_id: int) -> dict:
         """
@@ -2037,7 +2203,7 @@ class Suites(_MetaCategory):
 
 
 class Template(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/templates."""
+    """https://support.testrail.com/hc/en-us/articles/7077938165780-Templates."""
 
     def get_templates(self, project_id: int) -> list[dict]:
         """
@@ -2051,7 +2217,7 @@ class Template(_MetaCategory):
 
 
 class Tests(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/tests."""
+    """https://support.testrail.com/hc/en-us/articles/7077990441108-Tests."""
 
     def get_test(self, test_id: int, **kwargs) -> dict:
         """
@@ -2085,12 +2251,38 @@ class Tests(_MetaCategory):
         :param kwargs: filters
             :key status_id: list[str] or comma-separated string
                 A comma-separated list of status IDs to filter by.
+            :key label_id: list[int] or comma-separated string
+                A comma-separated list of label IDs to filter by.
         :return: response
         """
         return self.s.get(
             endpoint=f"get_tests/{run_id}",
             params=dict(limit=limit, offset=offset, **kwargs),
         )
+
+    def update_test(self, test_id: int, labels: list) -> dict:
+        """
+        Updates the labels assigned to an existing test.
+
+        :param test_id: int
+            The ID of the test
+        :param labels: list[int | str]
+            An array of label IDs and titles to assign to the test
+        :return: response
+        """
+        return self.s.post(endpoint=f"update_test/{test_id}", json={"labels": labels})
+
+    def update_tests(self, test_ids: list, labels: list) -> dict:
+        """
+        Updates the labels assigned to multiple tests with the same values.
+
+        :param test_ids: list[int]
+            An array of test IDs to update
+        :param labels: list[int | str]
+            An array of label IDs and titles to assign to the tests
+        :return: response
+        """
+        return self.s.post(endpoint="update_tests", json={"test_ids": test_ids, "labels": labels})
 
     def get_tests_bulk(self, run_id: int, **kwargs) -> list[dict]:
         """
@@ -2101,6 +2293,8 @@ class Tests(_MetaCategory):
         :param kwargs:
             :key status_id: list[str] or comma-separated string
                 A comma-separated list of status IDs to filter by.
+            :key label_id: list[int] or comma-separated string
+                A comma-separated list of label IDs to filter by.
         :return: List of tests
         :returns: list[dict]
         """
@@ -2108,7 +2302,7 @@ class Tests(_MetaCategory):
 
 
 class Users(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/users."""
+    """https://support.testrail.com/hc/en-us/articles/7077978310292-Users."""
 
     def get_user(self, user_id: int) -> dict:
         """
@@ -2158,6 +2352,68 @@ class Users(_MetaCategory):
             params=self._opt({"offset": offset, "limit": limit}),
         )
 
+    def add_user(self, name: str, email: str, **kwargs) -> dict:
+        """
+        Creates a new user (requires TestRail 7.3 or later; admin status required).
+
+        :param name: str
+            The full name of the user (required)
+        :param email: str
+            The email address of the user (required)
+        :param kwargs:
+            :key email_notifications: bool
+                True if the user should receive email notifications
+            :key is_active: bool
+                True if the user is active and false otherwise
+            :key is_admin: bool
+                True if the user is an administrator
+            :key group_ids: list[int]
+                An array of group IDs the user belongs to
+            :key mfa_required: bool
+                True if multi-factor authentication is required for the user
+            :key role_id: int
+                The ID of the global role assigned to the user
+            :key sso_enabled: bool
+                True if single sign-on is enabled for the user (TestRail Enterprise)
+            :key assigned_projects: list[int]
+                An array of project IDs the user is assigned to (TestRail Enterprise)
+        :return: response
+        """
+        return self.s.post(endpoint="add_user", json=dict(name=name, email=email, **kwargs))
+
+    def update_user(self, user_id: int, **kwargs) -> dict:
+        """
+        Updates an existing user (admin status required).
+
+        (partial updates are supported, i.e. you can submit and update specific fields only).
+
+        :param user_id: int
+            The ID of the user
+        :param kwargs:
+            :key name: str
+                The full name of the user
+            :key email: str
+                The email address of the user
+            :key email_notifications: bool
+                True if the user should receive email notifications
+            :key is_active: bool
+                True if the user is active and false otherwise
+            :key is_admin: bool
+                True if the user is an administrator
+            :key group_ids: list[int]
+                An array of group IDs the user belongs to
+            :key mfa_required: bool
+                True if multi-factor authentication is required for the user
+            :key role_id: int
+                The ID of the global role assigned to the user
+            :key sso_enabled: bool
+                True if single sign-on is enabled for the user (TestRail Enterprise)
+            :key assigned_projects: list[int]
+                An array of project IDs the user is assigned to (TestRail Enterprise)
+        :return: response
+        """
+        return self.s.post(endpoint=f"update_user/{user_id}", json=kwargs)
+
     def get_users_bulk(self, project_id: int | None = None, **kwargs) -> list[dict]:
         """
         Return a list of users with pagination.
@@ -2177,7 +2433,7 @@ class Users(_MetaCategory):
 
 
 class SharedSteps(_MetaCategory):
-    """https://www.gurock.com/testrail/docs/api/reference/api-shared-steps."""
+    """https://support.testrail.com/hc/en-us/articles/7077919815572-Shared-Steps."""
 
     def get_shared_step(self, shared_step_id: int) -> dict:
         """
@@ -2187,6 +2443,15 @@ class SharedSteps(_MetaCategory):
             The ID of the set of shared steps.
         """
         return self.s.get(endpoint=f"get_shared_step/{shared_step_id}")
+
+    def get_shared_step_history(self, shared_step_id: int) -> dict:
+        """
+        Returns the edit history for a set of shared steps (requires TestRail 7.3 or later).
+
+        :param shared_step_id: int
+            The ID of the set of shared steps.
+        """
+        return self.s.get(endpoint=f"get_shared_step_history/{shared_step_id}")
 
     def get_shared_steps(self, project_id: int, **kwargs) -> dict:
         """
@@ -2423,20 +2688,18 @@ class Datasets(_MetaCategory):
         """
         return self.s.get(endpoint=f"get_datasets/{project_id}")
 
-    def add_dataset(self, project_id: int, id: int, name: str, variables: list[dict]) -> dict:
+    def add_dataset(self, project_id: int, name: str, variables: list[dict]) -> dict:
         """
         Creates a new dataset.
 
         :param project_id: int
             The ID of the project to which the dataset should be added
-        :param id: int
-            The database ID of the dataset
         :param name: str
             Name of the dataset as provided
         :param variables: list[dict]
             Key/Value pairs. Key should be the variable name. Value should be the value to be included in the dataset.
         """
-        return self.s.post(endpoint=f"add_dataset/{project_id}", json={"name": name, "variables": variables, "id": id})
+        return self.s.post(endpoint=f"add_dataset/{project_id}", json={"name": name, "variables": variables})
 
     def update_dataset(self, dataset_id: int, **kwargs) -> dict:
         """
@@ -2460,6 +2723,20 @@ class Datasets(_MetaCategory):
             The ID of the dataset to be deleted
         """
         return self.s.post(endpoint=f"delete_dataset/{dataset_id}")
+
+
+class DynamicFilterFields(_MetaCategory):
+    """https://support.testrail.com/hc/en-us/articles/49616364363924-Dynamic-Filter-Fields."""
+
+    def get_dynamic_filter_fields(self, project_id: int) -> list[dict]:
+        """
+        Returns the list of fields available for dynamic filtering for a specific project.
+
+        :param project_id: int
+            The ID of the project
+        :return: response
+        """
+        return self.s.get(endpoint=f"get_dynamic_filter_fields/{project_id}")
 
 
 class Labels(_MetaCategory):

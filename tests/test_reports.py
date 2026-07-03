@@ -23,3 +23,24 @@ def test_run_report(api, mock, url):
     )
     response = api.reports.run_report(report_template_id)
     assert response["report_url"] == report_url
+
+
+def test_get_cross_project_reports(api, mock, url):
+    mock.add_callback(
+        responses.GET,
+        url("get_cross_project_reports"),
+        lambda _: (200, {}, json.dumps([{"id": 1, "name": "Cross Summary"}])),
+    )
+    response = api.reports.get_cross_project_reports()
+    assert response[0]["name"] == "Cross Summary"
+
+
+def test_run_cross_project_report(api, mock, url):
+    report_url, report_template_id = "https://...384", 2
+    mock.add_callback(
+        responses.GET,
+        url(f"run_cross_project_report/{report_template_id}"),
+        lambda _: (200, {}, json.dumps({"report_url": report_url})),
+    )
+    response = api.reports.run_cross_project_report(report_template_id)
+    assert response["report_url"] == report_url

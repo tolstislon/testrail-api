@@ -199,6 +199,46 @@ def test_add_custom_session(auth_data):
         api.users.get_users()
 
 
+def test_categories_bound_to_own_instance():
+    # Regression: categories used to be shared descriptors, so touching one API
+    # instance rebound the category session of another. Each instance must keep
+    # its own binding.
+    api_a = TRApi("https://a.testrail.com/", "a@a.com", "password")
+    api_b = TRApi("https://b.testrail.com/", "b@b.com", "password")
+
+    runs_a = api_a.runs
+    _ = api_b.runs.get_run  # touch the other instance's category
+
+    assert runs_a.s is api_a
+    assert api_b.runs.s is api_b
+    assert api_a.runs is not api_b.runs
+
+
+def test_category_is_cached_per_instance(auth_data):
+    api = TRApi(*auth_data)
+    assert api.runs is api.runs
+    assert api.cases is api.cases
+
+
+def test_categories_isolated_requests(mock):
+    # Two clients on different hosts must send requests to their own base URL.
+    api_a = TRApi("https://a.testrail.com/", "a@a.com", "password")
+    api_b = TRApi("https://b.testrail.com/", "b@b.com", "password")
+    mock.add_callback(
+        responses.GET,
+        "https://a.testrail.com/index.php?/api/v2/get_case/1",
+        lambda _: (200, {}, json.dumps({"host": "a"})),
+    )
+    mock.add_callback(
+        responses.GET,
+        "https://b.testrail.com/index.php?/api/v2/get_case/1",
+        lambda _: (200, {}, json.dumps({"host": "b"})),
+    )
+    runs_a = api_a.cases
+    _ = api_b.cases.get_case(1)  # rebind attempt on the shared object (old bug)
+    assert runs_a.get_case(1)["host"] == "a"
+
+
 def test_request_return_none_with_zero_iterations():
     # Initialize session with 0 iterations so the loop at line 218 never runs
     api = TRApi("https://testrail.com", "user", "password", exc_iterations=0, exc=False)

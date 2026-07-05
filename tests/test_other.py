@@ -239,6 +239,26 @@ def test_categories_isolated_requests(mock):
     assert runs_a.get_case(1)["host"] == "a"
 
 
+def test_context_manager_returns_self(auth_data):
+    with TRApi(*auth_data) as api:
+        assert isinstance(api, TRApi)
+
+
+def test_context_manager_closes_session(auth_data):
+    session = Session()
+    with mock.patch.object(session, "close") as close_mock, TRApi(*auth_data, session=session):
+        pass
+    close_mock.assert_called_once()
+
+
+def test_close_method(auth_data):
+    session = Session()
+    api = TRApi(*auth_data, session=session)
+    with mock.patch.object(session, "close") as close_mock:
+        api.close()
+    close_mock.assert_called_once()
+
+
 def test_request_return_none_with_zero_iterations():
     # Initialize session with 0 iterations so the loop at line 218 never runs
     api = TRApi("https://testrail.com", "user", "password", exc_iterations=0, exc=False)

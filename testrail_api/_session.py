@@ -8,7 +8,8 @@ from datetime import datetime
 from json.decoder import JSONDecodeError
 from os import environ
 from pathlib import Path
-from typing import Any, Final
+from types import TracebackType
+from typing import Any, Final, TypeVar
 
 import requests
 
@@ -19,6 +20,8 @@ from ._exception import StatusCodeError, TestRailError
 logger = logging.getLogger(__package__)
 
 RATE_LIMIT_STATUS_CODE: Final[int] = 429
+
+_S = TypeVar("_S", bound="Session")
 
 
 class Environ:
@@ -112,6 +115,23 @@ class Session:
     def user_email(self) -> str:
         """Get user email."""
         return self.__user_email
+
+    def close(self) -> None:
+        """Close the underlying HTTP session and release pooled connections."""
+        self.__session.close()
+
+    def __enter__(self: _S) -> _S:
+        """Enter the runtime context and return the session."""
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
+        """Close the session when leaving the runtime context."""
+        self.close()
 
     @staticmethod
     def __get_url(url: str, *, warn_ignore: bool) -> str:

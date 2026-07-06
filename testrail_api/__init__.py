@@ -48,9 +48,30 @@ except ImportError:  # pragma: no cover
 
 import logging
 
-from ._exception import StatusCodeError
+from ._enums import ResultStatus, SuiteMode
+from ._exception import (
+    AuthError,
+    NotFoundError,
+    RateLimitError,
+    ServerError,
+    StatusCodeError,
+    TestRailAPIError,
+    TestRailError,
+)
 from ._testrail_api import TestRailAPI
 
 logging.getLogger(__package__).addHandler(logging.NullHandler())
 
-__all__ = ["StatusCodeError", "TestRailAPI", "__version__"]
+__all__ = [
+    "AuthError",
+    "NotFoundError",
+    "RateLimitError",
+    "ResultStatus",
+    "ServerError",
+    "StatusCodeError",
+    "SuiteMode",
+    "TestRailAPI",
+    "TestRailAPIError",
+    "TestRailError",
+    "__version__",
+]

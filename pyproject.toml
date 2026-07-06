@@ -48,6 +48,8 @@ dev = [
     "responses==0.21.0",
     "ruff==0.15.20",
     "pytest-xdist==3.8.0",
+    "mypy==2.1.0",
+    "types-requests==2.33.0.20260518",
 ]
 
 [tool.setuptools.packages.find]
@@ -61,6 +63,21 @@ version_file = "testrail_api/__version__.py"
 
 [tool.coverage.run]
 omit = ["testrail_api/__version__.py"]
+
+[tool.mypy]
+files = ["testrail_api"]
+python_version = "3.10"
+strict = true
+# Every endpoint funnels through the overridable response_handler, which returns Any.
+warn_return_any = false
+
+[[tool.mypy.overrides]]
+module = "testrail_api._category"
+# Endpoint methods deliberately take untyped **kwargs (ruff ANN003 is ignored too)
+# and annotate JSON payloads as bare dict/list.
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+disallow_any_generics = false
 
 [tool.ruff]
 line-length = 120

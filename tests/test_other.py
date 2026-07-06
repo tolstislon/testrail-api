@@ -10,7 +10,15 @@ import responses
 from requests import Response, Session
 from requests.exceptions import ConnectionError
 
-from testrail_api import StatusCodeError
+from testrail_api import (
+    AuthError,
+    NotFoundError,
+    RateLimitError,
+    ResultStatus,
+    ServerError,
+    StatusCodeError,
+    SuiteMode,
+)
 from testrail_api import TestRailAPI as TRApi
 from testrail_api._category import _bulk_api_method
 from testrail_api._exception import TestRailAPIError as TRApiError
@@ -418,3 +426,49 @@ def test_sensitive_headers_redacted_in_log(auth_data, caplog):
     assert "top-secret" not in caplog.text
     assert "***" in caplog.text
     assert "visible" in caplog.text
+
+
+@pytest.mark.parametrize(
+    ("status", "exc_class"),
+    (
+        (401, AuthError),
+        (403, AuthError),
+        (404, NotFoundError),
+        (429, RateLimitError),
+        (500, ServerError),
+        (503, ServerError),
+        (400, StatusCodeError),
+    ),
+)
+def test_status_code_error_subclasses(api, mock, url, status, exc_class):
+    # retry-after: 0 keeps the 429 retries from sleeping before the final raise
+    mock.add_callback(responses.GET, url("get_case/1"), lambda _: (status, {"retry-after": "0"}, ""))
+    with pytest.raises(exc_class) as exc_info:
+        api.cases.get_case(1)
+    assert type(exc_info.value) is exc_class
+    assert isinstance(exc_info.value, StatusCodeError)
+    assert exc_info.value.status_code == status
+
+
+def test_enum_get_params_conversion(api, mock, url):
+    def callback(request) -> tuple[int, dict, str]:
+        query = parse_qs(urlparse(request.url).query)
+        assert query["status_id"] == ["1,5"]
+        assert query["suite_mode"] == ["3"]
+        return 200, {}, json.dumps({})
+
+    mock.add_callback(responses.GET, url("get_cases/1"), callback)
+    api.get(
+        "get_cases/1",
+        params={"status_id": [ResultStatus.PASSED, ResultStatus.FAILED], "suite_mode": SuiteMode.MULTIPLE},
+    )
+
+
+def test_enum_in_post_body(api, mock, url):
+    def callback(request) -> tuple[int, dict, str]:
+        body = json.loads(request.body)
+        assert body["results"][0]["status_id"] == 1
+        return 200, {}, json.dumps([])
+
+    mock.add_callback(responses.POST, url("add_results/1"), callback)
+    api.results.add_results(1, [{"test_id": 1, "status_id": ResultStatus.PASSED}])

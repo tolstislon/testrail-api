@@ -6,6 +6,7 @@ import warnings
 from collections.abc import Callable, Mapping
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
+from enum import Enum
 from json.decoder import JSONDecodeError
 from os import environ
 from pathlib import Path
@@ -14,9 +15,13 @@ from typing import Any, Final, TypeVar
 
 import requests
 
-from . import __version__
+try:
+    from .__version__ import version as __version__
+except ImportError:  # pragma: no cover
+    __version__ = "unknown"
+
 from ._enums import METHODS
-from ._exception import StatusCodeError, TestRailError
+from ._exception import TestRailError, status_error_class
 
 logger = logging.getLogger(__package__)
 
@@ -186,7 +191,7 @@ class Session:
                 response.content,
             )
             if self.__raise_on_error:
-                raise StatusCodeError(
+                raise status_error_class(response.status_code)(
                     response.status_code,
                     response.reason,
                     response.url,
@@ -200,17 +205,19 @@ class Session:
             return response.text or None
 
     @staticmethod
-    def __get_converter(params: dict) -> dict:
+    def __get_converter(params: dict[Any, Any]) -> dict[Any, Any]:
         """Convert GET parameters, returning a new dict."""
-        converted = {}
-        for key, value in params.items():
+        converted: dict[Any, Any] = {}
+        for key, raw_value in params.items():
+            # Unwrapping an Enum member (str(member) is unreliable across Python versions)
+            value = raw_value.value if isinstance(raw_value, Enum) else raw_value
             if isinstance(value, bool):
                 # Converting a boolean value to integer
                 converted[key] = int(value)
             elif isinstance(value, (list, tuple, set)):
                 # Converting a collection to a string '1,2,3' (sets are sorted for determinism)
                 items = sorted(value, key=str) if isinstance(value, set) else value
-                converted[key] = ",".join(str(i) for i in items)
+                converted[key] = ",".join(str(i.value if isinstance(i, Enum) else i) for i in items)
             elif isinstance(value, datetime):
                 # Converting a datetime value to integer (UNIX timestamp)
                 converted[key] = round(value.timestamp())
@@ -221,6 +228,9 @@ class Session:
     @classmethod
     def __post_converter(cls, json: Any) -> Any:
         """Convert POST parameters recursively, returning a new structure."""
+        if isinstance(json, Enum):
+            # Unwrapping an Enum member to its value
+            return cls.__post_converter(json.value)
         if isinstance(json, datetime):
             # Converting a datetime value to integer (UNIX timestamp)
             return round(json.timestamp())
@@ -268,7 +278,7 @@ class Session:
             json=json or {},
         )
 
-    def request(self, method: METHODS, endpoint: str, *, raw: bool = False, **kwargs) -> Any:
+    def request(self, method: METHODS, endpoint: str, *, raw: bool = False, **kwargs: Any) -> Any:
         """Send request method."""
         url = f"{self.__base_url}{endpoint}"
         if not endpoint.startswith(("add_attachment", "add_bdd")):
@@ -316,13 +326,13 @@ class Session:
     def _path(path: Path | str) -> Path:
         return path if isinstance(path, Path) else Path(path)
 
-    def attachment_request(self, method: METHODS, src: str, file: Path | str, **kwargs) -> dict:
+    def attachment_request(self, method: METHODS, src: str, file: Path | str, **kwargs: Any) -> dict[str, Any]:
         """Send attach."""
         file = self._path(file)
         with file.open("rb") as attachment:
             return self.request(method, src, files={"attachment": attachment}, **kwargs)
 
-    def get_attachment(self, method: METHODS, src: str, file: Path | str, **kwargs) -> Path:
+    def get_attachment(self, method: METHODS, src: str, file: Path | str, **kwargs: Any) -> Path:
         """Download attach."""
         file = self._path(file)
         response = self.request(method, src, raw=True, stream=True, **kwargs)

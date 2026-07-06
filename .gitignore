@@ -134,8 +134,9 @@ QWEN.md
 .github/copilot/
 .github/copilot-instructions.md
 
-# API documentation reference (local only)
+# API documentation reference and improvement analysis (local only)
 api_docs/
+api_dics/
 
 # Other
 TODO.txt

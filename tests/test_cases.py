@@ -217,8 +217,6 @@ def test_get_cases_bulk(api, mock, url):
         1,
         suite_id=2,
         section_id=3,
-        limit=5,
-        offset=10,
         created_after=now,
         created_before=round(now.timestamp()),
         updated_after=now,

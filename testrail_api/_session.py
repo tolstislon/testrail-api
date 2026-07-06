@@ -68,7 +68,7 @@ class Session:
             Ignore warning when not using HTTPS.
         :param retry_exceptions:
             Set of exceptions to retry the request.
-        :param response_hook:
+        :param response_handler:
             Override default response handling.
         :param kwargs:
             :key timeout: int (default: 30)
@@ -81,9 +81,13 @@ class Session:
                 Delay in receiving code 429.
             :key exc_iterations: int (default 3)
         """
-        _url = self.__get_url(url=url, warn_ignore=warn_ignore)
-        _email = self.__get_email(email=email)
-        _password = self.__get_password(password=password)
+        _url = self.__require(url, Environ.URL, "Url").rstrip("/")
+        if _url.startswith("http://") and not warn_ignore:
+            warnings.warn(
+                "Using HTTP and not HTTPS may cause writeable API requests to return 404 errors", stacklevel=2
+            )
+        _email = self.__require(email, Environ.EMAIL, "Email")
+        _password = self.__require(password, Environ.PASSWORD, "Password")
         self.__base_url = f"{_url}/index.php?/api/v2/"
         self.__timeout = kwargs.get("timeout", 30)
         self.__session = session or requests.Session()
@@ -101,7 +105,7 @@ class Session:
         logger.info(
             "Create Session{url: %s, user: %s, timeout: %s, headers: %s, verify: "
             "%s, exception: %s, exc_iterations: %s, retry: %s}",
-            url,
+            _url,
             self.__user_email,
             self.__timeout,
             self.__session.headers,
@@ -134,30 +138,11 @@ class Session:
         self.close()
 
     @staticmethod
-    def __get_url(url: str, *, warn_ignore: bool) -> str:
-        """Read URL."""
-        if not (_url := url or environ.get(Environ.URL)):
-            raise TestRailError(f"Url is not set. Use argument url or env {Environ.URL}")
-        _url = _url.rstrip("/")
-        if _url.startswith("http://") and not warn_ignore:
-            warnings.warn(
-                "Using HTTP and not HTTPS may cause writeable API requests to return 404 errors", stacklevel=2
-            )
-        return _url
-
-    @staticmethod
-    def __get_email(email: str | None) -> str:
-        """Read email."""
-        if not (_email := email or environ.get(Environ.EMAIL)):
-            raise TestRailError(f"Email is not set. Use argument email or env {Environ.EMAIL}")
-        return _email
-
-    @staticmethod
-    def __get_password(password: str) -> str:
-        """Read password."""
-        if not (_password := password or environ.get(Environ.PASSWORD)):
-            raise TestRailError(f"Password is not set. Use argument password or env {Environ.PASSWORD}")
-        return _password
+    def __require(value: str | None, env_var: str, name: str) -> str:
+        """Read a required setting from the argument or the environment variable."""
+        if not (result := value or environ.get(env_var)):
+            raise TestRailError(f"{name} is not set. Use argument {name.lower()} or env {env_var}")
+        return result
 
     def __default_response_handler(self, response: requests.Response) -> Any:
         """Deserialization json or return None."""
@@ -252,7 +237,16 @@ class Session:
                 and response.status_code == RATE_LIMIT_STATUS_CODE
                 and count < self.__exc_iterations - 1
             ):
-                time.sleep(int(response.headers.get("retry-after", self.__retry)))
+                retry_after = response.headers.get("retry-after", "")
+                delay = int(retry_after) if retry_after.strip().isdigit() else self.__retry
+                logger.warning(
+                    "Rate limit (429) on %s, sleeping %s sec before retry %s/%s",
+                    url,
+                    delay,
+                    count + 1,
+                    self.__exc_iterations,
+                )
+                time.sleep(delay)
                 continue
             logger.debug("Response header: %s", response.headers)
             return response if raw else self.__response_handler(response)

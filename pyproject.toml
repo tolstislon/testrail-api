@@ -53,6 +53,9 @@ dev = [
 [tool.setuptools.packages.find]
 exclude = ["tests", "dev_tools"]
 
+[tool.setuptools.package-data]
+testrail_api = ["py.typed"]
+
 [tool.setuptools_scm]
 version_file = "testrail_api/__version__.py"
 

@@ -31,20 +31,16 @@ def _bulk_api_method(func: Callable, resp_key: str, *args, **kwargs) -> list:
 class _MetaCategory:
     """Meta Category."""
 
+    def __init__(self, session: Session) -> None:
+        self._session = session
+
     @property
     def s(self) -> Session:
         return self._session
 
-    def __call__(self, session: Session):  # noqa: ANN204 (3.9 and 3.10 no Self)
-        self._session = session
-        return self
-
     @staticmethod
     def _opt(params: dict[Any, Any]) -> dict[Any, Any]:
         return {k: v for k, v in params.items() if v is not None}
-
-    def __get__(self, instance: Session, owner: type[Session]):  # noqa: ANN204 (3.9 and 3.10 no Self)
-        return self(instance)
 
 
 class Attachments(_MetaCategory):

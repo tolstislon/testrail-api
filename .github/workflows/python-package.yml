@@ -28,5 +28,7 @@ jobs:
                 run: uv run ruff format --check
             -   name: Lints
                 run: uv run ruff check
+            -   name: Type check
+                run: uv run mypy
             -   name: Test with pytest
                 run: uv run pytest -n auto ./tests --cov=testrail_api --cov-report=xml
